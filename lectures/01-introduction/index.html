@@ -1,0 +1,1374 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <title>Webprogramozás</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="http://webprogramozas.inf.elte.hu/webprog/ea/revealjs/css/reveal.css">
+
+<!-- Theme used for syntax highlighting of code -->
+<link rel="stylesheet" href="http://webprogramozas.inf.elte.hu/webprog/ea/revealjs/lib/css/github.css">
+<!-- Icons -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/elte-fi/revealjs-elte-fi@1.0.3/dist/revealjs-elte-fi.min.css"/>
+  <!-- Printing and PDF exports -->
+  <script>
+    var link = document.createElement( 'link' );
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = window.location.search.match( /print-pdf/gi ) ? 'http://webprogramozas.inf.elte.hu/webprog/ea/revealjs/css/print/pdf.css' : 'http://webprogramozas.inf.elte.hu/webprog/ea/revealjs/css/print/paper.css';
+    document.getElementsByTagName( 'head' )[0].appendChild( link );
+  </script>
+  <!--[if lt IE 9]>
+  <script src="http://webprogramozas.inf.elte.hu/webprog/ea/revealjs/lib/js/html5shiv.js"></script>
+  <![endif]-->
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+
+<section class="slide level2">
+
+<div class="title">
+<p>Webprogramozás</p>
+</div>
+<h3 id="követelmények-javascript-nyelvi-elemek">Követelmények, JavaScript nyelvi elemek</h3>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p><small> <strong>Visnovitz Márton</strong><br />
+egyetemi tanársegéd<br />
+visnovitz.marton@inf.elte.hu </small></p>
+</div><div class="column" style="width:50%;">
+<p><small> <strong>Horváth Győző</strong><br />
+egyetemi docens<br />
+horvath.gyozo@inf.elte.hu </small></p>
+</div>
+</div>
+<p><small> 1117 Budapest, Pázmány Péter sétány 1/c., 2.408<br />
+Tel: (1) 372-2500/8469<br />
+</small></p>
+</section>
+<section id="dinamikus-webprogramozás" class="slide level2" data-state="new-section">
+<h2 data-state="new-section">Dinamikus webprogramozás</h2>
+<p>STATIKUS ⚡ DINAMIKUS</p>
+</section>
+<section id="eddigi-ismeretek" class="slide level2">
+<h2>Eddigi ismeretek</h2>
+<p>Statikus weblapok készítése: <strong>Webfejlesztés</strong></p>
+<ul>
+<li>HTML5</li>
+<li>CSS 1, 2, 3</li>
+<li>Alapvető HTTP ismeretek</li>
+<li>CSS keretrendszerek (Bootstrap)</li>
+</ul>
+</section>
+<section id="kliens-szerver-architektúra" class="slide level2">
+<h2>Kliens-szerver architektúra</h2>
+<div class="columns">
+<div class="column" style="width:75%;">
+<ul>
+<li><p><strong>Web</strong>: kliens és kiszolgáló kommunikációja<br />
+</p></li>
+<li><p><strong>HTTP</strong>: a kommunikáció protokollja</p></li>
+<li><p>Kliens kérést intéz a szervernek</p></li>
+<li><p>Szerver válaszol</p></li>
+<li><p>A kliens feldolgozza a választ</p></li>
+</ul>
+</div><div class="column" style="width:25%;">
+<p><img data-src="../../assets/images/architecture/server-client.png" /></p>
+</div>
+</div>
+</section>
+<section id="statikus-oldalak" class="slide level2">
+<h2>Statikus oldalak</h2>
+<ul>
+<li><strong>Szerver szempontjából</strong> statikus
+<ul>
+<li>Kérés pillanatában a szerveren megtalálható az a tartalom, amely leküldésre kerül a válaszban</li>
+<li>Fájlkiszolgálás</li>
+</ul></li>
+<li><strong>Kliens szempontjából</strong> statikus
+<ul>
+<li>A letöltött és a létrejött tartalom az oldal élettartamának a végéig ugyanaz</li>
+<li>Nem változik meg sem a böngésző állapota, sem a betöltött dokumentum szerkezete</li>
+<li>Nem fut le benne programkód, leíró nyelv, deklaratív</li>
+</ul></li>
+</ul>
+</section>
+<section id="dinamikus-oldalak" class="slide level2">
+<h2>Dinamikus oldalak</h2>
+<ul>
+<li><strong>Szerver szempontjából</strong> dinamikus
+<ul>
+<li>A válaszként leküldött tartalmat program állítja elő</li>
+<li>A kérés pillanatában a válasz még nem létezik a szerveren</li>
+</ul></li>
+<li><strong>Kliens szempontjából</strong> dinamikus
+<ul>
+<li>A letöltött tartalomban programkód fut le</li>
+<li>Ez megváltoztathatja a böngésző állapotát és a dokumentum szerkezetét</li>
+</ul></li>
+<li><strong>⇒ PROGRAMOZÁS</strong></li>
+</ul>
+</section>
+<section id="miről-lesz-szó" class="slide level2">
+<h2>Miről lesz szó?</h2>
+<ul>
+<li>Dinamikus weblapkészítés</li>
+<li>Dinamikus web<strong>programozás</strong></li>
+<li>Kliens-szerver architektúra mindkét oldalán
+<ul>
+<li>Kliensoldalon: <strong>JavaScript</strong></li>
+<li>Szerveroldalon: <strong>PHP</strong></li>
+</ul></li>
+<li>Alapvető ismeretek, bevezetés
+<ul>
+<li>Új nyelvek</li>
+<li>Új technológiák</li>
+<li>Új programozási modellek</li>
+</ul></li>
+</ul>
+</section>
+<section id="félév-felépítése" class="slide level2">
+<h2>Félév felépítése</h2>
+<div class="roman-numbered">
+<ol type="1">
+<li>Kliens oldali dinamikus webprogramozás: <strong>JavaScript</strong></li>
+<li>Szerver oldali dinamikus webprogramozás: <strong>PHP</strong></li>
+</ol>
+</div>
+</section>
+<section id="motiváció" class="slide level2" data-state="new-section">
+<h2 data-state="new-section">Motiváció</h2>
+<!-- 
+
+--------------------------
+
+## {data-background-iframe="http://madebyevan.com/webgl-water/" data-background-interactive="true"}
+
+--------------------------
+
+## {data-background-iframe="http://jeremybouny.fr/ocean/demo/" data-background-interactive="true"}
+
+--------------------------
+
+## Trendek
+
+- Desktop → Web
+- Natív mobil
+- Web → Mobil
+- Web → Desktop
+- IOT, robotika
+
+--------------------------
+
+## Cél
+
+- Összetettebb alkalmazás készítése
+- Játék
+    - kliensoldal
+    - szerveroldal
+
+-->
+</section>
+<section id="section" class="slide level2" data-background-iframe="http://webprogramozas.inf.elte.hu/user/gyozke/if2017/grafilogika/login.php" data-background-interactive="true">
+<h2 data-background-iframe="http://webprogramozas.inf.elte.hu/user/gyozke/if2017/grafilogika/login.php" data-background-interactive="true"></h2>
+</section>
+<section id="section-1" class="slide level2" data-background-iframe="http://webprogramozas.inf.elte.hu/user/gyozke/if2017/plumber/index.php" data-background-interactive="true">
+<h2 data-background-iframe="http://webprogramozas.inf.elte.hu/user/gyozke/if2017/plumber/index.php" data-background-interactive="true"></h2>
+<!--
+
+--------------------------
+
+## {data-background-iframe="http://webprogramozas.inf.elte.hu/user/gyozke/if2017/labirintus/szrlab1.php" data-background-interactive="true"}
+
+--------------------------
+
+## {data-background-iframe="http://webprogramozas.inf.elte.hu/ebr/public/storage/tasks/1euvu0a7b05gq09q/DragonWarrior/" data-background-interactive="true"}
+
+-->
+</section>
+<section id="section-2" class="slide level2" data-background-iframe="http://webprogramozas.inf.elte.hu/ebr/public/storage/tasks/78e0vff90vp1b4rs/tangram/" data-background-interactive="true">
+<h2 data-background-iframe="http://webprogramozas.inf.elte.hu/ebr/public/storage/tasks/78e0vff90vp1b4rs/tangram/" data-background-interactive="true"></h2>
+</section>
+<section id="section-3" class="slide level2" data-background-iframe="http://webprogramozas.inf.elte.hu/ebr/public/storage/tasks/o68e1p7uvjcsye1c/" data-background-interactive="true">
+<h2 data-background-iframe="http://webprogramozas.inf.elte.hu/ebr/public/storage/tasks/o68e1p7uvjcsye1c/" data-background-interactive="true"></h2>
+<!-- 
+
+--------------------------
+
+## {data-background-iframe="http://webprogramozas.inf.elte.hu/webfejl2/gyak/verseny.html" data-background-interactive="true"} 
+
+-->
+</section>
+<section id="követelmények" class="slide level2" data-background="../../assets/images/backgrounds/gandalf.jpg" data-state="new-section">
+<h2 data-background="../../assets/images/backgrounds/gandalf.jpg" data-state="new-section">Követelmények</h2>
+</section>
+<section id="információk-a-tárgyról" class="slide level2">
+<h2>Információk a tárgyról</h2>
+<p><a href="http://canvas.elte.hu" class="uri">http://canvas.elte.hu</a></p>
+<ul>
+<li>Előadások</li>
+<li>Gyakorlati anyagok</li>
+<li>Beadandók</li>
+<li>Eredmények</li>
+</ul>
+</section>
+<section class="slide level2">
+
+<p><img data-src="../../assets/images/generic/bug-bounty.svg" /></p>
+<p><i class="fa fa-github"></i> <a href="https://github.com/elte-fi/courses-webprogramming">elte-fi/courses-webprogramming</a></p>
+</section>
+<section id="általános-információk" class="slide level2">
+<h2>Általános információk</h2>
+<ul>
+<li>Óraszám: 1 előadás + 2 gyakorlat + 1 konzultáció</li>
+<li>Előfeltétel: Webfejlesztés</li>
+<li>Számonkérés: <strong>folyamatos számonkérésű tárgy</strong></li>
+</ul>
+</section>
+<section id="követelmények-általános" class="slide level2">
+<h2>Követelmények (általános)</h2>
+<ul>
+<li>Előadás kötelező</li>
+<li>Gyakorlatok kötelezők (max. 3 hiányzás)</li>
+<li>Összesen <strong>120 pont</strong> szerezhető a félév során</li>
+</ul>
+</section>
+<section id="követelmények-bsc-nappali-foszk" class="slide level2">
+<h2>Követelmények (BSc nappali, FOSZK)</h2>
+<ul>
+<li><strong>Két csoport ZH</strong>
+<ul>
+<li><strong>JavaScript</strong>: 45 perc, 4. JS gyakorlat (10 pont)</li>
+<li><strong>PHP</strong>: 45 perc, 4. PHP gyakorlat (10 pont)</li>
+</ul></li>
+<li><strong>Két beadandó</strong>
+<ul>
+<li><strong>JavaScript</strong>: félév közepe - TBA (20 pont)</li>
+<li><strong>PHP</strong>: félév vége - TBA (20 pont)</li>
+</ul></li>
+<li><strong>Két évfolyam ZH</strong>
+<ul>
+<li><strong>JavaScript</strong>: 2 óra, félév közepe - TBA (30 pont)</li>
+<li><strong>PHP</strong>: 2 óra, félév vége - TBA (30 pont)</li>
+</ul></li>
+</ul>
+</section>
+<section id="követelmények-bsc-esti" class="slide level2">
+<h2>Követelmények (BSc esti)</h2>
+<ul>
+<li><strong>Két beadandó</strong>
+<ul>
+<li><strong>JavaScript</strong>: félév közepe - TBA (30 pont)</li>
+<li><strong>PHP</strong>: félév vége - TBA (30 pont)</li>
+</ul></li>
+<li><strong>Két évfolyam ZH</strong>
+<ul>
+<li><strong>JavaScript</strong>: 2 óra, félév közepe - TBA (30 pont)</li>
+<li><strong>PHP</strong>: 2 óra, félév vége - TBA (30 pont)</li>
+</ul></li>
+</ul>
+</section>
+<section id="jegyszerzés-feltételei" class="slide level2">
+<h2>Jegyszerzés feltételei</h2>
+<ul>
+<li>Részvétel az előadásokon</li>
+<li>Részvétel a gyakorlatokon</li>
+<li>Két elfogadott csoport ZH (legalább 40%) - kiv. esti</li>
+<li>Két elfogadott beadandó (legalább 40%)</li>
+<li>Két elfogadott évfolyam ZH (legalább 40%)</li>
+</ul>
+<p>A ZH-k esetében 1 hiányzás megengedett (pótolni kell)</p>
+</section>
+<section id="kliensoldali-webprogramozás" class="slide level2" data-state="new-section">
+<h2 data-state="new-section">Kliensoldali webprogramozás</h2>
+</section>
+<section id="javascript-története" class="slide level2">
+<h2>JavaScript története</h2>
+<div class="timeline">
+<ul>
+<li><strong>1991</strong>: világháló születése</li>
+<li><strong>1993</strong>: első grafikus böngészők</li>
+<li><strong>1994</strong>: Netscape Navigator böngésző</li>
+<li><strong>1995. 04</strong>: Netscape
+<ul>
+<li>Brendan Eich: olyan programozási nyelv, amelyekkel interaktívvá tehetők weboldalak</li>
+</ul></li>
+<li><strong>1995. 12</strong>: bejelentik a JavaScriptet</li>
+</ul>
+</div>
+</section>
+<section class="slide level2">
+
+<div class="timeline">
+<ul>
+<li><strong>1996-1999</strong>: I. böngészőháború ⚔️ (Netscape vs IE)
+<ul>
+<li>A kliensoldal megbízhatatlan</li>
+</ul></li>
+<li><strong>1999-2004</strong>: Sötét középkor
+<ul>
+<li>Szerveroldali technológiák fejlődése</li>
+</ul></li>
+<li><strong>2004-2017</strong>: II. böngészőháború ⚔️ (IE vs Firefox, Opera, …)</li>
+<li><strong>2006-</strong>: JavaScript újrafelfedezése (AJAX, jQuery)</li>
+<li><strong>2008</strong>: New kid on the block: Google Chrome
+<ul>
+<li>Versengés a JS sebességén</li>
+</ul></li>
+<li><strong>2009-</strong>: parancssori JavaScript (Node.js)</li>
+<li><strong>2017</strong>: Google Chrome 👑 (Chromium)</li>
+<li><strong>2019-</strong>: III. böngészőháború ⚔️? (Chrome vs Edge)</li>
+</ul>
+</div>
+</section>
+<section id="név-és-szabvány" class="slide level2">
+<h2>Név és szabvány</h2>
+<ul>
+<li>Elnevezések:
+<ul>
+<li>LiveScript: eredeti név</li>
+<li>JavaScript: marketing miatt a Java programozók átcsábítására (web Visual Basic-je)</li>
+</ul></li>
+<li>Szabvány: ECMAScript
+<ul>
+<li>Európai Informatikai és Kommunikációs Rendszerek Szabványosítási Szövetsége (ECMA)</li>
+</ul></li>
+<li>Microsoft
+<ul>
+<li>JScript</li>
+</ul></li>
+</ul>
+</section>
+<section id="ecmascript-verziók" class="slide level2">
+<h2>ECMAScript verziók</h2>
+<div class="timeline">
+<ul>
+<li>1997: 1. verzió</li>
+<li>1999: <strong>3. verzió</strong></li>
+<li>2009: <strong>5. verzió</strong> (ES5)
+<ul>
+<li>hibajavítások, apróbb fejlesztések</li>
+</ul></li>
+<li>2015: <strong>6. verzió</strong> (ES6, ECMAScript 2015)
+<ul>
+<li>nagyobb fejlesztések, modern nyelvi tulajdonságok</li>
+</ul></li>
+<li>2016: 7. verzió (ES7, ECMAScript 2016)</li>
+<li>2017: 8. verzió (ES8, ECMAScript 2017)</li>
+<li>…</li>
+</ul>
+</div>
+<p><strong>Stages</strong>: 0, 1, 2, 3, 4 → szabvány</p>
+</section>
+<section id="fejlesztőeszközök" class="slide level2" data-state="new-section">
+<h2 data-state="new-section">Fejlesztőeszközök</h2>
+<p>Szerkesztők, böngészők, eszköztárak, dokumentáció</p>
+</section>
+<section id="szerkesztők" class="slide level2">
+<h2>Szerkesztők</h2>
+<ul>
+<li>Text editorok
+<ul>
+<li>Notepad++</li>
+<li>Sublime Text 3</li>
+<li>Atom</li>
+<li><strong>Visual Studio Code</strong></li>
+</ul></li>
+<li>Integrált fejlesztőkörnyezetek (IDE)
+<ul>
+<li>NetBeans IDE</li>
+<li>Visual Studio</li>
+<li>WebStorm</li>
+</ul></li>
+</ul>
+<p>Tetszőleges modern kódszerkesztő használható</p>
+</section>
+<section id="böngészők" class="slide level2">
+<h2>Böngészők</h2>
+<ul>
+<li><strong>Google Chrome</strong></li>
+<li><strong>Microsoft Edge</strong></li>
+<li><strong>Opera</strong></li>
+<li>Mozilla Firefox</li>
+<li>Safari</li>
+</ul>
+</section>
+<section id="webfejlesztési-eszközök" class="slide level2">
+<h2>Webfejlesztési eszközök</h2>
+<ul>
+<li>Webfejlesztő eszköztár (F12)
+<ul>
+<li>Elemek</li>
+<li>JavaScript konzol (<code>console</code>)</li>
+<li>Debugger</li>
+<li>Erőforrások</li>
+<li>Hálózati forgalom</li>
+<li>Teljesítményprofilozás</li>
+</ul></li>
+<li>Parancssori eszközök</li>
+</ul>
+</section>
+<section id="dokumentáció" class="slide level2">
+<h2>Dokumentáció</h2>
+<ul>
+<li>Hivatalos dokumentáció az <a href="http://www.ecma-international.org/publications/standards/Ecma-262.htm">ECMAScript szabvány</a></li>
+<li>Mozilla Developer Network: JavaScript
+<ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/JavaScript">Főoldal</a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/JavaScript/Reference">JavaScript referencia</a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/JavaScript/Guide">JavaScript guide</a></li>
+<li>Firefox specifikus dolgok, de a dokumentáció megfelelően jelzi</li>
+</ul></li>
+</ul>
+</section>
+<section id="futtató-környezet" class="slide level2" data-state="new-section">
+<h2 data-state="new-section">Futtató környezet</h2>
+</section>
+<section id="futási-környezet" class="slide level2">
+<h2>Futási környezet</h2>
+<p>A JavaScriptnek szüksége van egy futtató környezetre</p>
+<ul>
+<li><strong>Böngésző</strong></li>
+<li>Parancssor (Node.js)</li>
+</ul>
+</section>
+<section id="hova-írhatjuk-a-kódot" class="slide level2">
+<h2>Hova írhatjuk a kódot?</h2>
+<ul>
+<li>JavaScript konzolba (böngésző)
+<ul>
+<li>Az adott oldal kontextusában értelmezésre kerül</li>
+<li>Kipróbálásra jó</li>
+</ul></li>
+<li><strong>HTML kódba</strong> (böngésző)
+<ul>
+<li>Inline szkript, <code>&lt;script&gt;</code> tag, bárhova rakhatjuk</li>
+<li>Külső állományba, <code>&lt;script&gt;</code> tag src attribútumával töltjük be</li>
+</ul></li>
+<li>Parancssori értelmezőbe (parancssor, Node.js)</li>
+</ul>
+</section>
+<section id="javascript-kód-helye" class="slide level2">
+<h2>JavaScript kód helye</h2>
+<pre class="html"><code>&lt;!doctype html&gt;
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;meta charset=&quot;utf-8&quot;&gt;
+    &lt;title&gt;Webfejlesztés 2.&lt;/title&gt;
+    &lt;script&gt;
+      //JavaScript kód helye
+    &lt;/script&gt;
+    &lt;script src=&quot;jskod.js&quot;&gt;&lt;/script&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;script&gt;
+      //JavaScript kód helye
+    &lt;/script&gt;
+    &lt;p&gt;Hello világ!&lt;/p&gt;
+    &lt;script src=&quot;jskod2.js&quot;&gt;&lt;/script&gt;
+  &lt;/body&gt;
+&lt;/html&gt;</code></pre>
+</section>
+<section id="javascript-kód-helye-1" class="slide level2">
+<h2>JavaScript kód helye</h2>
+<pre class="html"><code>&lt;!doctype html&gt;
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;!-- ... --&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;!-- ... --&gt;
+    &lt;script src=&quot;kod.js&quot;&gt;&lt;/script&gt;
+  &lt;/body&gt;
+&lt;/html&gt;</code></pre>
+</section>
+<section id="a-javascript-nyelv" class="slide level2" data-state="new-section">
+<h2 data-state="new-section">A JavaScript nyelv</h2>
+<p>Alapok</p>
+</section>
+<section id="mintaként-szolgáló-nyelvek" class="slide level2">
+<h2>Mintaként szolgáló nyelvek</h2>
+<p><img data-src="minta.png" /></p>
+</section>
+<section class="slide level2">
+
+<div class="columns">
+<div class="column" style="width:50%;">
+<pre class="cpp"><code>#include &lt;iostream&gt;
+using namespace std; 
+int main() { 
+  //declaration 
+  const int n=5; 
+  double x[]={1,3,5,7,9}; 
+  double s; 
+  //process
+  s=0; 
+  for(int i=0; i&lt;n; i++) { 
+    s=s+x[i]; 
+  } 
+  //write output
+  cout&lt;&lt;&quot;Sum: &quot;&lt;&lt;s&lt;&lt;endl; 
+  return 0; 
+} </code></pre>
+<footer>
+C++
+</footer>
+</div><div class="column" style="width:50%;">
+<pre class="js"><code>//declaration 
+const x=[1,3,5,7,9];
+let s;
+//process 
+s=0;
+for(let i=0; i&lt;x.length; i++) {
+    s=s+x[i];
+}
+//write output 
+console.log(&#39;Sum: &#39;, s);</code></pre>
+<footer>
+JavaScript
+</footer>
+</div>
+</div>
+</section>
+<section class="slide level2">
+
+<div class="columns">
+<div class="column" style="width:50%;">
+<h3 id="c">C++</h3>
+<ul>
+<li>Erősen típusos</li>
+<li>Fordított</li>
+<li>Általános célú programozási nyelv</li>
+</ul>
+</div><div class="column" style="width:50%;">
+<h3 id="javascript">JavaScript</h3>
+<ul>
+<li>Dinamikusan típusos</li>
+<li>Interpretált</li>
+<li>Szkriptnyelv</li>
+</ul>
+</div>
+</div>
+</section>
+<section id="dinamikusan-típusos" class="slide level2">
+<h2>Dinamikusan típusos</h2>
+<ul>
+<li>A változók típusa a benne tárolt érték típusától függ</li>
+<li>Vagy másképp: a típusok az értékekhez tartoznak, nem a változókhoz.</li>
+<li>Automatikus típuskonverziók (lehetőleg kerüljük)</li>
+</ul>
+<pre class="js"><code>a = &#39;alma&#39;;
+a = 12;
+a == &#39;12&#39;; //true</code></pre>
+</section>
+<section id="interpretált" class="slide level2">
+<h2>Interpretált</h2>
+<ul>
+<li>A böngészőben futó értelmező értelmezi a JavaScript kódsorokat sorról sorra</li>
+<li>Nincs fordítási fázis, nem a lefordított kód fut</li>
+<li>Minimális előfeldolgozás történik</li>
+<li>A kód a hibáig lefut, ott elakad:
+<ul>
+<li>Az adott <code>&lt;script&gt;</code> blokk futása megáll</li>
+<li>A <code>&lt;script&gt;</code> blokk után folytatódik az oldal betöltése</li>
+</ul></li>
+</ul>
+</section>
+<section id="további-jellemzők" class="slide level2">
+<h2>További jellemzők</h2>
+<ul>
+<li>Kis és nagybetűk különböznek (case sensitive)</li>
+<li>Nincs főprogram (<code>main</code>)</li>
+<li>Nincs input/output (csak API-kon keresztül)</li>
+<li>Nincs fájlkezelés (csak API-kon keresztül)</li>
+<li>Objektumorientált</li>
+<li>Prototípusos</li>
+<li>Automatikus pontosvessző beszúrás ❗</li>
+</ul>
+<pre class="js"><code>let a = 12  // --&gt; let a = 12;
+a = a + 1   // --&gt; a = a + 1;</code></pre>
+</section>
+<section id="típusok" class="slide level2">
+<h2>Típusok</h2>
+<ul>
+<li>Egyszerű típusok
+<div class="columns">
+<div class="column" style="width:60%;">
+<p>Szám<br />
+Nagy szám<br />
+Szöveg<br />
+Logikai<br />
+Undefined</p>
+</div>
+<div class="column" style="width:40%;">
+<p><code>Number</code><br />
+<code>BigInt</code><br />
+<code>String</code><br />
+<code>Boolean</code><br />
+<code>undefined</code></p>
+</div></li>
+<li>Összetett típusok
+<div class="columns">
+<div class="column" style="width:60%;">
+<p>Objektum<br />
+<em>Tömb</em><br />
+<em>Függvény</em></p>
+</div>
+<div class="column" style="width:40%;">
+<p><code>Object</code><br />
+<code>Array</code><br />
+<code>Function</code></p>
+</div></li>
+</ul>
+</section>
+<section id="literálformák" class="slide level2">
+<h2>Literálformák</h2>
+<p>Adott típus megjelenési formája</p>
+<div class="columns">
+<div class="column">
+<pre class="js"><code>// Logikai literál
+true
+false
+
+// Szám literál
+12
+12.34</code></pre>
+</div><div class="column">
+<pre class="js"><code>// Szöveg literál
+&#39;Szöveg&#39;
+&quot;Szöveg&quot;
+`Szöveg`
+
+`Tetszőleges ${kifejezés}`
+
+&#39;Idézőjelben &quot;így&quot; macsakörmölök&#39;
+&quot;Macskakörömben &#39;így&#39; idézek&quot;
+&#39;Idézőjelben \&#39; idézőjel&#39;
+&quot;Macskakörömben \&quot; macskaköröm&quot;
+&#39;Escape: \t \n \\ &#39;</code></pre>
+</div>
+</div>
+</section>
+<section id="változók" class="slide level2">
+<h2>Változók</h2>
+<ul>
+<li><del><code>var</code></del>, <code>let</code>, <code>const</code> kulcsszóval deklarálunk új változót</li>
+<li>ezek elhagyásával → globális változó – KERÜLENDŐ!!!</li>
+<li>Ha nincs kezdőérték → undefined</li>
+</ul>
+<pre class="js"><code>let nev = &#39;Győző&#39;; // &#39;Győző&#39;
+let masik;         //undefined</code></pre>
+</section>
+<section id="operátorok" class="slide level2">
+<h2>Operátorok</h2>
+<ul>
+<li>Aritmetikai operátorok
+<ul>
+<li><code>+</code>, <code>-</code>, <code>*</code>, <code>/</code>, <code>%</code>, <code>++</code>, <code>--</code>, unáris <code>-</code>, unáris <code>+</code></li>
+</ul></li>
+<li>Értékadás operátorai
+<ul>
+<li><code>=</code>, <code>*=</code>, <code>/=</code>, <code>%=</code>, <code>+=</code>, <code>-=</code>, stb.</li>
+</ul></li>
+<li>Összehasonlító operátor
+<ul>
+<li><strong><code>===</code></strong>, <strong><code>!==</code></strong>, <code>==</code>, <code>!=</code>, <code>&gt;</code>, <code>&gt;=</code>, <code>&lt;</code>, <code>&lt;=</code></li>
+<li><code>===</code> és <code>!==</code> típus és érték szerint</li>
+<li><code>==</code> és <code>!=</code> érték szerint (automatikus konverziók)</li>
+</ul></li>
+</ul>
+<pre class="js"><code>12 ==  &#39;12&#39;  // true
+12 === &#39;12&#39;  // false</code></pre>
+</section>
+<section id="operátorok-1" class="slide level2">
+<h2>Operátorok</h2>
+<ul>
+<li>Logikai operátorok
+<ul>
+<li><code>&amp;&amp;</code>, <code>||</code>, <code>!</code></li>
+</ul></li>
+<li>Szövegösszefűzés operátorai
+<ul>
+<li><code>+</code>, <code>+=</code></li>
+</ul></li>
+<li>Bitenkénti operátorok
+<ul>
+<li><code>&amp;</code>, <code>|</code>, <code>^</code>, <code>~</code>, <code>&lt;&lt;</code>, <code>&gt;&gt;</code>, <strong><code>&gt;&gt;&gt;</code></strong></li>
+</ul></li>
+<li>Speciális operátorok
+<ul>
+<li><code>? :</code> feltételes operátor</li>
+<li><strong><code>,</code></strong> több kifejezés végrehajtása egy utasításban, visszatérési értéke az utolsó kifejezés</li>
+</ul></li>
+</ul>
+</section>
+<section id="vezérlési-szerkezetek" class="slide level2">
+<h2>Vezérlési szerkezetek</h2>
+<div class="columns">
+<div class="column" style="width:22%;">
+<pre class="js"><code>// Elágazás
+if (felt) {
+  utasítások
+}
+
+if (felt) {
+  utasítások
+} else {
+  utasítások
+}</code></pre>
+</div><div class="column" style="width:37%;">
+<pre class="js"><code>// Többirányú elágazás
+switch(kifejezés) {
+  case érték1:
+    utasítások
+    break;
+  case érték2:
+    utasítások
+    break;
+  default:
+    utasítások 
+}</code></pre>
+</div><div class="column" style="width:41%;">
+<pre class="js"><code>// Ciklusok
+while (felt) {
+  utasítások
+}
+
+do {
+  utasítások
+} while (felt);
+
+for (let i=1; i&lt;=n; i++) {
+  utasítások
+}</code></pre>
+</div>
+</div>
+</section>
+<section id="a-javascript-nyelv-1" class="slide level2" data-state="new-section">
+<h2 data-state="new-section">A JavaScript nyelv</h2>
+<p>Függvények</p>
+</section>
+<section class="slide level2">
+
+<div class="columns">
+<div class="column">
+<pre class="cpp"><code>int factorial(int n) {
+    int f = 1;
+    for (int i=2; i&lt;=n; i++) {
+        f *= i;
+    }
+    return f;
+}</code></pre>
+<footer>
+C++
+</footer>
+</div><div class="column">
+<pre class="js"><code>function factorial(n) {
+    let f = 1;
+    for (let i=2; i&lt;=n; i++) {
+        f *= i;
+    }
+    return f;
+}</code></pre>
+<footer>
+JavaScript
+</footer>
+</div>
+</div>
+</section>
+<section id="alapértelmezett-értékek" class="slide level2">
+<h2>Alapértelmezett értékek</h2>
+<pre class="js"><code>// függvénydeklarációó
+function add(a, b = 3) {
+  return a + b;
+}
+
+// függvényhívás
+add(40, 2)      // 42
+add(10)         // 13
+add(50, 20, 10) // 70
+add()           // NaN</code></pre>
+</section>
+<section id="létrehozási-formák" class="slide level2">
+<h2>Létrehozási formák</h2>
+<pre class="js"><code>// függvénydeklaráció
+function add(a, b) {
+  return a + b;
+}
+
+// függvénykifejezés
+const add = function (a, b) {
+  return a + b;
+}
+
+// fat arrow
+const add = (a, b) =&gt; {
+  return a + b;
+}
+const add = (a, b) =&gt; a + b;</code></pre>
+</section>
+<section id="literálforma" class="slide level2">
+<h2>Literálforma</h2>
+<pre class="js"><code>function (a, b) {
+  return a + b;
+}
+
+// or
+
+(a, b) =&gt; a + b</code></pre>
+</section>
+<section id="függvény-mint-paraméter" class="slide level2">
+<h2>Függvény mint paraméter</h2>
+<pre class="js"><code>function countA(str) {
+  let count = 0;
+  for (const c of x) {
+    if (c === &#39;a&#39;) {
+      count++;
+    }
+  }
+  return count;
+}
+
+console.log( countA(&quot;apple&quot;) ) // 1</code></pre>
+</section>
+<section id="függvény-mint-paraméter-1" class="slide level2">
+<h2>Függvény mint paraméter</h2>
+<pre class="js"><code>function count(str, fn) {
+  let db = 0;
+  for (const c of x) {
+    if (fn(c)) {
+      db++;
+    }
+  }
+  return db;
+}
+
+console.log(
+  count(&quot;apple&quot;, c =&gt; c === &#39;a&#39;)
+)</code></pre>
+</section>
+<section id="a-javascript-nyelv-2" class="slide level2" data-state="new-section">
+<h2 data-state="new-section">A JavaScript nyelv</h2>
+<p>Tömb</p>
+</section>
+<section id="létrehozás" class="slide level2">
+<h2>Létrehozás</h2>
+<p>Literálforma: <code>[]</code></p>
+<pre class="js"><code>// creation
+const uresTomb = [];
+const tomb = [12, &#39;alma&#39;, true];
+
+// referencing an element
+tomb[0]; // =&gt; 12;
+tomb[1]; // =&gt; &#39;alma&#39;;
+tomb[2]; // =&gt; true;
+
+// length
+tomb.length; // =&gt; 3</code></pre>
+</section>
+<section id="módosítás" class="slide level2">
+<h2>Módosítás</h2>
+<pre class="js"><code>const tomb = [12, &#39;alma&#39;, true];
+
+// modification
+tomb[0] = 13;
+
+// new element at the end
+tomb.push(&quot;new&quot;);
+
+// new element somewhere (not recommended)
+tomb[100] = &#39;far away&#39;;
+tomb.length; // =&gt; 101
+tomb[99]; // =&gt; undefined
+
+// deleting (size remains the same)
+delete tomb[1];
+tomb[1]; // =&gt; undefined
+tomb.length; // =&gt; 101</code></pre>
+</section>
+<section id="mátrix" class="slide level2">
+<h2>Mátrix</h2>
+<p>Tömbök tömbje</p>
+<pre class="js"><code>const m = [
+  [1, 2, 3], 
+  [4, 5, 6],
+];
+
+m[1][2]; // =&gt; 6</code></pre>
+</section>
+<section id="iteratív-feldolgozás" class="slide level2">
+<h2>Iteratív feldolgozás</h2>
+<pre class="js"><code>const gyumolcsok = [
+  &#39;alma&#39;,
+  &#39;korte&#39;,
+  &#39;szilva&#39;
+];
+
+//A gyümölcsök kiírása a konzolra
+for (let i = 0; i &lt; gyumolcsok.length; i++) {
+  console.log(gyumolcsok[i]);
+}
+
+// for..of ciklus (ES6)
+for (const gyumolcs of gyumolcsok) {
+  console.log(gyumolcs);
+}</code></pre>
+</section>
+<section id="tömb-műveletek" class="slide level2">
+<h2>Tömb műveletek</h2>
+<ul>
+<li><code>pop()</code>, <code>push(e)</code>, <code>shift(e)</code>, <code>unshift()</code>
+<ul>
+<li>végéről, végére, elejére,elejéről</li>
+</ul></li>
+<li><code>reverse()</code>
+<ul>
+<li>megfordít</li>
+</ul></li>
+<li><code>splice(honnan, mennyit)</code>
+<ul>
+<li>kivág</li>
+</ul></li>
+<li><code>join(szeparátor)</code>
+<ul>
+<li>szöveggé fűz</li>
+</ul></li>
+<li><code>indexOf(elem)</code>
+<ul>
+<li>keresés</li>
+</ul></li>
+<li><code>includes(elem)</code>
+<ul>
+<li>eldöntés</li>
+</ul></li>
+</ul>
+</section>
+<section class="slide level2">
+
+<pre class="js"><code>const t = [1, 2, 3, 4, 5];
+
+t.push(6);      // [1, 2, 3, 4, 5, 6]
+t.pop();        // --&gt; 6, [1, 2, 3, 4, 5]
+t.unshift(0);   // [0, 1, 2, 3, 4, 5]
+t.shift();      // --&gt; 0, [1, 2, 3, 4, 5]
+t.reverse();    // [5, 4, 3, 2, 1]
+t.splice(2, 1); // [5, 4, 2, 1]
+t.join(&#39;###&#39;);  // &quot;5###4###2###1&quot;</code></pre>
+</section>
+<section id="tömbfüggvények" class="slide level2">
+<h2>Tömbfüggvények</h2>
+<p>Programozási tételek megvalósítása</p>
+<ul>
+<li><code>forEach</code>: általános ciklus</li>
+<li><code>some</code>: eldöntés</li>
+<li><code>every</code>: optimista eldöntés</li>
+<li><code>map</code>: másolás</li>
+<li><code>filter</code>: kiválogatás</li>
+<li><code>reduce</code>: összegzés (sorozatszámítás)</li>
+<li><code>find</code>: keresés (elem)</li>
+<li><code>findIndex</code>: keresés (index)</li>
+</ul>
+</section>
+<section id="példa-kiválogatás" class="slide level2">
+<h2>Példa – kiválogatás</h2>
+<pre class="js"><code>const numbers = [1, 2, 3, 4, 5];
+
+function filter(x, fn) {
+  const out = [];
+  for (const e of x) {
+    if (fn(e)) {
+        out.push(e);
+    }
+  }
+  return out;
+}
+const evens = filter(numbers, e =&gt;e % 2 === 0);
+
+// instead
+
+const evens = numbers.filter(e =&gt;e % 2 === 0);</code></pre>
+</section>
+<section id="példa-összegzés" class="slide level2">
+<h2>Példa – összegzés</h2>
+<pre class="js"><code>function sum(x) {
+  let s = 0;
+  for (const e of x) {
+    s = s + e;
+  }
+  return s;
+}
+
+// instead
+
+x.reduce((s, e) =&gt; s + e, 0);</code></pre>
+</section>
+<section id="destructuring-and-spread" class="slide level2">
+<h2>Destructuring and spread</h2>
+<pre class="js"><code>const numbers = [1, 2, 3, 4, 5];
+const a = numbers[0];
+const b = numbers[1];
+
+// instead
+const [a, b] = numbers;
+
+// default values
+const [a = 10, b = 20] = [100] // a:100, b:20
+
+// rest
+const [a, b, ...rest] = numbers; // --&gt; rest:[3, 4, 5]
+
+// swapping variables
+[a, b] = [b, a]
+
+// ignoring
+const [a,,b] = numbers; // a:1, b:3
+
+// spread
+const a = [1, 2, 3];
+const b = [9, ...a, 10]; // b:[9, 1, 2, 3, 10]</code></pre>
+</section>
+<section id="a-javascript-nyelv-3" class="slide level2" data-state="new-section">
+<h2 data-state="new-section">A JavaScript nyelv</h2>
+<p>Objektum</p>
+</section>
+<section id="létrehozás-1" class="slide level2">
+<h2>Létrehozás</h2>
+<p>Literálforma: <code>{ }</code></p>
+<pre class="js"><code>// creation
+const uresObj = {};
+const obj = {
+  mezo1: 12,
+  &#39;mezo2&#39;: &#39;alma&#39;,
+};
+
+// referencing
+obj.mezo1;      // =&gt; 12
+obj[&#39;mezo1&#39;];   // =&gt; 12</code></pre>
+</section>
+<section id="módosítás-1" class="slide level2">
+<h2>Módosítás</h2>
+<pre class="js"><code>const obj = {
+  mezo1: 12,
+  &#39;mezo2&#39;: &#39;alma&#39;,
+};
+
+// modification
+obj.mezo2 = &#39;korte&#39;;
+
+// extending
+obj.mezo3 = true;
+
+// deletion
+delete obj.mezo1;
+obj.mezo1; // =&gt; undefined</code></pre>
+</section>
+<section id="metódus-függvény-mint-adattag" class="slide level2">
+<h2>Metódus (függvény mint adattag)</h2>
+<pre class="js"><code>const obj = {
+  data: 42,
+  metodus: function () {
+    console.log(&#39;Foo: &#39;, this.data);
+  },
+  metodus2() {
+    console.log(&#39;Foo: &#39;, this.data);
+  }
+};
+
+obj.metodus();
+obj.metodus2();</code></pre>
+</section>
+<section id="getter-és-setter" class="slide level2">
+<h2>Getter és setter</h2>
+<pre class="js"><code>const obj = {
+  _data: 42,
+  get data() {
+    return _data;
+  },
+  set data(value) {
+    _data = value;
+  }
+};
+
+obj.data = 52;
+obj.data; // 52</code></pre>
+</section>
+<section id="dinamikus-mezőnév" class="slide level2">
+<h2>Dinamikus mezőnév</h2>
+<pre class="js"><code>// Computed property names
+const prop = &#39;foo&#39;;
+const o = {
+  [prop]: &#39;something&#39;,
+  [&#39;b&#39; + &#39;ar&#39;]: &#39;new&#39;
+};
+
+o.foo; // &#39;something&#39;
+o.bar; // &#39;new&#39;</code></pre>
+</section>
+<section id="objektum" class="slide level2">
+<h2>Objektum</h2>
+<ul>
+<li>Objektum
+<ul>
+<li>Kulcs-érték párok gyűjteménye</li>
+<li>Asszociatív tömbhöz hasonlít (hash)</li>
+<li>Rekord, osztálypéldány szimulálható</li>
+</ul></li>
+<li>JavaScriptben nagyon fontos szerepük van</li>
+<li>Majdnem minden objektum</li>
+<li>Ha az érték függvény → metódus</li>
+</ul>
+</section>
+<section id="példák" class="slide level2">
+<h2>Példák</h2>
+<div class="columns">
+<div class="column">
+<pre class="js"><code>//Tömb az objektumban
+const zsofi = {
+  kor: 7,
+  kedvencEtelek: [
+    &#39;krumplipüré&#39;,
+    &#39;rántott hús&#39;,
+    &#39;tejberizs&#39;
+  ]
+};
+//Elem elérése
+zsofi.kedvencEtelek[1]; 
+// =&gt; &#39;rántott hús&#39;</code></pre>
+</div><div class="column">
+<pre class="js"><code>//Objektum az objektumban
+const david = {
+  kor: 4,
+  cim: {
+    iranyitoszam: &#39;1241&#39;,
+    varos: &#39;Budapest&#39;,
+    utca: &#39;Egyszervolt utca&#39;,
+    hazszam: 63
+  }
+};
+//Elem elérése
+david.cim.utca; 
+// =&gt; &#39;Egyszervolt utca&#39;</code></pre>
+</div>
+</div>
+</section>
+<section id="feldolgozás" class="slide level2">
+<h2>Feldolgozás</h2>
+<pre class="js"><code>const matyi = {
+  kor: 1.5,
+  fiu: true,
+  cuki: true
+}
+
+// Feldolgozás a for..in ciklussal
+for (const i in matyi) {
+  console.log(i, matyi[i]);
+}
+// Eredmény
+// =&gt; kor 1.5
+// =&gt; fiu true
+// =&gt; cuki true</code></pre>
+</section>
+<section id="adatszerkezetek-modellezése" class="slide level2">
+<h2>Adatszerkezetek modellezése</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<pre class="js"><code>//C++ vector --&gt; JS tömb
+const kutyuk = [
+  &#39;telefon&#39;,
+  &#39;fülhallgató&#39;,
+  &#39;pendrive&#39;,
+  &#39;e-könyv olvasó&#39;
+];</code></pre>
+<pre class="js"><code>//C++ struct --&gt; JS objektum
+const hallgato = {
+  nev: &#39;Mosolygó Napsugár&#39;,
+  neptun: &#39;kod123&#39;,
+  szak: &#39;Informatika BSc&#39;
+};</code></pre>
+</div><div class="column" style="width:50%;">
+<pre class="js"><code>//Rekordok tömbje
+const hallgatok = [
+  {
+    nev: &#39;Mosolygó Napsugár&#39;,
+    neptun: &#39;kod123&#39;,
+    szak: &#39;Informatika BSc&#39;
+  },
+  {
+    nev: &#39;Kék Ibolya&#39;,
+    neptun: &#39;kod456&#39;,
+    szak: &#39;Informatika BSc&#39;
+  }
+];</code></pre>
+</div>
+</div>
+</section>
+<section id="adatszerkezetek-modellezése-1" class="slide level2">
+<h2>Adatszerkezetek modellezése</h2>
+<pre class="js"><code>//Tömböt tartalmazó rekordok tömbje
+const hallgatok = [
+  {
+    nev: &#39;Mosolygó Napsugár&#39;,
+    neptun: &#39;kod123&#39;,
+    szak: &#39;Informatika BSc&#39;,
+    targyak: [
+      &#39;Programozás&#39;,
+      &#39;Webfejlesztés 2.&#39;,
+      &#39;Számítógépes alapismeretek&#39;
+    ]
+  },
+  {
+    nev: &#39;Kék Ibolya&#39;,
+    neptun: &#39;kod456&#39;,
+    szak: &#39;Informatika BSc&#39;,
+    targyak: [
+      &#39;Programozás&#39;,
+      &#39;Webfejlesztés 2.&#39;,
+      &#39;Diszkrét matematika&#39;,
+      &#39;Testnevelés&#39;
+    ]
+  }
+];</code></pre>
+</section>
+<section id="destructuring-and-spread-1" class="slide level2">
+<h2>Destructuring and spread</h2>
+<pre class="js"><code>const o = {
+  a: 42,
+  b: 28,
+}
+const a = o.a
+const b = o.b
+
+// instead
+const {a, b} = o;
+
+// renaming
+const {a: c, b: d} = o;
+
+// default values
+const {a = 10, b = 20} = {a: 42};
+const {a: c = 10, b: d = 20} = {a: 42};
+
+// rest
+const o = {
+  a: 42,
+  b: 28,
+  c: 12
+};
+const {a, ...rest} = o; // rest={b:28, c:12}</code></pre>
+</section>
+<section id="destructuring-and-spread-2" class="slide level2">
+<h2>Destructuring and spread</h2>
+<pre class="js"><code>// nested objects
+const david = {
+  kor: 4,
+  cim: {
+    iranyitoszam: &#39;1241&#39;,
+    varos: &#39;Budapest&#39;,
+    utca: &#39;Egyszervolt utca&#39;,
+    hazszam: 63
+  }
+};
+const { cim: { utca }} = david</code></pre>
+</section>
+<section id="class-es6" class="slide level2">
+<h2><code>class</code> (ES6)</h2>
+<pre class="js"><code>class Rectangle {
+  constructor(height, width) {
+    this.height = height;
+    this.width = width;
+  }
+  // Getter
+  get area() {
+    return this.calcArea();
+  }
+  // Method
+  calcArea() {
+    return this.height * this.width;
+  }
+}
+
+const square = new Rectangle(10, 10);
+
+console.log(square.area); // 100</code></pre>
+</section>
+<section id="class-publikus-mezők" class="slide level2">
+<h2><code>class</code> – publikus mezők</h2>
+<pre class="js"><code>class Product {
+  name;
+  tax = 0.2;
+  basePrice = 0;
+  price;
+
+  constructor(name, basePrice) {
+    this.name = name;
+    this.basePrice = basePrice;
+    this.price = (basePrice * (1 + this.tax)).toFixed(2);
+  }
+}</code></pre>
+</section>
+<section id="összefoglalás" class="slide level2" data-state="topic">
+<h2 data-state="topic">Összefoglalás</h2>
+<ul>
+<li>C++ → JavaScript</li>
+<li>Adatszerkezetek
+<ul>
+<li>elemi</li>
+<li>összetett: tömb, objektum</li>
+</ul></li>
+<li>Programozási tételek tömbfüggvényekként</li>
+</ul>
+</section>
+    </div>
+  </div>
+
+  <script src="http://webprogramozas.inf.elte.hu/webprog/ea/revealjs/lib/js/head.min.js"></script>
+  <script src="http://webprogramozas.inf.elte.hu/webprog/ea/revealjs/js/reveal.js"></script>
+
+  <script>
+
+    const codes = document.querySelectorAll('pre > code')
+    for (const code of codes) {
+      code.setAttribute('data-noescape', '')
+      const text = code.innerHTML
+      const markedText = text
+        .replace(/✒&gt;/g, '<mark>')
+        .replace(/&lt;✒/g, '</mark>')
+        /* .replace(/✒→/g, '<mark>')
+        .replace(/←✒/g, '</mark>') */
+      code.innerHTML = markedText
+    }
+
+      // Full list of configuration options available at:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        // Help the user learn the controls by providing hints, for example by
+	// bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: false,
+        // Display the page number of the current slide
+        slideNumber: true,
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+        // Push each slide change to the browser history
+        history: false,
+        // Transition style for full page slide backgrounds
+        backgroundTransition: 'slide', // none/fade/slide/convex/concave/zoom
+
+        // Optional reveal.js plugins
+        dependencies: [
+          { src: 'http://webprogramozas.inf.elte.hu/webprog/ea/revealjs/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+          { src: 'http://webprogramozas.inf.elte.hu/webprog/ea/revealjs/plugin/zoom-js/zoom.js', async: true },
+          { src: 'http://webprogramozas.inf.elte.hu/webprog/ea/revealjs/plugin/notes/notes.js', async: true },
+          { src: 'http://webprogramozas.inf.elte.hu/webprog/ea/revealjs/plugin/highlight/highlight.js', async: true }
+        ]
+      });
+    </script>
+    </body>
+</html>

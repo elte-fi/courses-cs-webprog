@@ -1,0 +1,1 @@
+watch "scripts\gen2.bat %1" lectures --interval 2
