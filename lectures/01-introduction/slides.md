@@ -461,7 +461,7 @@ Alapok
 
 ## Mintaként szolgáló nyelvek
 
-![](minta.png)
+![](../../assets/images/javascript-languages.png)
 
 --------------------------
 
