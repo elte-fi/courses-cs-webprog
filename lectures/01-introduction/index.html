@@ -7,31 +7,30 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
-  <link rel="stylesheet" href="http://webprogramozas.inf.elte.hu/webprog/ea/revealjs/css/reveal.css">
 
-<!-- Theme used for syntax highlighting of code -->
-<link rel="stylesheet" href="http://webprogramozas.inf.elte.hu/webprog/ea/revealjs/lib/css/github.css">
-<!-- Icons -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+  <!-- Reveal.js Theme -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/elte-fi/revealjs-elte-fi@1.0.5/dist/revealjs-elte-fi.min.css">
+  <!-- Highlighting -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.18.1/build/styles/default.min.css">
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/FortAwesome/Font-Awesome@5.12.1/css/fontawesome.min.css">
 
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/elte-fi/revealjs-elte-fi@1.0.3/dist/revealjs-elte-fi.min.css"/>
   <!-- Printing and PDF exports -->
   <script>
-    var link = document.createElement( 'link' );
+    var link = document.createElement('link');
     link.rel = 'stylesheet';
     link.type = 'text/css';
-    link.href = window.location.search.match( /print-pdf/gi ) ? 'http://webprogramozas.inf.elte.hu/webprog/ea/revealjs/css/print/pdf.css' : 'http://webprogramozas.inf.elte.hu/webprog/ea/revealjs/css/print/paper.css';
-    document.getElementsByTagName( 'head' )[0].appendChild( link );
+    link.href = window.location.search.match(/print-pdf/gi) 
+      ? 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/css/print/pdf.css' 
+      : 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/css/print/paper.css';
+    document.getElementsByTagName('head')[0].appendChild( link );
   </script>
-  <!--[if lt IE 9]>
-  <script src="http://webprogramozas.inf.elte.hu/webprog/ea/revealjs/lib/js/html5shiv.js"></script>
-  <![endif]-->
-</head>
+
+  </head>
+
 <body>
   <div class="reveal">
     <div class="slides">
-
-
 <section class="slide level2">
 
 <div class="title">
@@ -1328,11 +1327,10 @@ console.log(square.area); // 100</code></pre>
     </div>
   </div>
 
-  <script src="http://webprogramozas.inf.elte.hu/webprog/ea/revealjs/lib/js/head.min.js"></script>
-  <script src="http://webprogramozas.inf.elte.hu/webprog/ea/revealjs/js/reveal.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.18.1/build/highlight.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/js/reveal.js"></script>
 
   <script>
-
     const codes = document.querySelectorAll('pre > code')
     for (const code of codes) {
       code.setAttribute('data-noescape', '')
@@ -1340,17 +1338,17 @@ console.log(square.area); // 100</code></pre>
       const markedText = text
         .replace(/✒&gt;/g, '<mark>')
         .replace(/&lt;✒/g, '</mark>')
-        /* .replace(/✒→/g, '<mark>')
-        .replace(/←✒/g, '</mark>') */
       code.innerHTML = markedText
     }
 
       // Full list of configuration options available at:
       // https://github.com/hakimel/reveal.js#configuration
       Reveal.initialize({
-        // Help the user learn the controls by providing hints, for example by
-	// bouncing the down arrow when they first encounter a vertical slide
+        // Display controls in the bottom right corner
+        controls: true,
         controlsTutorial: false,
+        // Display a presentation progress bar
+        progress: true,
         // Display the page number of the current slide
         slideNumber: true,
         // Add the current slide number to the URL hash so that reloading the
@@ -1358,15 +1356,53 @@ console.log(square.area); // 100</code></pre>
         hash: true,
         // Push each slide change to the browser history
         history: false,
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+        // Enable the slide overview mode
+        overview: true,
+        // Vertical centering of slides
+        center: true,
+        // Enables touch navigation on devices with touch input
+        touch: true,
+        // Loop the presentation
+        loop: false,
+        // Hides the address bar on mobile devices
+        hideAddressBar: true,
+        // Transition style
+        transition: 'slide', // none/fade/slide/convex/concave/zoom
         // Transition style for full page slide backgrounds
         backgroundTransition: 'slide', // none/fade/slide/convex/concave/zoom
+        // Bounds for smallest/largest possible scale to apply to content
+        minScale: 0.5,
+        maxScale: 3,
+        // Modifier key used to click-zoom to part of the slide
+        zoomKey: "ctrl",
+        math: {
+          mathjax: 'https://cdn.jsdelivr.net/gh/mathjax/MathJax@3.0.1/es5/tex-mml-chtml.js',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          }
+        },
 
         // Optional reveal.js plugins
         dependencies: [
-          { src: 'http://webprogramozas.inf.elte.hu/webprog/ea/revealjs/lib/js/classList.js', condition: function() { return !document.body.classList; } },
-          { src: 'http://webprogramozas.inf.elte.hu/webprog/ea/revealjs/plugin/zoom-js/zoom.js', async: true },
-          { src: 'http://webprogramozas.inf.elte.hu/webprog/ea/revealjs/plugin/notes/notes.js', async: true },
-          { src: 'http://webprogramozas.inf.elte.hu/webprog/ea/revealjs/plugin/highlight/highlight.js', async: true }
+          { src: 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+          { src: 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/plugin/zoom-js/zoom.js', async: true },
+          //{ src: 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/socket.io/socket.io.js', async: true },
+          //{ src: 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/plugin/notes-server/client.js', async: true },
+          { src: 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/plugin/math/math.js', async: true },
+          { src: 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/plugin/notes/notes.js', async: true },
+          { src: 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/plugin/highlight/highlight.js', async: true }
         ]
       });
     </script>

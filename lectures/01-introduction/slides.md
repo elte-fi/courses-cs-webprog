@@ -1,7 +1,5 @@
 ---
-pagetitle: Webprogramozás
-css: 
-  - https://cdn.jsdelivr.net/gh/elte-fi/revealjs-elte-fi@1.0.3/dist/revealjs-elte-fi.min.css
+title: Webprogramozás
 ---
 
 ::: title
