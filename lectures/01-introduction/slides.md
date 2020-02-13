@@ -1,5 +1,5 @@
 ---
-title: Webprogramozás
+title: Webprogramozás - Bevezetés
 ---
 
 ::: title
@@ -49,10 +49,12 @@ STATIKUS ⚡ DINAMIKUS
 
 Statikus weblapok készítése: **Webfejlesztés**
 
-- HTML5
-- CSS 1, 2, 3
-- Alapvető HTTP ismeretek
-- CSS keretrendszerek (Bootstrap)
+<ul class="tasklist">
+  <li class="complete">HTML5</li>
+  <li class="complete">CSS 1, 2, 3</li>
+  <li class="complete">Alapvető HTTP ismeretek</li>
+  <li class="complete">CSS keretrendszerek (Bootstrap)</li>
+</ul>
 
 --------------------------
 
@@ -98,21 +100,29 @@ Statikus weblapok készítése: **Webfejlesztés**
 - **Kliens szempontjából** dinamikus
   + A letöltött tartalomban programkód fut le
   + Ez megváltoztathatja a böngésző állapotát és a dokumentum szerkezetét
-- **⇒ PROGRAMOZÁS**
+- **→ PROGRAMOZÁS**
 
 --------------------------
 
 ## Miről lesz szó?
 
-- Dinamikus weblapkészítés
-- Dinamikus web**programozás**
-- Kliens-szerver architektúra mindkét oldalán
-  + Kliensoldalon: **JavaScript**
-  + Szerveroldalon: **PHP**
-- Alapvető ismeretek, bevezetés
-  + Új nyelvek
-  + Új technológiák
-  + Új programozási modellek
+<ul class="tasklist">
+  <li>Dinamikus weblapkészítés</li>
+  <li>Dinamikus web**programozás**</li>
+  <li>Kliens-szerver architektúra mindkét oldalán
+    <ul>
+      <li>Kliensoldalon: **JavaScript**
+      <li>Szerveroldalon: **PHP**
+    </ul>
+  </li>
+  <li>Alapvető ismeretek, bevezetés
+    <ul>
+      <li>Új nyelvek</li>
+      <li>Új technológiák</li>
+      <li>Új programozási modellek</li>
+    </ul>
+  </li>
+</ul>
 
 --------------------------
 
@@ -233,7 +243,7 @@ A ZH-k esetében 1 hiányzás megengedett (pótolni kell)
 
 ## JavaScript története
 
-::: {.timeline}
+::: {.timeline .continued}
 - **1991**: világháló születése
 - **1993**: első grafikus böngészők
 - **1994**: Netscape Navigator böngésző
@@ -244,7 +254,7 @@ A ZH-k esetében 1 hiányzás megengedett (pótolni kell)
 
 --------------------------
 
-::: {.timeline}
+::: {.timeline .continuation}
 - **1996-1999**: I. böngészőháború ⚔️ (Netscape vs IE)
   + A kliensoldal megbízhatatlan
 - **1999-2004**: Sötét középkor
@@ -274,7 +284,7 @@ A ZH-k esetében 1 hiányzás megengedett (pótolni kell)
 
 ## ECMAScript verziók
 
-::: {.timeline}
+::: {.timeline .continued}
 - 1997: 1. verzió 
 - 1999: **3. verzió**
 - 2009: **5. verzió** (ES5)
