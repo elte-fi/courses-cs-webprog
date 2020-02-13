@@ -9,14 +9,21 @@ Webprogramozás
 ### Követelmények, JavaScript nyelvi elemek
 
 :::::: {.columns}
-::: {.column width="50%"}
+::: {.column width="33%"}
 <small>
 **Visnovitz Márton**  
 egyetemi tanársegéd  
 visnovitz.marton@inf.elte.hu
 </small>
 :::
-::: {.column width="50%"}
+::: {.column width="33%"}
+<small>
+**Gerely Viktor**  
+demonstrátor  
+mohmas@inf.elte.hu
+</small>
+:::
+::: {.column width="33%"}
 <small>
 **Horváth Győző**  
 egyetemi docens  
@@ -120,71 +127,26 @@ Statikus weblapok készítése: **Webfejlesztés**
 
 ## Motiváció {data-state="new-section"}
 
-<!-- 
-
---------------------------
-
-## {data-background-iframe="http://madebyevan.com/webgl-water/" data-background-interactive="true"}
-
---------------------------
-
-## {data-background-iframe="http://jeremybouny.fr/ocean/demo/" data-background-interactive="true"}
-
---------------------------
-
-## Trendek
-
-- Desktop → Web
-- Natív mobil
-- Web → Mobil
-- Web → Desktop
-- IOT, robotika
-
---------------------------
-
-## Cél
-
-- Összetettebb alkalmazás készítése
-- Játék
-    - kliensoldal
-    - szerveroldal
-
--->
-
---------------------------
-
-## {data-background-iframe="http://webprogramozas.inf.elte.hu/user/gyozke/if2017/grafilogika/login.php" data-background-interactive="true"}
-
 --------------------------
 
 ## {data-background-iframe="http://webprogramozas.inf.elte.hu/user/gyozke/if2017/plumber/index.php" data-background-interactive="true"}
 
 <!--
+## {data-background-iframe="http://madebyevan.com/webgl-water/" data-background-interactive="true"}
 
---------------------------
+## {data-background-iframe="http://jeremybouny.fr/ocean/demo/" data-background-interactive="true"}
+
+## {data-background-iframe="http://webprogramozas.inf.elte.hu/user/gyozke/if2017/grafilogika/login.php" data-background-interactive="true"}
 
 ## {data-background-iframe="http://webprogramozas.inf.elte.hu/user/gyozke/if2017/labirintus/szrlab1.php" data-background-interactive="true"}
 
---------------------------
-
 ## {data-background-iframe="http://webprogramozas.inf.elte.hu/ebr/public/storage/tasks/1euvu0a7b05gq09q/DragonWarrior/" data-background-interactive="true"}
-
--->
-
---------------------------
 
 ## {data-background-iframe="http://webprogramozas.inf.elte.hu/ebr/public/storage/tasks/78e0vff90vp1b4rs/tangram/" data-background-interactive="true"}
 
---------------------------
-
 ## {data-background-iframe="http://webprogramozas.inf.elte.hu/ebr/public/storage/tasks/o68e1p7uvjcsye1c/" data-background-interactive="true"}
 
-<!-- 
-
---------------------------
-
 ## {data-background-iframe="http://webprogramozas.inf.elte.hu/webfejl2/gyak/verseny.html" data-background-interactive="true"} 
-
 -->
 
 --------------------------
@@ -290,7 +252,7 @@ A ZH-k esetében 1 hiányzás megengedett (pótolni kell)
 - **2004-2017**: II. böngészőháború ⚔️ (IE vs Firefox, Opera, ...)
 - **2006-**: JavaScript újrafelfedezése (AJAX, jQuery)
 - **2008**: New kid on the block: Google Chrome
-  + Versengés a JS sebességén
+  + Versengés a JS sebességén: böngészőháború ⚔️
 - **2009-**: parancssori JavaScript (Node.js)
 - **2017**: Google Chrome 👑 (Chromium)
 - **2019-**: III. böngészőháború ⚔️? (Chrome vs Edge)
@@ -569,34 +531,37 @@ a = a + 1   // --> a = a + 1;
 
 ## Típusok
 
-- Egyszerű típusok
-  <div class="columns">
-  <div class="column" width="60%">
-  Szám  
-  Nagy&nbsp;szám  
-  Szöveg  
-  Logikai  
-  Undefined  
-  </div>
-  <div class="column" width="40%">
-  `Number`  
-  `BigInt`  
-  `String`  
-  `Boolean`  
-  `undefined`  
-  </div>
-- Összetett típusok
-  <div class="columns">
-  <div class="column" width="60%">
-  Objektum  
-  *Tömb*  
-  *Függvény*
-  </div>
-  <div class="column" width="40%">
-  `Object`  
-  `Array`  
-  `Function`
-  </div>
+:::::: {.columns}
+::: {.column width="33%"}
+**Primitív értékek**  
+
+|             |
+| ----------- |
+| `null`      |
+| `undefined` |
+
+:::
+
+::: {.column width="33%"}
+**Egyszerű típusok**
+  
+|         |           |
+| ------- | --------- |
+| Logikai | `Boolean` |
+| Szám    | `Number`  |
+| Szöveg  | `String`  |
+:::
+
+::: {.column width="33%"}
+**Összetett típusok**
+  
+|          |            |
+| -------- | ---------- |
+| Objektum | `Object`   |
+| Tömb     | `Array`    |
+| Függvény | `Function` |
+:::
+::::::
 
 --------------------------
 
@@ -640,12 +605,12 @@ false
 ## Változók
 
 - ~~`var`~~, `let`, `const` kulcsszóval deklarálunk új változót
-- ezek elhagyásával → globális változó -- KERÜLENDŐ!!!
+- Ezek elhagyásával → globális változó -- KERÜLENDŐ!!!
 - Ha nincs kezdőérték → undefined
 
 ```js
 let nev = 'Győző'; // 'Győző'
-let masik;         //undefined
+let masik;         // undefined
 ```
 
 --------------------------
@@ -674,8 +639,6 @@ let masik;         //undefined
     + `&&`, `||`, `!`
 - Szövegösszefűzés operátorai
     + `+`, `+=`
-- Bitenkénti operátorok
-    + `&`, `|`, `^`, `~`, `<<`, `>>`, **`>>>`**
 - Speciális operátorok
     + `? :` feltételes operátor
     + **`,`** több kifejezés végrehajtása egy utasításban, visszatérési értéke az utolsó kifejezés
@@ -780,10 +743,10 @@ function add(a, b = 3) {
 }
 
 // függvényhívás
-add(40, 2)      // 42
-add(10)         // 13
-add(50, 20, 10) // 70
-add()           // NaN
+add(40, 2);      // 42
+add(10);         // 13
+add(50, 20, 10); // 70
+add();           // NaN
 ```
 
 --------------------------
@@ -819,7 +782,7 @@ function (a, b) {
 
 // or
 
-(a, b) => a + b
+(a, b) => a + b;
 ```
 
 --------------------------
@@ -837,7 +800,7 @@ function countA(str) {
   return count;
 }
 
-console.log( countA("apple") ) // 1
+console.log( countA("apple") ); // 1
 ```
 
 --------------------------
@@ -857,7 +820,7 @@ function count(str, fn) {
 
 console.log(
   count("apple", c => c === 'a')
-)
+);
 ```
 
 --------------------------
@@ -865,6 +828,14 @@ console.log(
 ## A JavaScript nyelv {data-state="new-section"}
 
 Tömb
+
+--------------------------
+
+## Tömb
+
+- Értékek rendezett sorozata
+- Vektor, verem, sor, lista szimulálható
+- JavaScriptben nagyon fontos szerepük van
 
 --------------------------
 
@@ -1071,6 +1042,17 @@ Objektum
 
 --------------------------
 
+## Objektum
+
+- Kulcs-érték párok gyűjteménye
+- Asszociatív tömbhöz hasonlít (hash)
+- Rekord, osztálypéldány szimulálható
+- JavaScriptben nagyon fontos szerepük van
+- Majdnem minden objektum
+- Ha az érték függvény → metódus
+
+--------------------------
+
 ## Létrehozás
 
 Literálforma: `{ }`
@@ -1162,18 +1144,6 @@ const o = {
 o.foo; // 'something'
 o.bar; // 'new'
 ```
-
---------------------------
-
-## Objektum
-
-- Objektum
-    + Kulcs-érték párok gyűjteménye
-    + Asszociatív tömbhöz hasonlít (hash)
-    + Rekord, osztálypéldány szimulálható
-- JavaScriptben nagyon fontos szerepük van
-- Majdnem minden objektum
-- Ha az érték függvény → metódus
 
 --------------------------
 
@@ -1412,6 +1382,6 @@ class Product {
 
 - C++ → JavaScript
 - Adatszerkezetek
-    + elemi
-    + összetett: tömb, objektum
+    + egyszerű: logikai, szám, szöveg
+    + összetett: tömb, objektum, függvény
 - Programozási tételek tömbfüggvényekként
