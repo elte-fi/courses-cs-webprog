@@ -9,8 +9,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
 
   <!-- Reveal.js Theme -->
-  <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/elte-fi/revealjs-elte-fi@1.0.6/dist/revealjs-elte-fi.min.css"> -->
-  <link rel="stylesheet" href="file:///C:/Users/visno/Desktop/revealjs-elte-fi/dist/revealjs-elte-fi.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/elte-fi/revealjs-elte-fi@1.0.8/dist/revealjs-elte-fi.min.css">
   <!-- Highlighting -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.18.1/build/styles/default.min.css">
   <!-- Icons -->
@@ -83,20 +82,30 @@ Tel: (1) 372-2500/8469<br />
 </section>
 <section id="javascript-nyelvi-elemek" class="slide level2">
 <h2>JavaScript nyelvi elemek</h2>
-<div class="tasklist complete">
+<ul class="tasklist">
+<li class="complete">
+Alapok
 <ul>
-<li>Alapok
-<ul>
-<li>C-alapú szintaxis</li>
-<li>vezérlési szerkezetek</li>
-</ul></li>
-<li>Típusok:
-<ul>
-<li>Egyszerű: szöveg, szám, logikai</li>
-<li>Összetett: objektum, tömb, függvény</li>
-</ul></li>
+<li>
+C-alapú szintaxis
+</li>
+<li>
+vezérlési szerkezetek
+</li>
 </ul>
-</div>
+</li>
+<li class="complete">
+Típusok:
+<ul>
+<li>
+Egyszerű: szöveg, szám, logikai
+</li>
+<li>
+Összetett: objektum, tömb, függvény
+</li>
+</ul>
+</li>
+</ul>
 </section>
 <section id="felületi-elemek-programozása" class="slide level2" data-state="new-section">
 <h2 data-state="new-section">Felületi elemek programozása</h2>
@@ -119,14 +128,20 @@ Tel: (1) 372-2500/8469<br />
 </section>
 <section id="megoldás-lépései" class="slide level2">
 <h2>Megoldás lépései</h2>
-<div class="tasklist">
-<ol type="1">
-<li>Reagálni a gomb lenyomására.</li>
-<li>Kiolvasni a szöveges beviteli mező értékét (beolvasás).</li>
-<li>Előállítani a bemenet alapján a kimenetet, azaz az üdvözlő szöveget (feldolgozás).</li>
-<li>Megjeleníteni az üdvözlő szöveget (kiírás).</li>
-</ol>
-</div>
+<ul class="tasklist">
+<li>
+Reagálni a gomb lenyomására.
+</li>
+<li>
+Kiolvasni a szöveges beviteli mező értékét (beolvasás).
+</li>
+<li>
+Előállítani a bemenet alapján a kimenetet, azaz az üdvözlő szöveget (feldolgozás).
+</li>
+<li>
+Megjeleníteni az üdvözlő szöveget (kiírás).
+</li>
+</ul>
 </section>
 <section class="slide level2">
 
@@ -152,22 +167,20 @@ function hello() {
 </section>
 <section id="megoldás-lépései-1" class="slide level2">
 <h2>Megoldás lépései</h2>
-<div class="tasklist">
-<ol type="1">
-<li>Reagálni a gomb lenyomására.</li>
-<li>Kiolvasni a szöveges beviteli mező értékét (beolvasás).</li>
-</ol>
-</div>
-<div class="tasklist complete">
-<ol start="3" type="1">
-<li>Előállítani a bemenet alapján a kimenetet, azaz az üdvözlő szöveget (feldolgozás).</li>
-</ol>
-</div>
-<div class="tasklist">
-<ol start="4" type="1">
-<li>Megjeleníteni az üdvözlő szöveget (kiírás).</li>
-</ol>
-</div>
+<ul class="tasklist">
+<li>
+Reagálni a gomb lenyomására.
+</li>
+<li>
+Kiolvasni a szöveges beviteli mező értékét (beolvasás).
+</li>
+<li class="complete">
+Előállítani a bemenet alapján a kimenetet, azaz az üdvözlő szöveget (feldolgozás).
+</li>
+<li>
+Megjeleníteni az üdvözlő szöveget (kiírás).
+</li>
+</ul>
 <pre class="js"><code>function greet(name) {
   return `Hello ${name}`
 }</code></pre>

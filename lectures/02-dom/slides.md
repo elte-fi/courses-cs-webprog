@@ -72,14 +72,20 @@ Tel: (1) 372-2500/8469\
 
 ## JavaScript nyelvi elemek
 
-::: {.tasklist .complete}
-- Alapok 
-  + C-alapú szintaxis
-  + vezérlési szerkezetek
-- Típusok: 
-  + Egyszerű: szöveg, szám, logikai
-  + Összetett: objektum, tömb, függvény
-:::
+<ul class="tasklist">
+  <li class="complete">Alapok 
+    <ul>
+      <li>C-alapú szintaxis</li>
+      <li>vezérlési szerkezetek</li>
+    </ul>
+  </li>
+  <li class="complete">Típusok: 
+    <ul>
+      <li>Egyszerű: szöveg, szám, logikai</li>
+      <li>Összetett: objektum, tömb, függvény</li>
+    </ul>
+  </li>
+</ul>
 
 --------------------------
 
@@ -101,12 +107,12 @@ Tel: (1) 372-2500/8469\
 
 ## Megoldás lépései
 
-::: {.tasklist}
-1. Reagálni a gomb lenyomására.
-2. Kiolvasni a szöveges beviteli mező értékét (beolvasás).
-3. Előállítani a bemenet alapján a kimenetet, azaz az üdvözlő szöveget (feldolgozás). 
-4. Megjeleníteni az üdvözlő szöveget (kiírás).
-::: 
+<ul class="tasklist">
+  <li>Reagálni a gomb lenyomására.</li>
+  <li>Kiolvasni a szöveges beviteli mező értékét (beolvasás).</li>
+  <li>Előállítani a bemenet alapján a kimenetet, azaz az üdvözlő szöveget (feldolgozás). </li>
+  <li>Megjeleníteni az üdvözlő szöveget (kiírás).</li>
+</ul>
 
 --------------------------
 
@@ -144,16 +150,12 @@ function hello() {
 
 ## Megoldás lépései
 
-::: {.tasklist}
-1. Reagálni a gomb lenyomására.
-2. Kiolvasni a szöveges beviteli mező értékét (beolvasás).
-:::
-::: {.tasklist .complete}
-3. Előállítani a bemenet alapján a kimenetet, azaz az üdvözlő szöveget (feldolgozás). 
-:::
-::: {.tasklist}
-4. Megjeleníteni az üdvözlő szöveget (kiírás).
-::: 
+<ul class="tasklist">
+  <li>Reagálni a gomb lenyomására.</li>
+  <li>Kiolvasni a szöveges beviteli mező értékét (beolvasás).</li>
+  <li class="complete">Előállítani a bemenet alapján a kimenetet, azaz az üdvözlő szöveget (feldolgozás). </li>
+  <li>Megjeleníteni az üdvözlő szöveget (kiírás).</li>
+</ul>
 
 ```js
 function greet(name) {
