@@ -50,8 +50,8 @@ $body$
       code.setAttribute('data-noescape', '')
       const text = code.innerHTML
       const markedText = text
-        .replace(/✒&gt;/g, '<mark>')
         .replace(/&lt;✒/g, '</mark>')
+        .replace(/✒&gt;/g, '<mark>')
       code.innerHTML = markedText
     }
 

@@ -33,27 +33,6 @@
     <div class="slides">
 <section class="slide level2">
 
-<!-- ## Ismétlés {data-background-image="desert.jpg" .new-section} -->
-<!-- 
-:::::::::::::: {.columns}
-::: {.column width="40%"}
-contents...
-:::
-::: {.column width="60%"}
-contents...
-:::
-::::::::::::::
- -->
-<!-- <iframe style="background-color: white;" frameborder="0" src="./teszt.html" height="50" width="600"></iframe> -->
-<!-- ## {data-background-iframe="https://mdn.mozillademos.org/en-US/docs/Web/API/KeyboardEvent/code$samples/Exercising_KeyboardEvent?revision=1559366" data-background-interactive="true"} -->
-<!-- 
-```js
-✒>function add(a, b) {<✒
-✒>  return a + b<✒;
-}
-```
--->
-<!-- → -->
 <div class="title">
 <p>Webprogramozás</p>
 </div>
@@ -147,26 +126,35 @@ Megjeleníteni az üdvözlő szöveget (kiírás).
 
 <div class="example">
 <form>
-Név: <input type="text" id="nev"> <br> <input type="button" value="Say hello!" id="gomb" onclick="hello()"> <br> <span id="kimenet"></span>
+Name: <input type="text" id="name"> <br> <input type="button" value="Say hello!" id="hello"> <br> <span id="output"></span>
 </form>
 </div>
 <script>
-function nevbolUdvozles(nev) {
-  return `Hello ${nev}!`;
+function greet(name) {
+  return `Hello ${name}!`;
 }
-function hello() {
-  let nev = document.querySelector('#nev').value;
-  let udvozles = nevbolUdvozles(nev);
-  document.querySelector('#kimenet').innerHTML = udvozles;
+
+const input = document.querySelector('#name');
+const output = document.querySelector('#output');
+const hello = document.querySelector('#hello');
+
+function handleHelloClick() {
+  const name = input.value;
+  const greeting = greet(name);
+  output.innerHTML = greeting;
 }
+
+hello.addEventListener('click', handleHelloClick);
 </script>
 <pre class="html"><code>&lt;form&gt;
-  Név: &lt;input type=&quot;text&quot;&gt; &lt;br&gt;
-  &lt;input type=&quot;button&quot; value=&quot;Say hello!&quot;&gt;
+  Name: &lt;input type=&quot;text&quot; id=&quot;name&quot;&gt; &lt;br&gt;
+  &lt;input type=&quot;button&quot; value=&quot;Say hello!&quot; id=&quot;hello&quot;&gt;
+  &lt;br&gt;
+  &lt;span id=&quot;output&quot;&gt;&lt;/span&gt;
 &lt;/form&gt;</code></pre>
 </section>
 <section id="megoldás-lépései-1" class="slide level2">
-<h2>Megoldás lépései</h2>
+<h2>Megoldás lépései (1)</h2>
 <ul class="tasklist">
 <li>
 Reagálni a gomb lenyomására.
@@ -182,7 +170,7 @@ Megjeleníteni az üdvözlő szöveget (kiírás).
 </li>
 </ul>
 <pre class="js"><code>function greet(name) {
-  return `Hello ${name}`
+  return `Hello ${name}!`;
 }</code></pre>
 </section>
 <section id="felhasználói-felület" class="slide level2">
@@ -195,7 +183,7 @@ Megjeleníteni az üdvözlő szöveget (kiírás).
 </ul></li>
 <li>Elemei
 <ul>
-<li><strong>HTML</strong>: oldal szerekezetének leírása</li>
+<li><strong>HTML</strong>: oldal szerkezetének leírása</li>
 <li><strong>CSS</strong>: megjelenés, stílus</li>
 <li><strong>JavaScript</strong>: program a felület működtetésére</li>
 </ul></li>
@@ -227,32 +215,31 @@ Megjeleníteni az üdvözlő szöveget (kiírás).
 
 <div class="columns">
 <div class="column">
-<div style="color: orange; font-size: 1.3em">
-<p><strong>DOM Core</strong></p>
-</div>
+<h2 style="color: rgb(80, 124, 128);">
+DOM Core
+</h2>
 <ul>
 <li>csomópontok fája</li>
 <li>ábrázolás és műveletek</li>
 </ul>
 </div><div class="column">
-<div style="color: lightblue; font-size: 1.3em">
-<p><strong>HTML DOM</strong></p>
-</div>
+<h2 style="color: rgb(122, 129, 116);">
+HTML DOM
+</h2>
 <ul>
 <li>HTML elemek fája</li>
 </ul>
 </div>
 </div>
-<p><img data-src="dom.png" /></p>
+<p><img data-src="../../assets/images/architecture/dom.png" /></p>
 </section>
 <section id="dokumentum-objektum-modell" class="slide level2">
 <h2>Dokumentum Objektum Modell</h2>
 <ul>
 <li>HTML és XML dokumentumok programozási felülete</li>
-<li>Szabványos interfész fastruktúra alapú hierarchiához</li>
-<li>Objektumstruktúra, faszerkezet</li>
+<li>Szabványos interfész fa struktúra alapú hierarchiához</li>
 <li>DOM gyökere: <code>document</code></li>
-<li>DOM csomópontok
+<li>DOM csomópontok:
 <ul>
 <li>dokumentum</li>
 <li>elem</li>
@@ -264,35 +251,42 @@ Megjeleníteni az üdvözlő szöveget (kiírás).
 <section id="szöveges-csomópontok" class="slide level2">
 <h2>Szöveges csomópontok</h2>
 <div class="columns">
-<div class="column" style="width: 55%">
+<div class="column" style="width: 50%">
 <pre class="html"><code>&lt;!doctype html&gt;
-&lt;html lang=&quot;en&quot;&gt;
+&lt;html&gt;
   &lt;head&gt;
     &lt;meta charset=&quot;utf-8&quot;&gt;
     &lt;title&gt;&lt;/title&gt;
   &lt;/head&gt;
   &lt;body&gt;
-    &lt;p id=&quot;par1&quot;&gt;Bekezdés.&lt;/p&gt;
-    &lt;p class=&quot;aktiv&quot;&gt;Még egy bekezdés.&lt;/p&gt;
-    &lt;ul&gt;
-      &lt;li&gt;első&lt;/li&gt;
-      &lt;li class=&quot;aktiv&quot;&gt;második&lt;/li&gt;
-    &lt;/ul&gt;
-    &lt;form name=&quot;form1&quot;&gt;
-      &lt;input type=&quot;radio&quot; name=&quot;r1&quot; value=&quot;elso&quot;&gt;
-      &lt;input type=&quot;radio&quot; name=&quot;r1&quot; value=&quot;masodik&quot;&gt;
-    &lt;/form&gt;
+    &lt;p&gt;Lorem ipsum.&lt;/p&gt;
+    &lt;p class=&quot;active&quot;&gt;
+      Dolor sit amet.
+    &lt;/p&gt;
   &lt;/body&gt;
 &lt;/html&gt;</code></pre>
-</div><div class="column" style="width: 45%">
-<p><img data-src="example_dom.png" /></p>
+</div><div class="column" style="width: 50%">
+<pre><code>┣ <strong>DOCTYPE</strong>: html
+┣ <strong>HTML</strong>
+┣━━ #text:
+┣━━ <strong>META</strong> charset="utf-8"
+┣━━━━ #text:
+┣━━━━ <strong>TITLE</strong>
+┣━━━━ #text:
+┣ #text:
+┣ <strong>BODY</strong>
+┣━━ #text:
+┣━━ <strong>P</strong>
+┣━━ #text: Lorem ipsum.
+┣━━ <strong>P</strong> class="active"
+┣━━ #text: Dolor sit amet.
+┗ #text:
+</code></pre>
 </div>
 </div>
 </section>
 <section id="műveletcsoportok" class="slide level2">
 <h2>Műveletcsoportok</h2>
-<div class="columns">
-<div class="column">
 <ul>
 <li>Elemek kiválasztása</li>
 <li>Szerkezet bejárása</li>
@@ -304,10 +298,6 @@ Megjeleníteni az üdvözlő szöveget (kiírás).
 <li>törlés</li>
 </ul></li>
 </ul>
-</div><div class="column">
-<p><img data-src="hello_dom.png" /></p>
-</div>
-</div>
 </section>
 <section id="elemek-kiválasztása" class="slide level2" data-state="new-section">
 <h2 data-state="new-section">Elem(ek) kiválasztása</h2>
@@ -315,41 +305,74 @@ Megjeleníteni az üdvözlő szöveget (kiírás).
 <section id="elemek-kiválasztása-1" class="slide level2">
 <h2>Elem(ek) kiválasztása</h2>
 <p>CSS szelektorral:</p>
-<ul>
-<li>egy elem: <code>document.querySelector(sel)</code></li>
-<li>több elem: <code>document.querySelectorAll(sel)</code></li>
-</ul>
+<table>
+<tbody>
+<tr class="odd">
+<td>Egy elem:</td>
+<td><code>document.querySelector(sel)</code></td>
+</tr>
+<tr class="even">
+<td>Több elem:</td>
+<td><code>document.querySelectorAll(sel)</code></td>
+</tr>
+</tbody>
+</table>
 <pre class="html"><code>&lt;form&gt;
   Név: 
-  &lt;input id=&quot;nev&quot; value=&quot;Frodó&quot;&gt;
-  &lt;button&gt;Nyomj meg!&lt;/button&gt;
+  &lt;input id=&quot;name&quot; value=&quot;Luke&quot;&gt;
+  &lt;button&gt;Click me!&lt;/button&gt;
 &lt;/form&gt;
 &lt;script&gt;
-  console.log( document.querySelector(&quot;#nev&quot;) );
+  console.log( document.querySelector(&quot;#name&quot;) );
   console.log( document.querySelectorAll(&quot;form &gt; *&quot;) );
 &lt;/script&gt;</code></pre>
 </section>
 <section id="css-szelektorok" class="slide level2">
 <h2>CSS szelektorok</h2>
-<ul>
-<li>Elemek kiválasztása
-<ul>
-<li>az elem nevével (<code>button</code>),</li>
-<li>az azonosítójával (<code>#fejlec</code>),</li>
-<li>az alkalmazott stílusosztály alapján (<code>.fontos</code>),</li>
-<li>az attribútumaival (<code>[name=nev]</code>),</li>
-<li>mindenkit kiválasztva (<code>*</code>), illetve</li>
-<li>ezek kombinálásával (<code>input.hibas[type=text]</code>)</li>
-</ul></li>
-<li>Hierarchikus viszonyok
-<ul>
-<li>szülő-gyerek (<code>form &gt; input</code>)</li>
-<li>szülő-leszármazott (<code>#torzs div</code>)</li>
-<li>közvetlenül utána jövő testvér (<code>p + span</code>)</li>
-<li>utána jövő testvérek (<code>p ~ span</code>)</li>
-</ul></li>
-</ul>
-<p><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors">Dokumentáció</a></p>
+<table>
+<tbody>
+<tr class="odd">
+<td>névvel</td>
+<td><code>button</code></td>
+</tr>
+<tr class="even">
+<td>azonosítóval</td>
+<td><code>#navbar</code></td>
+</tr>
+<tr class="odd">
+<td>stílusosztállyal</td>
+<td><code>.important</code></td>
+</tr>
+<tr class="even">
+<td>attribútummal</td>
+<td><code>[name=password]</code></td>
+</tr>
+<tr class="odd">
+<td>univerzális</td>
+<td><code>*</code></td>
+</tr>
+<tr class="even">
+<td>kombinálva</td>
+<td><code>input.error[type=text]</code></td>
+</tr>
+<tr class="odd">
+<td>közvetlen gyerek</td>
+<td><code>form &gt;input</code></td>
+</tr>
+<tr class="even">
+<td>leszármazott</td>
+<td><code>#wrapper div</code></td>
+</tr>
+<tr class="odd">
+<td>következő testvér</td>
+<td><code>ul + p</code></td>
+</tr>
+<tr class="even">
+<td>utána jövő testvérek</td>
+<td><code>ul ~ p</code></td>
+</tr>
+</tbody>
+</table>
 </section>
 <section id="több-elem-kiválasztása" class="slide level2">
 <h2>Több elem kiválasztása</h2>
@@ -358,18 +381,18 @@ Megjeleníteni az üdvözlő szöveget (kiírás).
     &lt;li&gt;Second&lt;/li&gt;
     &lt;li&gt;Third&lt;/li&gt;
 &lt;/ul&gt;</code></pre>
-<pre class="js"><code>const listItems = document.querySelectorAll(&#39;ul&gt;li&#39;)
+<pre class="js"><code>const listItems = document.querySelectorAll(&#39;ul &gt; li&#39;)
 
-// Array-like object
+// Array-like object (NodeList)
 for (const li of listItems) { /*...*/ }     // OK
 listItems.forEach(li =&gt; { /*...*/ })        // Wrong: not an array
 
 // Transforming to array
-const listItemsArray = Array.from(listItems)
-listItemsArray.forEach(li =&gt; { /*...*/ })   // OK</code></pre>
+const listItemsArray = Array.from(listItems);
+listItemsArray.forEach(li =&gt; { /*...*/ });  // OK</code></pre>
 </section>
-<section id="adott-elem-alatti-kiválasztás" class="slide level2">
-<h2>Adott elem alatti kiválasztás</h2>
+<section id="kiválasztás-leszármazottak-közül" class="slide level2">
+<h2>Kiválasztás leszármazottak közül</h2>
 <ul>
 <li><code>elem.querySelector(sel)</code></li>
 <li><code>elem.querySelectorAll(sel)</code></li>
@@ -383,25 +406,16 @@ listItemsArray.forEach(li =&gt; { /*...*/ })   // OK</code></pre>
 <pre class="js"><code>const firstDiv = document.querySelector(&#39;div.first&#39;)
 const spanInFirstDiv = ✒&gt;firstDiv&lt;✒.querySelector(&#39;span&#39;)</code></pre>
 </section>
-<section id="példafeladat" class="slide level2">
-<h2>Példafeladat</h2>
-<pre class="html"><code>&lt;form&gt;
-  Név: &lt;input type=&quot;text&quot; ✒&gt;id=&quot;name&quot;&lt;✒ &gt; &lt;br&gt;
-  &lt;input type=&quot;button&quot; value=&quot;Say hello!&quot;&gt;
-&lt;/form&gt;</code></pre>
-<pre class="js"><code>const nameInput = document.querySelector(&#39;#name&#39;)
-const nameInput = document.querySelector(&#39;form input[type=text]&#39;)</code></pre>
-</section>
 <section id="dom-elem-tulajdonságai-és-metódusai" class="slide level2" data-state="new-section">
 <h2 data-state="new-section">DOM elem tulajdonságai és metódusai</h2>
 </section>
 <section id="dom-elem-tulajdonságai-és-metódusai-1" class="slide level2">
 <h2>DOM elem tulajdonságai és metódusai</h2>
 <ul>
-<li><a href="https://www.w3.org/TR/2017/REC-html52-20171214/">szabvány</a></li>
-<li><a href="https://developer.mozilla.org/en-US/docs/Web/API">dokumentáció</a></li>
-<li>analóg módszer (HTML, 80%)</li>
-<li>felfedező módszer (fejlesztői eszköztár, óvatosan)</li>
+<li><a href="https://www.w3.org/TR/2017/REC-html52-20171214/">Szabvány</a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/API">Dokumentáció</a></li>
+<li>Analóg módszer (HTML, az esetek 80%-ban OK)</li>
+<li>Felfedező módszer (fejlesztői eszköztár, óvatosan)</li>
 </ul>
 </section>
 <section id="analóg-módszer" class="slide level2">
@@ -443,26 +457,95 @@ const nameInput = document.querySelector(&#39;form input[type=text]&#39;)</code>
 <li><code>innerHTML</code>, <code>innerText</code>: az elem nyitó- és záróelem közötti HTML vagy szöveg</li>
 </ul>
 <pre class="html"><code>&lt;p&gt;This is a &lt;span&gt;text&lt;/span&gt;&lt;/p&gt;</code></pre>
-<pre class="js"><code>const p = document.querySelector(&#39;p&#39;)
+<pre class="js"><code>const p = document.querySelector(&#39;p&#39;);
 // reading
-p.innerHTML // &#39;This is a &lt;span&gt;text&lt;/span&gt;&#39;
-p.innerText // &#39;This is a text&#39;
+p.innerHTML; // &#39;This is a &lt;span&gt;text&lt;/span&gt;&#39;
+p.innerText; // &#39;This is a text&#39;
 // writing
-p.innerHTML = &#39;This is a &lt;strong&gt;new&lt;/strong&gt; text&#39;</code></pre>
+p.innerHTML = &#39;This is a &lt;strong&gt;new&lt;/strong&gt; text&#39;;</code></pre>
 </section>
-<section id="példafeladat-1" class="slide level2">
-<h2>Példafeladat</h2>
-<pre class="html"><code>&lt;form&gt;
-  Név: &lt;input type=&quot;text&quot; id=&quot;name&quot; ✒&gt;value=&quot;Győző&quot;&lt;✒ &gt; &lt;br&gt;
-  &lt;input type=&quot;button&quot; value=&quot;Say hello!&quot;&gt; &lt;br&gt;
-  &lt;output&gt;&lt;/output&gt;
-&lt;/form&gt;</code></pre>
+<section id="megoldás-lépései-2" class="slide level2">
+<h2>Megoldás lépései (2)</h2>
+<ul class="tasklist">
+<li>
+Reagálni a gomb lenyomására.
+</li>
+<li class="complete">
+Kiolvasni a szöveges beviteli mező értékét (beolvasás).
+</li>
+<li class="complete">
+Előállítani a bemenet alapján a kimenetet, azaz az üdvözlő szöveget (feldolgozás).
+</li>
+<li class="complete">
+Megjeleníteni az üdvözlő szöveget (kiírás).
+</li>
+</ul>
 <pre class="js"><code>// Reading
-const nameInput = document.querySelector(&#39;#name&#39;)
-const name = nameInput✒&gt;.value&lt;✒
+const input = document.querySelector(&#39;#name&#39;);
+const name = input✒&gt;.value&lt;✒;
 // Writing
-const output = document.querySelector(&#39;output&#39;)
-output.innerHTML = `Hello ${name}!`</code></pre>
+const output = document.querySelector(&#39;#output&#39;);
+output✒&gt;.innerHTML&lt;✒ = greet(name);</code></pre>
+</section>
+<section id="elemi-eseménykezelés" class="slide level2" data-state="new-section">
+<h2 data-state="new-section">Elemi eseménykezelés</h2>
+</section>
+<section id="eseménykezelés" class="slide level2">
+<h2>Eseménykezelés</h2>
+<ol type="1">
+<li>Az eseményt kiváltó elem (pl. egy gomb)</li>
+<li>Az esemény típusa (pl. kattintás)</li>
+<li>Az eseményt kezelő függvény</li>
+</ol>
+<p><code>elem.addEventListener('eventType', eventHandler)</code></p>
+<pre class="js"><code>const button = document.querySelector(&#39;button&#39;);
+
+function handleButtonClick() {
+  console.log(&#39;clicked&#39;);
+}
+
+button.addEventListener(&#39;click&#39;, handleButtonClick);</code></pre>
+</section>
+<section id="megoldás-lépései-3" class="slide level2">
+<h2>Megoldás lépései (3)</h2>
+<pre class="html"><code>&lt;form&gt;
+  Name: &lt;input type=&quot;text&quot; id=&quot;name&quot;&gt; &lt;br&gt;
+  &lt;input type=&quot;button&quot; value=&quot;Say hello!&quot; id=&quot;hello&quot;&gt;
+  &lt;br&gt;
+  &lt;span id=&quot;output&quot;&gt;&lt;/span&gt;
+&lt;/form&gt;</code></pre>
+<pre class="js"><code>function greet(name) {
+  return `Hello ${name}!`;
+}
+
+const input = document.querySelector(&#39;#name&#39;);
+const output = document.querySelector(&#39;#output&#39;);
+const hello = document.querySelector(&#39;#hello&#39;);
+
+function handleHelloClick() {
+  const name = input.value;
+  const greeting = greet(name);
+  output.innerHTML = greeting;
+}
+
+hello.addEventListener(&#39;click&#39;, handleHelloClick);</code></pre>
+</section>
+<section id="megoldás-lépései-3-1" class="slide level2">
+<h2>Megoldás lépései (3)</h2>
+<ul class="tasklist">
+<li class="complete">
+Reagálni a gomb lenyomására.
+</li>
+<li class="complete">
+Kiolvasni a szöveges beviteli mező értékét (beolvasás).
+</li>
+<li class="complete">
+Előállítani a bemenet alapján a kimenetet, azaz az üdvözlő szöveget (feldolgozás).
+</li>
+<li class="complete">
+Megjeleníteni az üdvözlő szöveget (kiírás).
+</li>
+</ul>
 </section>
 <section id="a-dom-mint-io" class="slide level2" data-state="new-section">
 <h2 data-state="new-section">A DOM mint I/O</h2>
@@ -471,14 +554,13 @@ output.innerHTML = `Hello ${name}!`</code></pre>
 <h2>A DOM mint I/O</h2>
 <ul>
 <li>A felhasználó a felhasználói felületen keresztül lép kapcsolatba a programmal</li>
-<li>programbeli elérés a DOM-on keresztül lehetséges</li>
-<li>program számára a DOM az I/O</li>
+<li>A program számára a DOM az I/O</li>
 </ul>
-<pre class="js"><code>// Typical JavaScript program
+<pre class="js"><code>// Typical JavaScript program:
 
-// reading (from DOM)
-// processing (independent from I/O)
-// writing (to DOM)</code></pre>
+// Reading (from DOM)
+// Processing (independent from I/O)
+// Writing (to DOM)</code></pre>
 </section>
 <section id="a-dom-mint-io-2" class="slide level2">
 <h2>A DOM mint I/O</h2>
@@ -486,109 +568,127 @@ output.innerHTML = `Hello ${name}!`</code></pre>
 <li>Beolvasás: DOM objektum tulajdonságának lekérdezése</li>
 <li>Kiírás: DOM objektum tulajdonságának módosítása</li>
 </ul>
-<pre class="html"><code>&lt;!-- beolvasás --&gt;
-&lt;input type=&quot;checkbox&quot; id=&quot;elfogad&quot; checked&gt;
+<pre class="html"><code>&lt;!-- Reading --&gt;
+&lt;input type=&quot;checkbox&quot; id=&quot;accept&quot; checked&gt;
 &lt;script&gt;
-  const elfogad = document.querySelector(&quot;#elfogad&quot;).checked;
+  const elfogad = document.querySelector(&quot;#accept&quot;).checked;
 &lt;/script&gt;
 
-&lt;!-- kiírás --&gt;
-&lt;img src=&quot;&quot; id=&quot;kep&quot;&gt;
+&lt;!-- Writing --&gt;
+&lt;img src=&quot;&quot; id=&quot;image&quot;&gt;
 &lt;script&gt;
-  const url = &quot;http://kepek.hu/alma.png&quot;;
-  document.querySelector(&quot;#kep&quot;).src = url;
+  const url = &quot;http://images.io/example.png&quot;;
+  const image = document.querySelector(&quot;#image&quot;);
+  image.src = url;
 &lt;/script&gt;</code></pre>
 </section>
 <section id="példa-dom-io" class="slide level2">
 <h2>Példa DOM I/O</h2>
-<pre class="html"><code>&lt;input type=&quot;radio&quot; name=&quot;nem&quot; value=&quot;ferfi&quot; checked&gt; férfi
-&lt;input type=&quot;radio&quot; name=&quot;nem&quot; value=&quot;no&quot;&gt; nő
-Leánykori név: &lt;input id=&quot;leanykori_nev&quot;&gt;
+<pre class="html"><code>&lt;input type=&quot;radio&quot; name=&quot;gender&quot; value=&quot;male&quot; checked&gt; Male
+&lt;input type=&quot;radio&quot; name=&quot;gender&quot; value=&quot;female&quot;&gt; Female
+Maiden name: &lt;input id=&quot;maidenName&quot;&gt;
 &lt;script&gt;
-  // beolvasás
-  const no = document.querySelector(&quot;[name=nem][value=no]&quot;).checked;
-  // kiírás
-  document.querySelector(&quot;#leanykori_nev&quot;).hidden = !no;
+  // Reading
+  const femaleRadio = 
+    document.querySelector(&quot;[name=gender][value=female]&quot;);
+  const isFemale = famaleRadio.checked;
+  // Writing
+  document.querySelector(&quot;#maidenName&quot;).hidden = !isFemale;
 &lt;/script&gt;</code></pre>
 </section>
 <section id="új-elemek-létrehozása" class="slide level2">
 <h2>Új elemek létrehozása</h2>
 <ul>
-<li>kiírás egy speciális formája</li>
-<li>szövegesen</li>
+<li>A kiírás egy speciális formája</li>
+<li>A HTML kód szövegesen</li>
 <li><code>innerHTML</code> tulajdonság írása</li>
-<li>tetszőleges mennyiség</li>
+<li>Akár egyszerre több elemet is</li>
 </ul>
-<pre class="html"><code>&lt;div id=&quot;kimenet&quot;&gt;&lt;/div&gt;
+<pre class="html"><code>&lt;div id=&quot;output&quot;&gt;&lt;/div&gt;
 &lt;script&gt;
-  const udvozles = &quot;&lt;h1&gt;Hello &lt;em&gt;mindenki&lt;/em&gt;&lt;/h1&gt;&quot;;
-  document.querySelector(&quot;#kimenet&quot;).innerHTML = udvozles;
+  const greeting = &quot;&lt;h1&gt;Hello &lt;em&gt;World&lt;/em&gt;&lt;/h1&gt;&quot;;
+  const output = document.querySelector(&quot;#output&quot;);
+  output.innerHTML = greeting;
 &lt;/script&gt;</code></pre>
 </section>
 <section id="html-generálás" class="slide level2">
 <h2>HTML generálás</h2>
 <pre class="js"><code>// Rövid statikus szöveg megadása
-const s = `&lt;h1&gt;Hello there!&lt;/h1&gt;`;
+const html1 = `&lt;h1&gt;Hello there!&lt;/h1&gt;`;
 
 // Többsoros statikus szöveg megadása
-const s = `
+const html2 = `
   &lt;div&gt;
     &lt;p&gt;No, &lt;strong&gt;I&lt;/strong&gt; am your father!&lt;/p&gt;
   &lt;/div&gt;
 `;
 
 // Változók behelyettesítése
-const pontszam = 100;
-const s = `Összesen ${pontszam} pontot gyűjtöttél!`;
+const callsign = &#39;Red 5&#39;;
+const html3 = `${callsign}, standing by.`;
 
 // Tömbök kiírása leképezéssel
-const nevek = [&quot;Sára&quot;, &quot;Zsófi&quot;, &quot;Dávid&quot;, &quot;Matyi&quot;, &quot;Veronika&quot;];
-const s = `
+const callsigns = [&quot;Red 10&quot;, &quot;Red 7&quot;, &quot;Red 3&quot;, &quot;Red 6&quot;, &quot;Red 9&quot;];
+const html4 = `
+  &lt;p&gt;All wings, report in.&lt;/p&gt;
   &lt;ul&gt;
-    ${nevek.map(nev =&gt; `
-      &lt;li&gt;${nev}&lt;/li&gt;
+    ${callsigns.map(callsign =&gt; `
+      &lt;li&gt;${callsign}, standing by.&lt;/li&gt;
     `).join(&quot;&quot;)}
   &lt;/ul&gt;
 `;
 
 // Feltételes kiírás (elágazás)
-const homerseklet = 5;
-const s = `
-  &lt;span&gt;Hú de nagyon
-  ${homerseklet &gt; 20 ? &quot;meleg&quot; : &quot;hideg&quot;}
-  van&lt;/span&gt;
+const chanceOfSuccess = 0.4;
+const html5 = `
+  &lt;span&gt;
+    I have a 
+    ${chanceOfSuccess &lt; 0.5 ? &quot;bad&quot; : &quot;good&quot;}
+    feeling about this.
+  &lt;/span&gt;
 `;
 
 // Függvényekkel
-function lista(nevek) {
+function hanDescription(properties) {
   return `
+    You
     &lt;ul&gt;
-      ${nevek.map(listaElem).join(&quot;&quot;)}
+      ${properties.map(hanProperty).join(&quot;&quot;)}
     &lt;/ul&gt;
+    Nerf Herder!
   `;
 }
-function listaElem(s) {
-  return `&lt;li&gt;${s}&lt;/li&gt;`;
+
+function hanProperty(property) {
+  return `&lt;li&gt;${property}&lt;/li&gt;`;
 }
-const nevek = [&quot;Sára&quot;, &quot;Zsófi&quot;, &quot;Dávid&quot;, &quot;Matyi&quot;, &quot;Veronika&quot;];
-const s = lista(nevek);</code></pre>
+
+const hanProperties = [
+  &quot;stuck up&quot;,
+  &quot;half witted&quot;,
+  &quot;scruffy looking&quot;
+];
+const html6 = hanDescription(hanProperties);</code></pre>
 </section>
 <section id="új-elemek-létrehozása-1" class="slide level2">
 <h2>Új elemek létrehozása</h2>
 <p>Programozottan:</p>
 <ul>
-<li>létrehozás:
+<li>Létrehozás:
 <ul>
 <li><code>document.createElement(elem)</code></li>
 </ul></li>
-<li>beszúrás:
+<li>Beszúrás:
 <ul>
 <li><code>parent.appendChild(child)</code>: szülő gyerekeihez utolsóként hozzáadja az új elemet</li>
 <li><code>parent.insertBefore(newChild, refChild)</code>: referencia elé beszúrja az új elemet</li>
 </ul></li>
 </ul>
+</section>
+<section id="új-elemek-beszúrása" class="slide level2">
+<h2>Új elemek beszúrása</h2>
 <div class="columns">
-<div class="column" style="width: 30%">
+<div class="column" style="width: 33%">
 <pre class="html"><code>&lt;body&gt;
   &lt;ul&gt;
     &lt;li&gt;First&lt;/li&gt;
@@ -598,14 +698,15 @@ const s = lista(nevek);</code></pre>
   &lt;/ul&gt;
   ✒&gt; &lt;✒    
 &lt;/body&gt;</code></pre>
-</div><div class="column" style="width: 70%">
-<pre class="js"><code>const p = document.createElement(&#39;p&#39;)
-document.body.appendChild(p)
+</div><div class="column" style="width: 67%">
+<pre class="js"><code>const p = document.createElement(&#39;p&#39;);
+document.body.appendChild(p);
 
-const newLi = document.createElement(&#39;li&#39;)
-const ul = document.querySelector(&#39;ul&#39;)
-const refLi = ul.querySelector(&#39;li:nth-of-type(3)&#39;)
-ul.insertBefore(newLi, refLi)</code></pre>
+const newLi = document.createElement(&#39;li&#39;);
+const ul = document.querySelector(&#39;ul&#39;);
+const refLi = 
+  ul.querySelector(&#39;li:nth-of-type(3)&#39;);
+ul.insertBefore(newLi, refLi);</code></pre>
 </div>
 </div>
 </section>
@@ -614,11 +715,8 @@ ul.insertBefore(newLi, refLi)</code></pre>
 </section>
 <section id="ismétlés-1" class="slide level2">
 <h2>Ismétlés</h2>
-<pre class="html"><code>&lt;div 
-  class=&quot;rodian bounty-hunter&quot; 
-  style=&quot;position: absolute; top: 50px;&quot;
-&gt;
-    Greedo
+<pre class="html"><code>&lt;div class=&quot;rodian bounty-hunter&quot; style=&quot;bottom: 72in&quot;&gt;
+  Greedo
 &lt;/div&gt;</code></pre>
 </section>
 <section id="stílusattribútum-programozása" class="slide level2">
@@ -653,17 +751,17 @@ ul.insertBefore(newLi, refLi)</code></pre>
 </section>
 <section id="stílusattribútum-programozása-1" class="slide level2">
 <h2>Stílusattribútum programozása</h2>
-<pre class="html"><code>&lt;div style=&quot;position: absolute&quot; id=&quot;mozgo_elem&quot;&gt;&lt;/div&gt;
+<pre class="html"><code>&lt;div style=&quot;position: absolute&quot; id=&quot;movingElement&quot;&gt;&lt;/div&gt;
 &lt;script&gt;
-  document.querySelector(&quot;#mozgo_elem&quot;).style.top  = &quot;25px&quot;;
-  document.querySelector(&quot;#mozgo_elem&quot;).style.left = &quot;42px&quot;;
+  document.querySelector(&quot;#movingElement&quot;).style.top  = &quot;25px&quot;;
+  document.querySelector(&quot;#movingElement&quot;).style.left = &quot;42px&quot;;
 &lt;/script&gt;</code></pre>
 </section>
 <section id="objektum-stílus" class="slide level2">
 <h2>Objektum stílus</h2>
 <ul>
-<li><code>elem.style</code></li>
-<li><code>CSSStyleDeclaration</code> objektum az összes stílustulajdonsággal</li>
+<li><code>elem.style</code>: <code>CSSStyleDeclaration</code> objektum</li>
+<li>Az összes stílustulajdonságot tartalmazza</li>
 <li>Tetszőleges tulajdonság beállítható (írás)</li>
 <li>Lekérdezhető stílustulajdonságok (olvasás):
 <ul>
@@ -671,26 +769,23 @@ ul.insertBefore(newLi, refLi)</code></pre>
 <li>JavaScriptből határoztuk meg az értéküket.</li>
 </ul></li>
 </ul>
-<div class="columns">
-<div class="column" style="width: 45%">
+</section>
+<section id="példa-1" class="slide level2">
+<h2>Példa</h2>
 <pre class="html"><code>&lt;style&gt;
 .box {
   position: absolute;
   width: 100px; height: 100px;
 }
 &lt;/style&gt;
-&lt;div class=&quot;box&quot; 
-     style=&quot;left: 20px&quot;&gt;&lt;/div&gt;</code></pre>
-</div><div class="column" style="width: 55%">
-<pre class="js"><code>const box = document.querySelector(&quot;div&quot;)
-box.style.top = &quot;30px&quot;
+&lt;div class=&quot;box&quot; style=&quot;left: 20px&quot;&gt;&lt;/div&gt;</code></pre>
+<pre class="js"><code>const box = document.querySelector(&quot;div&quot;);
+box.style.top = &quot;30px&quot;;
 
-box.style.top       // &quot;30px&quot;  &lt;-- JS
-box.style.left      // &quot;20px&quot;  &lt;-- style attr
-box.style.width     // &quot;&quot;
-box.style.position  // &quot;&quot;</code></pre>
-</div>
-</div>
+box.style.top;       // &quot;30px&quot;  &lt;-- JS
+box.style.left;      // &quot;20px&quot;  &lt;-- style attribute
+box.style.width;     // &quot;&quot;
+box.style.position;  // &quot;&quot;</code></pre>
 </section>
 <section id="számított-stílus" class="slide level2">
 <h2>Számított stílus</h2>
@@ -699,27 +794,24 @@ box.style.position  // &quot;&quot;</code></pre>
 <li>A böngésző által nyilvántartott stílustulajdonságok</li>
 <li>A rövidítések (pl. <code>border</code>, <code>background</code>, stb.) nem érhető el, csak az elemi tulajdonságok.</li>
 </ul>
-<div class="columns">
-<div class="column" style="width: 45%">
+</section>
+<section id="példa-2" class="slide level2">
+<h2>Példa</h2>
 <pre class="html"><code>&lt;style&gt;
 .box {
   position: absolute;
   width: 100px; height: 100px;
 }
 &lt;/style&gt;
-&lt;div class=&quot;box&quot; 
-     style=&quot;left: 20px&quot;&gt;&lt;/div&gt;</code></pre>
-</div><div class="column" style="width: 55%">
-<pre class="js"><code>const box = document.querySelector(&quot;div&quot;)
-box.top = &quot;30px&quot;
+&lt;div class=&quot;box&quot; style=&quot;left: 20px&quot;&gt;&lt;/div&gt;</code></pre>
+<pre class="js"><code>const box = document.querySelector(&quot;div&quot;);
+box.top = &quot;30px&quot;;
 
-const compStyle = window.getComputedStyle(box)
-compStyle.top       // &quot;30px&quot;
-compStyle.left      // &quot;20px&quot;
-compStyle.width     // &quot;100px&quot;
-compStyle.position  // &quot;absolute&quot;</code></pre>
-</div>
-</div>
+const computedStyle = window.getComputedStyle(box);
+computedStyle.top       // &quot;30px&quot;
+computedStyle.left      // &quot;20px&quot;
+computedStyle.width     // &quot;100px&quot;
+computedStyle.position  // &quot;absolute&quot;</code></pre>
 </section>
 <section id="stílusosztály-programozása" class="slide level2">
 <h2>Stílusosztály programozása</h2>
@@ -735,53 +827,25 @@ compStyle.position  // &quot;absolute&quot;</code></pre>
 <section id="stílusosztály-programozása-1" class="slide level2">
 <h2>Stílusosztály programozása</h2>
 <p><code>add</code>, <code>remove</code>, <code>toggle</code>, <code>contains</code></p>
-<pre class="html"><code>&lt;div class=&quot;piros barna sarga&quot;&gt;</code></pre>
-<pre class="js"><code>const div = document.querySelector(&#39;div&#39;)
-div.classList.remove(&quot;barna&quot;)
-div.classList.add(&quot;zold&quot;)
+<pre class="html"><code>&lt;div class=&quot;red green blue&quot;&gt;</code></pre>
+<pre class="js"><code>const div = document.querySelector(&#39;div&#39;);
+div.classList.remove(&quot;green&quot;);
+div.classList.add(&quot;pink&quot;);
 
 // váltogatás
-div.classList.toggle(&quot;zold&quot;)
+div.classList.toggle(&quot;pink&quot;);
 
 // feltételes megjelenítés
-div.classList.toggle(&quot;zold&quot;, i &lt; 10 )
+div.classList.toggle(&quot;pink&quot;, i &lt; 10);
 
 // van-e adott stílusosztály
-div.classList.contains(&quot;piros&quot;)  // true
+div.classList.contains(&quot;red&quot;);  // true
 
 // több hozzáadása egyszerre
-div.classList.add(&quot;kek&quot;, &quot;arany&quot;)</code></pre>
+div.classList.add(&quot;orange&quot;, &quot;yellow&quot;);</code></pre>
 </section>
 <section id="dom-tulajdonságok-és-metódusok" class="slide level2" data-state="new-section">
 <h2 data-state="new-section">DOM tulajdonságok és metódusok</h2>
-</section>
-<section id="szerkezet-bejárása" class="slide level2">
-<h2>Szerkezet bejárása</h2>
-<ul>
-<li>Bejárás
-<ul>
-<li>gyerekek
-<ul>
-<li><code>children</code>, <code>firstElementChild</code>, <code>lastElementChild</code>, <code>childElementCount</code></li>
-<li><code>childNodes</code>, <code>firstChild</code>, <code>lastChild</code></li>
-</ul></li>
-<li>szülő/ős
-<ul>
-<li><code>parentNode</code>, <code>parentElement</code></li>
-<li><code>closest(css_selector)</code></li>
-</ul></li>
-<li>testvérek
-<ul>
-<li><code>nextElementSibling</code>, <code>previousElementSibling</code></li>
-<li><code>nextSibling</code>, <code>previousSibling</code></li>
-</ul></li>
-</ul></li>
-<li>Csomópont típusa
-<ul>
-<li><code>nodeType === 1</code>: elem</li>
-<li><code>nodeType === 3</code>: szöveges csomópont</li>
-</ul></li>
-</ul>
 </section>
 <section id="attribútum-programozás" class="slide level2">
 <h2>Attribútum programozás</h2>
@@ -792,39 +856,64 @@ div.classList.add(&quot;kek&quot;, &quot;arany&quot;)</code></pre>
 <li><code>removeAttribute(name)</code></li>
 <li><code>toggleAttribute(name[, predicate])</code></li>
 </ul>
+</section>
+<section id="példa-3" class="slide level2">
+<h2>Példa</h2>
 <pre class="html"><code>&lt;button type=&quot;submit&quot; data-id=&quot;10&quot; disabled&gt;A button&lt;/button&gt;</code></pre>
-<pre class="js"><code>const b = document.querySelector(&#39;button&#39;)
-// reading
-b.getAttribute(&#39;type&#39;)      // &#39;submit&#39;
-b.getAttribute(&#39;data-id&#39;)   // &#39;10&#39;
-b.getAttribute(&#39;disabled&#39;)  // &#39;&#39;
-b.getAttribute(&#39;foo&#39;)       // null or &#39;&#39;
-b.hasAttribute(&#39;disabled&#39;)  // true
-// writing
-b.setAttribute(&#39;name&#39;, &#39;send&#39;)
-b.setAttribute(&#39;hidden&#39;, &#39;&#39;)  // boolean attribute
-b.toggleAttribute(&#39;disabled&#39;) // toggle boolean attribute</code></pre>
+<pre class="js"><code>const button = document.querySelector(&#39;button&#39;);
+// Reading
+button.getAttribute(&#39;type&#39;);        // &#39;submit&#39;
+button.getAttribute(&#39;data-id&#39;);     // &#39;10&#39;
+button.getAttribute(&#39;disabled&#39;);    // &#39;&#39;
+button.getAttribute(&#39;foo&#39;);         // null or &#39;&#39;
+button.hasAttribute(&#39;disabled&#39;);    // true
+// Writing
+button.setAttribute(&#39;name&#39;, &#39;send&#39;);
+button.setAttribute(&#39;hidden&#39;, &#39;&#39;);  // boolean attribute
+button.toggleAttribute(&#39;disabled&#39;); // toggle boolean attribute</code></pre>
 </section>
 <section id="attribútum-programozás-1" class="slide level2">
 <h2>Attribútum programozás</h2>
 <p><code>data-*</code> attribútum → <code>dataset</code> tulajdonság</p>
-<pre class="html"><code>&lt;div 
-  data-id=&quot;10&quot;
-  data-some-text=&quot;foo&quot;
-&gt;&lt;/div&gt;</code></pre>
-<pre class="js"><code>const div = document.querySelector(&#39;div&#39;)
-// reading
-div.dataset.id        // &quot;10&quot;
-div.dataset.someText  // &quot;foo&quot;
-// writing
-div.dataset.someText = &quot;bar&quot;
-div.dataset.user = &quot;John&quot;               // --&gt; data-user=&quot;John&quot;
-div.dataset.dateOfBirth = &quot;2000-12-12&quot;  // --&gt; data-date-of-birth=&quot;2000-12-12&quot;
-// removing
-delete div.dataset.id
-// checking
-&#39;someText&#39; in el.dataset  // true
-&#39;id&#39; in el.dataset        // false</code></pre>
+<pre class="html"><code>&lt;div data-id=&quot;10&quot; data-some-text=&quot;foo&quot;&gt;&lt;/div&gt;</code></pre>
+<pre class="js"><code>const div = document.querySelector(&#39;div&#39;);
+// Reading
+div.dataset.id;        // &quot;10&quot;
+div.dataset.someText;  // &quot;foo&quot;
+// Writing
+div.dataset.someText = &quot;bar&quot;;
+div.dataset.user = &quot;John&quot;;               // --&gt; data-user=&quot;John&quot;
+div.dataset.dateOfBirth = &quot;2000-12-12&quot;;  // --&gt; data-date-of-birth=&quot;2000-12-12&quot;
+// Removing
+delete div.dataset.id;
+// Checking
+&#39;someText&#39; in el.dataset;  // true
+&#39;id&#39; in el.dataset;        // false</code></pre>
+</section>
+<section id="szerkezet-bejárása" class="slide level2">
+<h2>Szerkezet bejárása</h2>
+<ul>
+<li>gyerekek
+<ul>
+<li><code>childNodes</code>, <code>firstChild</code>, <code>lastChild</code></li>
+<li><code>children</code>, <code>firstElementChild</code>, <code>lastElementChild</code></li>
+</ul></li>
+<li>szülő/ős
+<ul>
+<li><code>parentNode</code>, <code>parentElement</code></li>
+<li><code>closest(cssSelector)</code></li>
+</ul></li>
+<li>testvérek
+<ul>
+<li><code>nextSibling</code>, <code>previousSibling</code></li>
+<li><code>nextElementSibling</code>, <code>previousElementSibling</code></li>
+</ul></li>
+</ul>
+<p>Csomópont típusa</p>
+<ul>
+<li><code>nodeType === 1</code>: elem</li>
+<li><code>nodeType === 3</code>: szöveges csomópont</li>
+</ul>
 </section>
 <section id="szerkezet-módosítása" class="slide level2">
 <h2>Szerkezet módosítása</h2>
@@ -845,19 +934,15 @@ delete div.dataset.id
     &lt;li&gt;negyedik&lt;/li&gt;
     &lt;li&gt;ötödik&lt;/li&gt;
 &lt;/ul&gt;</code></pre>
-<pre class="js"><code>function pozicio( el ) {
-   let db = 0;
+<pre class="js"><code>function getPosition(element) {
+   const parent = element.parentNode;
+   const children = Array.from(parent.children);
 
-   // kiválasztás és számolás az elemtől visszafelé
-   while ( null != el ) {
-      // előző testvérre lépés
-      el = el.previousElementSibling;
-      db++;
-   }
-   
-   return db;
+   return children.indexOf(element) + 1;
 }
-pozicio(document.querySelector(&#39;ul &gt; li:nth-child(2)&#39;)); // 2</code></pre>
+
+const secondChild = document.querySelector(&#39;ul &gt; li:nth-child(2)&#39;);
+const position = getPosition(secondChild); // 2</code></pre>
 </section>
 <section id="régi-megoldások" class="slide level2" data-state="new-section">
 <h2 data-state="new-section">Régi megoldások</h2>
@@ -869,13 +954,19 @@ pozicio(document.querySelector(&#39;ul &gt; li:nth-child(2)&#39;)); // 2</code><
 <li><code>confirm(text)</code></li>
 <li><code>prompt(text, default)</code></li>
 </ul>
-<pre class="js"><code>alert(&#39;Hello világ!&#39;);
+<pre class="js"><code>alert(&#39;The Force will be with you. Always.&#39;);
 
-const kerdes = confirm(&#39;Szereted a csokit?&#39;);
+const kerdes = confirm(&#39;Judge me by my size, do you?&#39;);
 
-const nev = prompt(&#39;Mi a neved?&#39;, &#39;Senki bácsi&#39;);
+const target = prompt(`
+  You would prefer another target?
+  A military target?
+  Then name the system!
+`, &#39;Dantooine&#39;);
 
-console.log(`Helló ${nev}!`);</code></pre>
+console.log(
+  `${target} is too remote to make an effective demonstration!`
+);</code></pre>
 </section>
 <section id="elemek-kiválasztása-2" class="slide level2">
 <h2>Elemek kiválasztása</h2>
@@ -889,8 +980,8 @@ console.log(`Helló ${nev}!`);</code></pre>
 <ul>
 <li><code>getElementsByTagName(tagName)</code></li>
 <li><code>getElementsByClassName(className)</code></li>
-<li><strong><code>querySelector(css_selector)</code></strong></li>
-<li><strong><code>querySelectorAll(css_selector)</code></strong></li>
+<li><strong><code>querySelector(cssSelector)</code></strong></li>
+<li><strong><code>querySelectorAll(cssSelector)</code></strong></li>
 </ul></li>
 </ul>
 </section>
@@ -907,49 +998,15 @@ console.log(`Helló ${nev}!`);</code></pre>
 div.className   // &#39;human hero&#39;
 div.className = &#39;human king&#39;</code></pre>
 </section>
-<section id="elemi-eseménykezelés" class="slide level2" data-state="new-section">
-<h2 data-state="new-section">Elemi eseménykezelés</h2>
-</section>
-<section id="eseménykezelés" class="slide level2">
-<h2>Eseménykezelés</h2>
-<ul>
-<li>események (pl. kattintás)</li>
-<li>eseménykezelők (függvények)</li>
-<li><code>elem.addEventListener('type', fn)</code></li>
-</ul>
-<pre class="js"><code>const button = document.querySelector(&#39;button&#39;)
-button.addEventListener(&#39;click&#39;, onClick)
-function onClick() {
-  console.log(&#39;clicked&#39;);
-}</code></pre>
-</section>
-<section id="példafeladat-2" class="slide level2">
-<h2>Példafeladat</h2>
-<pre class="html"><code>&lt;form&gt;
-  Név: &lt;input type=&quot;text&quot; id=&quot;name&quot; value=&quot;Győző&quot;&gt; &lt;br&gt;
-  &lt;input type=&quot;button&quot; value=&quot;Say hello!&quot;&gt; &lt;br&gt;
-  &lt;output&gt;&lt;/output&gt;
-&lt;/form&gt;</code></pre>
-<pre class="js"><code>const button = document.querySelector(&#39;input[button]&#39;)
-button.addEventListener(&#39;click&#39;, onGreet)
-function onGreet() {
-  // Reading
-  const nameInput = document.querySelector(&#39;#name&#39;)
-  const name = nameInput.value
-  // Process
-  const greeting = `Hello ${name}!`
-  // Writing
-  const output = document.querySelector(&#39;output&#39;)
-  output.innerHTML = greeting
-}</code></pre>
-</section>
 <section id="összefoglalás" class="slide level2" data-state="topic">
 <h2 data-state="topic">Összefoglalás</h2>
 <ul>
 <li>DOM a felhasználói felület programozási interfésze</li>
-<li>Elemek kiválasztása: <code>document.querySelector(css-selector)</code></li>
+<li>Elemek kiválasztása:<br />
+<code>document.querySelector(css-selector)</code></li>
 <li>Tulajdonságai: analóg módszer</li>
-<li>Alap eseménykezelés: <code>elem.addEventListener('click', onClick)</code></li>
+<li>Alap eseménykezelés:<br />
+<code>elem.addEventListener('click', onClick)</code></li>
 </ul>
 </section>
     </div>
@@ -964,8 +1021,8 @@ function onGreet() {
       code.setAttribute('data-noescape', '')
       const text = code.innerHTML
       const markedText = text
-        .replace(/✒&gt;/g, '<mark>')
         .replace(/&lt;✒/g, '</mark>')
+        .replace(/✒&gt;/g, '<mark>')
       code.innerHTML = markedText
     }
 
