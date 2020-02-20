@@ -9,7 +9,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
 
   <!-- Reveal.js Theme -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/elte-fi/revealjs-elte-fi@1.0.8/dist/revealjs-elte-fi.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/elte-fi/revealjs-elte-fi@1.0.11/dist/revealjs-elte-fi.min.css">
   <!-- Highlighting -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.18.1/build/styles/default.min.css">
   <!-- Icons -->
@@ -1012,10 +1012,13 @@ div.className = &#39;human king&#39;</code></pre>
     </div>
   </div>
 
+  <div id="captcha"></div>
+
   <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.18.1/build/highlight.min.js"></script>
   <script src="https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/js/reveal.js"></script>
 
   <script>
+    // Highlighting in code blocks
     const codes = document.querySelectorAll('pre > code')
     for (const code of codes) {
       code.setAttribute('data-noescape', '')
@@ -1026,70 +1029,78 @@ div.className = &#39;human king&#39;</code></pre>
       code.innerHTML = markedText
     }
 
-      // Full list of configuration options available at:
-      // https://github.com/hakimel/reveal.js#configuration
-      Reveal.initialize({
-        // Display controls in the bottom right corner
-        controls: true,
-        controlsTutorial: false,
-        // Display a presentation progress bar
-        progress: true,
-        // Display the page number of the current slide
-        slideNumber: true,
-        // Add the current slide number to the URL hash so that reloading the
-        // page/copying the URL will return you to the same slide
-        hash: true,
-        // Push each slide change to the browser history
-        history: false,
-        // Enable keyboard shortcuts for navigation
-        keyboard: true,
-        // Enable the slide overview mode
-        overview: true,
-        // Vertical centering of slides
-        center: true,
-        // Enables touch navigation on devices with touch input
-        touch: true,
-        // Loop the presentation
-        loop: false,
-        // Hides the address bar on mobile devices
-        hideAddressBar: true,
-        // Transition style
-        transition: 'slide', // none/fade/slide/convex/concave/zoom
-        // Transition style for full page slide backgrounds
-        backgroundTransition: 'slide', // none/fade/slide/convex/concave/zoom
-        // Bounds for smallest/largest possible scale to apply to content
-        minScale: 0.5,
-        maxScale: 3,
-        // Modifier key used to click-zoom to part of the slide
-        zoomKey: "ctrl",
-        math: {
-          mathjax: 'https://cdn.jsdelivr.net/gh/mathjax/MathJax@3.0.1/es5/tex-mml-chtml.js',
-          config: 'TeX-AMS_HTML-full',
-          tex2jax: {
-            inlineMath: [['\\(','\\)']],
-            displayMath: [['\\[','\\]']],
-            balanceBraces: true,
-            processEscapes: false,
-            processRefs: true,
-            processEnvironments: true,
-            preview: 'TeX',
-            skipTags: ['script','noscript','style','textarea','pre','code'],
-            ignoreClass: 'tex2jax_ignore',
-            processClass: 'tex2jax_process'
-          }
-        },
+    // Adding captcha
+    const queryString = new URLSearchParams(window.location.search);
+    const captcha = queryString.get('captcha');
+    const captchaElement = document.getElementById("captcha");
+    captchaElement.innerHTML = captcha;
 
-        // Optional reveal.js plugins
-        dependencies: [
-          { src: 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/lib/js/classList.js', condition: function() { return !document.body.classList; } },
-          { src: 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/plugin/zoom-js/zoom.js', async: true },
-          //{ src: 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/socket.io/socket.io.js', async: true },
-          //{ src: 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/plugin/notes-server/client.js', async: true },
-          { src: 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/plugin/math/math.js', async: true },
-          { src: 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/plugin/notes/notes.js', async: true },
-          { src: 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/plugin/highlight/highlight.js', async: true }
-        ]
-      });
-    </script>
-    </body>
+    // Full list of configuration options available at:
+    // https://github.com/hakimel/reveal.js#configuration
+    Reveal.initialize({
+      // Display controls in the bottom right corner
+      controls: true,
+      controlsTutorial: false,
+      // Display a presentation progress bar
+      progress: true,
+      // Display the page number of the current slide
+      slideNumber: true,
+      // Add the current slide number to the URL hash so that reloading the
+      // page/copying the URL will return you to the same slide
+      hash: true,
+      // Push each slide change to the browser history
+      history: false,
+      // Enable keyboard shortcuts for navigation
+      keyboard: true,
+      // Enable the slide overview mode
+      overview: true,
+      // Vertical centering of slides
+      center: true,
+      // Enables touch navigation on devices with touch input
+      touch: true,
+      // Loop the presentation
+      loop: false,
+      // Hides the address bar on mobile devices
+      hideAddressBar: true,
+      // Transition style
+      transition: 'slide', // none/fade/slide/convex/concave/zoom
+      // Transition style for full page slide backgrounds
+      backgroundTransition: 'slide', // none/fade/slide/convex/concave/zoom
+      // Bounds for smallest/largest possible scale to apply to content
+      minScale: 0.5,
+      maxScale: 3,
+      // Modifier key used to click-zoom to part of the slide
+      zoomKey: "ctrl",
+      math: {
+        mathjax: 'https://cdn.jsdelivr.net/gh/mathjax/MathJax@3.0.1/es5/tex-mml-chtml.js',
+        config: 'TeX-AMS_HTML-full',
+        tex2jax: {
+          inlineMath: [['\\(','\\)']],
+          displayMath: [['\\[','\\]']],
+          balanceBraces: true,
+          processEscapes: false,
+          processRefs: true,
+          processEnvironments: true,
+          preview: 'TeX',
+          skipTags: ['script','noscript','style','textarea','pre','code'],
+          ignoreClass: 'tex2jax_ignore',
+          processClass: 'tex2jax_process'
+        }
+      },
+
+      // Optional reveal.js plugins
+      dependencies: [
+        { src: 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+        { src: 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/plugin/zoom-js/zoom.js', async: true },
+        //{ src: 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/socket.io/socket.io.js', async: true },
+        //{ src: 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/plugin/notes-server/client.js', async: true },
+        { src: 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/plugin/math/math.js', async: true },
+        { src: 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/plugin/notes/notes.js', async: true },
+        { src: 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/plugin/highlight/highlight.js', async: true }
+      ]
+    });
+  </script>
+
+  
+  </body>
 </html>
