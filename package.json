@@ -1,0 +1,20 @@
+{
+  "name": "courses-webprogramming",
+  "description": "ELTE FI Web Programming Course",
+  "version": "1.0.0",
+  "author": "Győző Horváth <gyozke@inf.elte.hu>",
+  "contributors": [
+    "Márton Visnovitz <vimtaai@inf.elte.hu>",
+    "Viktor Gerely <mohmas@inf.elte.hu>"
+  ],
+  "license": "CC-BY-NC-SA-4.0",
+  "repository": "github:elte-fi/courses-webprogramming",
+  "scripts": {
+    "build:lectures": "",
+    "watch:lectures": ""
+  },
+  "devDependencies": {
+    "chokidar-cli": "^2.1.0",
+    "reveal-md": "^3.4.7"
+  }
+}

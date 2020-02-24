@@ -1,0 +1,1110 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <title>Webprogramozás - Eseménykezelés</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+  <!-- Reveal.js Theme -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/elte-fi/revealjs-elte-fi@1.0.12/dist/revealjs-elte-fi.min.css">
+  <!-- Highlighting -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.18.1/build/styles/default.min.css">
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+
+  <!-- Printing and PDF exports -->
+  <script>
+    var link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = window.location.search.match(/print-pdf/gi) 
+      ? 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/css/print/pdf.css' 
+      : 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/css/print/paper.css';
+    document.getElementsByTagName('head')[0].appendChild( link );
+  </script>
+
+  </head>
+
+<body>
+  <div class="reveal">
+    <div class="slides">
+<section class="slide level2">
+
+<div class="title">
+<p>Webprogramozás</p>
+</div>
+<h3 id="interaktív-programok-készítése-a-böngészőben-eseménykezelés">Interaktív programok készítése a böngészőben: eseménykezelés</h3>
+<div class="columns">
+<div class="column" style="width:33.333%;">
+<small> <strong>Visnovitz Márton</strong><br> egyetemi tanársegéd<br> visnovitz.marton@inf.elte.hu </small>
+</div><div class="column" style="width:33.333%;">
+<small> <strong>Gerely Viktor</strong><br> demonstrátor<br> mohmas@inf.elte.hu </small>
+</div><div class="column" style="width:33.333%;">
+<small> <strong>Horváth Győző</strong><br> egyetemi docens<br> horvath.gyozo@inf.elte.hu </small>
+</div>
+</div>
+<p><small> 1117 Budapest, Pázmány Péter sétány 1/c., 2.408<br> Tel: (1) 372-2500/8469<br />
+</small></p>
+</section>
+<section id="ismétlés" class="slide level2" data-state="new-section">
+<h2 data-state="new-section">Ismétlés</h2>
+</section>
+<section id="ismétlés---nyelvi-elemek" class="slide level2">
+<h2>Ismétlés - nyelvi elemek</h2>
+<ul class="task-list">
+<li><input type="checkbox" disabled="" checked="" />
+Dinamikusan típusos</li>
+<li><input type="checkbox" disabled="" checked="" />
+Interpretált nyelv</li>
+<li><input type="checkbox" disabled="" checked="" />
+Szintaxis C++-hoz hasonló</li>
+<li><input type="checkbox" disabled="" checked="" />
+Adatszerkezetek (elemi, összetett)</li>
+<li><input type="checkbox" disabled="" checked="" />
+Funkcionális aspektus</li>
+<li><input type="checkbox" disabled="" checked="" />
+OOP-s aspektus</li>
+</ul>
+</section>
+<section id="ismétlés---dom" class="slide level2">
+<h2>Ismétlés - DOM</h2>
+<ul class="task-list">
+<li><input type="checkbox" disabled="" checked="" />
+HTML elemek belső ábrázolása</li>
+<li><input type="checkbox" disabled="" checked="" />
+Programozási interfész (API)</li>
+<li><input type="checkbox" disabled="" checked="" />
+Bemeneti-kimeneti interfész</li>
+</ul>
+<p><img data-src="../../assets/images/architecture/js-dom-ui.png" /></p>
+</section>
+<section id="ismétlés-dom" class="slide level2">
+<h2>Ismétlés – DOM</h2>
+<ul class="task-list">
+<li><input type="checkbox" disabled="" checked="" />
+Elemek kiválasztása<ul>
+<li><code>document.querySelector('css selector')</code></li>
+<li><code>document.querySelectorAll('css selector')</code></li>
+</ul></li>
+<li><input type="checkbox" disabled="" checked="" />
+Elem (JavaScript objektum) tulajdonságai<ul>
+<li>Analógia: Webfejlesztés → Webprogramozás</li>
+<li>írás/olvasás</li>
+<li>tulajdonságok (pl. <code>innerHTML</code>)</li>
+<li>metódusok</li>
+</ul></li>
+<li><input type="checkbox" disabled="" checked="" />
+Eseménykezelés<ul>
+<li>Eseménytípusok</li>
+<li><code>elem.addEventListener(típus, fgv)</code></li>
+</ul></li>
+</ul>
+</section>
+<section id="ismétlés---dom-1" class="slide level2">
+<h2>Ismétlés - DOM</h2>
+<pre class="html"><code>&lt;form&gt;
+  Name: &lt;input type=&quot;text&quot; id=&quot;name&quot;&gt; &lt;br&gt;
+  &lt;input type=&quot;button&quot; value=&quot;Say hello!&quot; id=&quot;hello&quot;&gt;
+  &lt;br&gt;
+  &lt;span id=&quot;output&quot;&gt;&lt;/span&gt;
+&lt;/form&gt;</code></pre>
+<pre class="js"><code>function greet(name) {
+  return `Hello ${name}!`;
+}
+
+const input = document.querySelector(&#39;#name&#39;);
+const output = document.querySelector(&#39;#output&#39;);
+const hello = document.querySelector(&#39;#hello&#39;);
+
+function handleHelloClick() {
+  const name = input.value;
+  const greeting = greet(name);
+  output.innerHTML = greeting;
+}
+
+hello.addEventListener(&#39;click&#39;, handleHelloClick);</code></pre>
+</section>
+<section id="eseménykezelés" class="slide level2" data-state="new-section" data-background="nature.jpg">
+<h2 data-state="new-section" data-background="nature.jpg">Eseménykezelés</h2>
+<p>Interaktív programok</p>
+</section>
+<section id="fogalmak" class="slide level2">
+<h2>Fogalmak</h2>
+<ul>
+<li>Interaktív programok</li>
+<li>Felhasználói tevékenység</li>
+<li>Esemény</li>
+<li>Eseménykezelő függvények</li>
+<li>→ <strong>ESEMÉNYVEZÉRELT PROGRAMOZÁS</strong></li>
+</ul>
+</section>
+<section id="eseménykezelők-mint-mini-programok" class="slide level2">
+<h2>Eseménykezelők mint mini programok</h2>
+<pre class="js"><code>function handleEvent() {
+  // Read
+  // Process
+  // Write
+}</code></pre>
+</section>
+<section id="események" class="slide level2">
+<h2>Események</h2>
+<ul>
+<li><code>click</code>: egérkattintás</li>
+<li><code>mousemove</code>: egérmozgatás</li>
+<li><code>mousedown</code>: egér gombjának lenyomása</li>
+<li><code>mouseup</code>: egér gombjának felengedése</li>
+<li><code>input</code>: input mező értékének megváltozása</li>
+<li><code>keydown</code>: billentyűzet gombjának lenyomása</li>
+<li><code>keyup</code>: billentyűzet gombjának felengedése</li>
+<li><code>keypress</code>: billentyűzet gombjának megnyomása</li>
+<li><code>submit</code>: űrlap elküldése</li>
+<li><code>scroll</code>: görgetés az oldalon</li>
+</ul>
+<p><a href="https://developer.mozilla.org/en-US/docs/Web/Events">Események referenciája</a></p>
+</section>
+<section id="eseménykezelő-függvények-regisztrálása" class="slide level2">
+<h2>Eseménykezelő függvények regisztrálása</h2>
+<pre class="js"><code>// Egyszerűbb esetekben
+element.addEventListener(eventType, eventHandler);
+element.removeEventListener(eventType, eventHandler);
+
+// Például
+const button = document.querySelector(&quot;button&quot;);
+
+button.addEventListener(&quot;click&quot;, handleButtonClick);
+button.removeEventListener(&quot;click&quot;, handleButtonClick);
+
+function handleButtonClick() {
+  // mi történjen kattintáskor
+}
+
+// helyben definiálva
+element.addEventListener(eventType, function () {});</code></pre>
+</section>
+<section id="eseménykezelő-függvények-regisztrálása-1" class="slide level2">
+<h2>Eseménykezelő függvények regisztrálása</h2>
+<pre class="js"><code>target.addEventListener(eventType, eventListener[, options]);
+// `options` object:
+// - capture: Boolean (elkapás iránya)
+// - once: Boolean (egyszeri hívás, majd eltávolítás)
+// - passive: Boolean (nincs preventDefault() hívás)
+
+target.removeEventListener(eventType, eventListener[, options]);
+// options object
+// - capture: Boolean
+
+// Csak a capture flag számít az eseménykezelő azonosításában 
+// a type és listener mellett
+// Névtelen függvényt nem lehet eltávolítani (nincs rá referencia)
+// kivéve: `once` option
+
+target.addEventListener(&#39;click&#39;, onClick, { once: true });</code></pre>
+</section>
+<section id="eseménykezelő-függvények-regisztrálása-2" class="slide level2">
+<h2>Eseménykezelő függvények regisztrálása</h2>
+<pre class="js"><code>// Egy elem egy eseményéhez több eseménykezelő függvény
+button.addEventListener(&quot;click&quot;, handleButtonClick1);
+button.addEventListener(&quot;click&quot;, handleButtonClick2);
+
+// Több eseményhez ugyanaz az eseménykezelő függvény
+button1.addEventListener(&quot;click&quot;, handleButtonClick);
+button2.addEventListener(&quot;click&quot;, handleButtonClick);</code></pre>
+</section>
+<section id="eseménykezelő-példa" class="slide level2">
+<h2>Eseménykezelő példa</h2>
+<pre class="html"><code>&lt;form&gt;
+  Name: &lt;input type=&quot;text&quot; id=&quot;name&quot;&gt; &lt;br&gt;
+  &lt;input type=&quot;button&quot; value=&quot;Say hello!&quot; id=&quot;hello&quot;&gt;
+  &lt;br&gt;
+  &lt;span id=&quot;output&quot;&gt;&lt;/span&gt;
+&lt;/form&gt;</code></pre>
+<pre class="js"><code>function greet(name) {
+  return `Hello ${name}!`;
+}
+
+const input = document.querySelector(&#39;#name&#39;);
+const output = document.querySelector(&#39;#output&#39;);
+const hello = document.querySelector(&#39;#hello&#39;);
+
+function handleHelloClick() {
+  const name = input.value;
+  const greeting = greet(name);
+  output.innerHTML = greeting;
+}
+
+hello.addEventListener(&#39;click&#39;, handleHelloClick);</code></pre>
+</section>
+<section id="példa" class="slide level2">
+<h2>Példa</h2>
+<ul>
+<li>Feladat:
+<ul>
+<li>Adott hivatkozások felsorolása</li>
+<li>Cél: SHIFT gomb nyomva tartásával kattintva a konzolra kiírjuk a megnyitandó oldal URL-jét</li>
+</ul></li>
+</ul>
+<div class="example">
+<ul id="linkList">
+<li>
+<a id="link1" href="http://www.elte.hu">ELTE</a>
+</li>
+<li>
+<a id="link2" href="http://www.inf.elte.hu">ELTE IK</a>
+</li>
+<li>
+<a id="link3" href="http://www.inf.elte.hu/mot">ELTE IK MOT</a>
+</li>
+</ul>
+</div>
+<script>
+  const linkList = document.querySelector("#linkList");
+  function handleLinkClick(event) {
+    if (!event.shiftKey) {
+      return;
+    }
+
+    event.preventDefault();
+    const target = event.target;
+
+    if (target.matches("li a")) {
+      const href = target.href;
+      console.log(href);
+    }
+  } 
+
+  linkList.addEventListener("click", handleLinkClick);
+</script>
+</section>
+<section id="kérdések" class="slide level2">
+<h2>Kérdések</h2>
+<ul>
+<li>Honnan tudjuk, hogy a SHIFT billentyű le van-e nyomva?</li>
+<li>Hogyan tiltom le a hivatkozás követését?</li>
+<li>Hogyan skálázható a megoldás a hivatkozások számával?</li>
+</ul>
+<pre class="html"><code>&lt;ul&gt;
+  &lt;li&gt;
+    &lt;a href=&quot;http://www.elte.hu&quot;&gt;ELTE&lt;/a&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;a href=&quot;http://www.inf.elte.hu&quot;&gt;ELTE IK&lt;/a&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;a href=&quot;http://www.inf.elte.hu/mot&quot;&gt;ELTE IK MOT&lt;/a&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;</code></pre>
+</section>
+<section id="az-eseményobjektum" class="slide level2">
+<h2>Az eseményobjektum</h2>
+<p>Az eseménykezelő függvények első paraméterként automatikusan megkapják</p>
+<pre class="js"><code>function handleEvent(event) {
+  console.log(event);
+}</code></pre>
+</section>
+<section id="az-eseményobjektum-1" class="slide level2">
+<h2>Az eseményobjektum</h2>
+<p>Tartalma az eseménytől függ:</p>
+<table>
+<tbody>
+<tr class="odd">
+<td>Általános tulajdonságok</td>
+<td>pl. <code>type</code>, <code>target</code></td>
+</tr>
+<tr class="even">
+<td>Egéresemény</td>
+<td>pl. <code>screenX</code>, <code>screenY</code>, <code>buttons</code></td>
+</tr>
+<tr class="odd">
+<td>Billentyűzetesemény</td>
+<td>pl. <code>key</code>, <code>code</code>, <code>altKey</code>, <code>ctrlKey</code></td>
+</tr>
+</tbody>
+</table>
+<p><a href="https://developer.mozilla.org/en-US/docs/Web/API/Event">Referencia</a></p>
+</section>
+<section id="billentyűzetesemény-tulajdonságai" class="slide level2">
+<h2>Billentyűzetesemény tulajdonságai</h2>
+<p><code>key</code>, <code>code</code></p>
+<div class="example columns">
+<div class="column" style="width:50%;">
+<input id="keyboardInput" style="width: 100%;height: 100%">
+</div><div class="column" style="width:50%;">
+<div id="keyboardOutput" style="height: 200px">
+
+</div>
+</div>
+</div>
+<script>
+  const keyboardInput = document.querySelector("#keyboardInput");
+  const keyboardOutput = document.querySelector("#keyboardOutput");
+  function handleKeyDown(event) {
+    event.preventDefault();
+    keyboardOutput.innerHTML = `
+      Key: <code>${event.key}</code><br>
+      Code: <code>${event.code}</code>
+    `;
+  } 
+  keyboardInput.addEventListener("keydown", handleKeyDown);
+</script>
+</section>
+<section id="egéresemény-tulajdonságai" class="slide level2">
+<h2>Egéresemény tulajdonságai</h2>
+<p><code>screenX</code>, <code>screenY</code>, <code>offsetX</code>, <code>offsetY</code>, <code>clientX</code>, <code>clientY</code></p>
+<div class="example columns">
+<div class="column" style="width:50%;">
+<input id="mouseInput" style="width: 100%;height: 100%">
+</div><div class="column" style="width:50%;">
+<div id="mouseOutput" style="height: 200px">
+
+</div>
+</div>
+</div>
+<script>
+  const mouseInput = document.querySelector("#mouseInput");
+  const mouseOutput = document.querySelector("#mouseOutput");
+  function handleMouseMove(event) {
+    mouseOutput.innerHTML = `
+      ScreenX/Y: <code>${event.screenX};${event.screenY}</code><br>
+      OffsetX/Y: <code>${event.offsetX};${event.offsetY}</code><br>
+      ClientX/Y: <code>${event.clientX};${event.clientY}</code><br>
+    `;
+  } 
+  mouseInput.addEventListener("mousemove", handleMouseMove);
+</script>
+</section>
+<section id="a-megoldás-lépései" class="slide level2">
+<h2>A megoldás lépései</h2>
+<ul class="task-list">
+<li><input type="checkbox" disabled="" />
+SHIFT lenyomásának vizsgálata</li>
+<li><input type="checkbox" disabled="" />
+Kattintott elem elérése</li>
+<li><input type="checkbox" disabled="" />
+Alapértelmezett esemény letiltása</li>
+<li><input type="checkbox" disabled="" />
+Hozzárendelés az összes elemhez</li>
+</ul>
+</section>
+<section id="eseményobjektum-példa" class="slide level2">
+<h2>Eseményobjektum – példa</h2>
+<pre class="js"><code>const link = document.querySelector(&#39;#link1&#39;);
+
+function handleLinkClick(event) {
+  if (✒&gt;!event.shiftKey&lt;✒) {
+    return;
+  }
+
+  const href = link.href;
+  console.log(href);
+  alert(&#39;stop&#39;);
+}
+
+link.addEventListener(&#39;click&#39;, handleLinkClick);</code></pre>
+<div class="example">
+<ul id="linkList2">
+<li>
+<a id="link2_1" href="http://www.elte.hu">ELTE</a>
+</li>
+<li>
+<a id="link2_2" href="http://www.inf.elte.hu">ELTE IK</a>
+</li>
+<li>
+<a id="link2_3" href="http://www.inf.elte.hu/mot">ELTE IK MOT</a>
+</li>
+</ul>
+</div>
+<script>
+  const link2 = document.querySelector('#link2_1');
+
+  function handleLinkClick2(event) {
+    if (!event.shiftKey) {
+      return;
+    }
+
+    const href = link2.href;
+    console.log(href);
+    alert('stop');
+  }
+
+  link2.addEventListener('click', handleLinkClick2);
+</script>
+</section>
+<section id="a-megoldás-lépései-1" class="slide level2">
+<h2>A megoldás lépései</h2>
+<ul class="task-list">
+<li><input type="checkbox" disabled="" checked="" />
+SHIFT lenyomásának vizsgálata</li>
+<li><input type="checkbox" disabled="" />
+Kattintott elem elérése</li>
+<li><input type="checkbox" disabled="" />
+Alapértelmezett esemény letiltása</li>
+<li><input type="checkbox" disabled="" />
+Hozzárendelés az összes elemhez</li>
+</ul>
+</section>
+<section id="alapértelmezett-művelet-megakadályozása" class="slide level2">
+<h2>Alapértelmezett művelet megakadályozása</h2>
+<ul>
+<li>Alapértelmezett műveletek:
+<ul>
+<li>Linkre kattintás → oldal betöltése</li>
+<li>Submit gombra kattintás → űrlap elküldése</li>
+<li>Beviteli mezőbe gépelés → karakterek beíródnak</li>
+</ul></li>
+<li>Megakadályozása
+<ul>
+<li>eseményobjektum <code>preventDefault()</code> metódusa</li>
+</ul></li>
+</ul>
+<pre class="js"><code>function handleEvent(event) {
+  event.preventDefault();
+}</code></pre>
+</section>
+<section id="alapértelmezett-művelet-megakadályozása-példa" class="slide level2">
+<h2>Alapértelmezett művelet megakadályozása – példa</h2>
+<pre class="js"><code>const link = document.querySelector(&#39;#link1&#39;);
+
+function handleLinkClick(event) {
+  if (!event.shiftKey) {
+    return;
+  }
+
+  ✒&gt;event.preventDefault();&lt;✒
+  const href = link.href;
+  console.log(href);
+}
+
+link.addEventListener(&#39;click&#39;, handleLinkClick);</code></pre>
+<div class="example">
+<ul id="linkList3">
+<li>
+<a id="link3_1" href="http://www.elte.hu">ELTE</a>
+</li>
+<li>
+<a id="link3_2" href="http://www.inf.elte.hu">ELTE IK</a>
+</li>
+<li>
+<a id="link3_3" href="http://www.inf.elte.hu/mot">ELTE IK MOT</a>
+</li>
+</ul>
+</div>
+<script>
+  const link3 = document.querySelector('#link3_1');
+
+  function handleLinkClick3(event) {
+    if (!event.shiftKey) {
+      return;
+    }
+
+    event.preventDefault();
+    const href = link3.href;
+    console.log(href);
+  }
+
+  link3.addEventListener('click', handleLinkClick3);
+</script>
+</section>
+<section id="a-megoldás-lépései-2" class="slide level2">
+<h2>A megoldás lépései</h2>
+<ul class="task-list">
+<li><input type="checkbox" disabled="" checked="" />
+SHIFT lenyomásának vizsgálata</li>
+<li><input type="checkbox" disabled="" />
+Kattintott elem elérése</li>
+<li><input type="checkbox" disabled="" checked="" />
+Alapértelmezett esemény letiltása</li>
+<li><input type="checkbox" disabled="" />
+Hozzárendelés az összes elemhez</li>
+</ul>
+</section>
+<section id="hatékonysági-megfontolások" class="slide level2">
+<h2>Hatékonysági megfontolások</h2>
+<pre class="js"><code>const link1 = document.querySelector(&#39;#link1&#39;);
+const link2 = document.querySelector(&#39;#link2&#39;);
+const link3 = document.querySelector(&#39;#link3&#39;);
+
+function handleLinkClick1(event) { /* ... */ }
+function handleLinkClick2(event) { /* ... */ }
+function handleLinkClick3(event) { /* ... */ }
+
+link1.addEventListener(&#39;click&#39;, handleLinkClick);
+link2.addEventListener(&#39;click&#39;, handleLinkClick2);
+link3.addEventListener(&#39;click&#39;, handleLinkClick3);</code></pre>
+</section>
+<section id="hatékonysági-megfontolások-1" class="slide level2">
+<h2>Hatékonysági megfontolások</h2>
+<table>
+<tbody>
+<tr class="odd">
+<td><code>this</code></td>
+<td>az eseményre <strong>figyelő</strong> objektum</td>
+</tr>
+<tr class="even">
+<td><code>event.target</code></td>
+<td>az eseményt <strong>kiváltó</strong> objektum</td>
+</tr>
+</tbody>
+</table>
+<pre class="js"><code>const link1 = document.querySelector(&#39;#link1&#39;);
+const link2 = document.querySelector(&#39;#link2&#39;);
+const link3 = document.querySelector(&#39;#link3&#39;);
+
+function handleLinkClick(event) {
+  if (!event.shiftKey) {
+    return;
+  }
+
+  event.preventDefault();
+  ✒&gt;const href = this.href;&lt;✒ 
+  // VAGY
+  // const href = event.target.href;
+  console.log(href);
+}
+
+link1.addEventListener(&#39;click&#39;, handleLinkClick);
+link2.addEventListener(&#39;click&#39;, handleLinkClick);
+link3.addEventListener(&#39;click&#39;, handleLinkClick);</code></pre>
+</section>
+<section class="slide level2">
+
+<div class="example">
+<ul id="linkList4">
+<li>
+<a id="link4_1" href="http://www.elte.hu">ELTE</a>
+</li>
+<li>
+<a id="link4_2" href="http://www.inf.elte.hu">ELTE IK</a>
+</li>
+<li>
+<a id="link4_3" href="http://www.inf.elte.hu/mot">ELTE IK MOT</a>
+</li>
+</ul>
+</div>
+<script>
+  const link4_1 = document.querySelector('#link4_1');
+  const link4_2 = document.querySelector('#link4_2');
+  const link4_3 = document.querySelector('#link4_3');
+
+  function handleLinkClick4(event) {
+    if (!event.shiftKey) {
+      return;
+    }
+
+    event.preventDefault();
+    const href = this.href;
+    console.log(href);
+  }
+
+  link4_1.addEventListener('click', handleLinkClick4);
+  link4_2.addEventListener('click', handleLinkClick4);
+  link4_3.addEventListener('click', handleLinkClick4);
+</script>
+</section>
+<section id="a-megoldás-lépései-3" class="slide level2">
+<h2>A megoldás lépései</h2>
+<ul class="task-list">
+<li><input type="checkbox" disabled="" checked="" />
+SHIFT lenyomásának vizsgálata</li>
+<li><input type="checkbox" disabled="" checked="" />
+Kattintott elem elérése</li>
+<li><input type="checkbox" disabled="" checked="" />
+Alapértelmezett esemény letiltása</li>
+<li><input type="checkbox" disabled="" />
+Hozzárendelés az összes elemhez</li>
+</ul>
+</section>
+<section id="hatékonysági-megfontolások-2" class="slide level2">
+<h2>Hatékonysági megfontolások</h2>
+<pre class="js"><code>const linkList = document.querySelectorAll(&#39;#linkList li a&#39;);
+
+function handleLinkClick(event) {
+  if (!event.shiftKey) {
+    return;
+  }
+
+  event.preventDefault();
+  const href = event.target.href;
+  console.log(href);
+}
+
+for (const link of linkList) {
+  link.addEventListener(&#39;click&#39;, handleLinkClick);
+}</code></pre>
+<div class="example">
+<ul id="linkList5">
+<li>
+<a href="http://www.elte.hu">ELTE</a>
+</li>
+<li>
+<a href="http://www.inf.elte.hu">ELTE IK</a>
+</li>
+<li>
+<a href="http://www.inf.elte.hu/mot">ELTE IK MOT</a>
+</li>
+</ul>
+</div>
+<script>
+  const linkList5 = document.querySelectorAll('#linkList5 li a');
+
+  function handleLinkClick5(event) {
+    if (!event.shiftKey) {
+      return;
+    }
+    
+    event.preventDefault();
+    const href = event.target.href;
+    console.log(href);
+  }
+
+  for (const link of linkList5) {
+    link.addEventListener('click', handleLinkClick);
+  }
+</script>
+</section>
+<section id="a-megoldás-lépései-4" class="slide level2">
+<h2>A megoldás lépései</h2>
+<ul class="task-list">
+<li><input type="checkbox" disabled="" checked="" />
+SHIFT lenyomásának vizsgálata</li>
+<li><input type="checkbox" disabled="" checked="" />
+Kattintott elem elérése</li>
+<li><input type="checkbox" disabled="" checked="" />
+Alapértelmezett esemény letiltása</li>
+<li><input type="checkbox" disabled="" checked="" />
+Hozzárendelés az összes elemhez</li>
+</ul>
+</section>
+<section id="események-buborékolása-és-delegálása" class="slide level2">
+<h2>Események buborékolása és delegálása</h2>
+<ul>
+<li>Forrásobjektum: az eseményt kiváltó objektum (<code>e.target</code>)</li>
+<li>Kezelőobjektum: az az objektum, amelyhez az eseménykezelő hozzá van rendelve (<code>this</code>)</li>
+<li>Események buborékolása: az esemény a forrásobjektumtól kezdve sorban mindegyik szülőjén is bekövetkezik</li>
+<li>Lehetséges magasabb szinten kezelni az eseményt, mint ahol bekövetkezik</li>
+</ul>
+<pre><code>forrás → szülő → szülő → ... → body → html → document → window</code></pre>
+</section>
+<section id="események-buborékolása-és-delegálása-1" class="slide level2">
+<h2>Események buborékolása és delegálása</h2>
+<ul>
+<li>Delegálás: az eseményt magasabb szinten kezeljük, de egy alacsonyabb szintű objektummal dolgozunk</li>
+<li>Delegált objektum: az az objektum, amellyel az eseménykezelőben dolgozni szeretnénk</li>
+<li>Buborékolás megakadályozása: <code>e.stopPropagation()</code></li>
+<li>Pontosabban
+<ol type="1">
+<li>Föntről lefele (event capture)</li>
+<li>Lentről felfele (event bubbling)</li>
+</ol></li>
+</ul>
+<pre><code>forrás → szülő → szülő → ... → body → html → document → window</code></pre>
+</section>
+<section id="esemény-delegálása-példa" class="slide level2">
+<h2>Esemény delegálása – példa</h2>
+<div class="columns">
+<div class="column" style="width:85%;">
+<pre class="html"><code>&lt;ul id=&quot;linkList&quot;&gt;
+  &lt;li&gt;
+    &lt;a href=&quot;http://www.elte.hu&quot;&gt;ELTE&lt;/a&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;a href=&quot;http://www.inf.elte.hu&quot;&gt;ELTE IK&lt;/a&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;a href=&quot;http://www.inf.elte.hu/mot&quot;&gt;ELTE IK MOT&lt;/a&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;</code></pre>
+</div><div class="column" style="width:15%;">
+<p><img data-src="../../assets/images/examples/delegation-1.png" /></p>
+</div>
+</div>
+</section>
+<section id="esemény-delegálása-példa-1" class="slide level2">
+<h2>Esemény delegálása – példa</h2>
+<pre class="js"><code>const linkList = document.querySelector(&#39;#linkList&#39;);
+
+function handleListClick(event) {
+  if (!event.shiftKey) {
+    return;
+  }
+
+  const target = event.target;
+
+  if (✒&gt;!target.matches(&#39;li a&#39;)&lt;✒) {
+    return;
+  }
+
+  event.preventDefault();
+  const href = target.href;
+  console.log(href);
+}
+
+linkList.addEventListener(&#39;click&#39;, handleListClick);</code></pre>
+</section>
+<section id="esemény-delegálása-példa-2" class="slide level2">
+<h2>Esemény delegálása – példa</h2>
+<div class="columns">
+<div class="column" style="width:85%;">
+<pre class="html"><code>&lt;ul&gt;
+  &lt;li&gt;
+    &lt;a href=&quot;http://www.elte.hu&quot;&gt;
+      &lt;span&gt;ELTE&lt;/span&gt;
+    &lt;/a&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;a href=&quot;http://www.inf.elte.hu&quot;&gt;
+      ELTE &lt;span&gt;IK&lt;/span&gt;
+    &lt;/a&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;a href=&quot;http://www.inf.elte.hu/mot&quot;&gt;
+      Médiainformatikai Tanszék
+    &lt;/a&gt; 
+  &lt;/li&gt;
+&lt;/ul&gt;</code></pre>
+<p>A delegált elem közbülső elem!</p>
+</div><div class="column" style="width:15%;">
+<p><img data-src="../../assets/images/examples/delegation-2.png" /></p>
+</div>
+</div>
+</section>
+<section class="slide level2">
+
+<div class="example">
+<ul id="linkList6">
+<li>
+<a href="http://www.elte.hu"> <span style="color: red">ELTE</span> </a>
+</li>
+<li>
+<a href="http://www.inf.elte.hu"> ELTE <span style="color: red">IK</span> </a>
+</li>
+<li>
+<a href="http://www.inf.elte.hu/mot"> Médiainformatikai Tanszék </a>
+</li>
+</ul>
+</div>
+<script>
+  const linkList6 = document.querySelector('#linkList6');
+
+  function handleListClick6(event) {
+    if (!event.shiftKey) {
+      return;
+    }
+
+    const target = event.target;
+
+    if (!target.matches('li a')) {
+      return;
+    }
+
+    event.preventDefault();
+    const href = target.href;
+    console.log(href);
+  }
+
+  linkList6.addEventListener('click', handleListClick6);
+</script>
+</section>
+<section id="esemény-delegálása" class="slide level2">
+<h2>Esemény delegálása</h2>
+<div class="columns">
+<div class="column" style="width:82%;">
+<pre class="js"><code>function handleClick(event) {
+  const handlerElement = this;
+  const sourceElement = event.target;
+  const selector = &#39;.foo&#39;;
+
+  let element = sourceElement;
+
+  while (
+    element !== handlerElement &amp;&amp; 
+    !element.matches(selector)
+  ) {
+    element = element.parentNode;
+  }
+
+  if (element !== handlerElement) {
+    const targetElement = element;
+    console.log(targetElement);
+  }
+}</code></pre>
+</div><div class="column" style="width:18%;">
+<p><img data-src="../../assets/images/examples/delegation-3.png" /></p>
+</div>
+</div>
+</section>
+<section id="esemény-delegálása-1" class="slide level2">
+<h2>Esemény delegálása</h2>
+<div class="columns">
+<div class="column" style="width:82%;">
+<pre class="js"><code>function handleClick(event) {
+  const handlerElement = this;
+  const sourceElement = event.target;
+  const selector = &#39;.foo&#39;;
+
+  const closestElement = 
+    sourceElement.closest(selector);
+
+  if (handlerElement.contains(closestElement)) {
+    const targetElement = closestElement;
+    console.log(targetElement);
+  }
+}</code></pre>
+</div><div class="column" style="width:18%;">
+<p><img data-src="../../assets/images/examples/delegation-3.png" /></p>
+</div>
+</div>
+</section>
+<section id="esemény-delegálása-példa-3" class="slide level2">
+<h2>Esemény delegálása – példa</h2>
+<div class="columns">
+<div class="column" style="width:82%;">
+<pre class="js"><code>function onClick(event) {
+  const handlerElement = this;
+  const sourceElement = event.target;
+  const selector = &#39;li a&#39;;
+
+  const closestElement = 
+    sourceElement.closest(selector);
+
+  if (handlerElement.contains(closestElement)) {
+    const targetElement = closestElement;
+
+    if (!event.shiftKey) {
+      return;
+    }
+      
+    event.preventDefault();
+    console.log(targetElement.href);
+  }
+}</code></pre>
+</div><div class="column" style="width:18%;">
+<p><img data-src="../../assets/images/examples/delegation-2.png" /></p>
+</div>
+</div>
+</section>
+<section id="okos-delegate-segédfüggvény" class="slide level2">
+<h2>“Okos” <code>delegate</code> segédfüggvény</h2>
+<div class="columns">
+<div class="column" style="width:82%;">
+<pre class="js"><code>function delegate(parent, type, selector, handler) {
+
+  ✒&gt;function delegatedFunction(event) {
+    const handlerElement = this;
+    const sourceElement = event.target;
+
+    const closestElement = 
+      sourceElement.closest(selector);
+
+    if (handlerElement.contains(closestElement)) {
+      const targetElement = closestElement;
+      handler.call(targetElement, event);
+    }
+  }&lt;✒
+
+  parent.addEventListener(type, delegatedFunction);
+}</code></pre>
+</div><div class="column" style="width:18%;">
+<p><img data-src="../../assets/images/examples/delegation-3.png" /></p>
+</div>
+</div>
+</section>
+<section id="rövid-okos-delegate-segédfüggvény" class="slide level2">
+<h2>“Rövid-okos” <code>delegate</code> segédfüggvény</h2>
+<pre class="js"><code>function delegate(parent, type, selector, handler) {
+  parent.addEventListener(type, function (event) {
+    const targetElement = event.target.closest(selector);
+
+    if (this.contains(targetElement)) {
+      handler.call(targetElement, event);
+    }
+  });
+}</code></pre>
+<script>
+  function delegate(parent, type, selector, handler) {
+    parent.addEventListener(type, function (event) {
+      const targetElement = event.target.closest(selector);
+
+      if (this.contains(targetElement)) {
+        handler.call(targetElement, event);
+      }
+    });
+  }
+</script>
+</section>
+<section id="buta-delegálás" class="slide level2">
+<h2>“Buta” delegálás</h2>
+<pre class="js"><code>function handleEvent(event) {
+  if (!event.target.matches(selector)) {
+    return;
+  }
+
+  // Do magic...
+}
+parent.addEventListener(type, handleEvent);</code></pre>
+</section>
+<section id="esemény-delegálása-példa-4" class="slide level2">
+<h2>Esemény delegálása – példa</h2>
+<pre class="js"><code>const list = document.querySelector(&#39;ul&#39;)
+
+function handleListClick(event) {
+  if (!event.shiftKey) {
+    return;
+  }
+
+  event.preventDefault();
+  // A this itt a delegate segédfüggvény által van beállítva
+  console.log(this.href);
+}
+
+delegate(list, &#39;click&#39;, &#39;li a&#39;, handleListClick);</code></pre>
+<div class="example">
+<ul id="linkList7">
+<li>
+<a href="http://www.elte.hu"> <span style="color: red">ELTE</span> </a>
+</li>
+<li>
+<a href="http://www.inf.elte.hu"> ELTE <span style="color: red">IK</span> </a>
+</li>
+<li>
+<a href="http://www.inf.elte.hu/mot"> Médiainformatikai Tanszék </a>
+</li>
+</ul>
+</div>
+<script>
+  const linkList7 = document.querySelector('#linkList7');
+
+  function handleListClick7(event) {
+    if (!event.shiftKey) {
+      return;
+    }
+
+    event.preventDefault();
+    console.log(this.href);
+  }
+
+  delegate(linkList7, 'click', 'li a', handleListClick7);
+</script>
+</section>
+<section id="események-delegálása" class="slide level2">
+<h2>Események delegálása</h2>
+<ul>
+<li>Hatékony programozási minta<br />
+(egy elem - egy eseménykezelő)</li>
+<li>Sok elemnél / valamilyen típusú elemre átlalánosan</li>
+<li>Dinamikusan beszúrt elemeknél</li>
+<li>Viselkedés hozzárendelése elemekhez deklaratívan</li>
+</ul>
+<!-- https://javascript.info/event-delegation -->
+</section>
+<section id="összefoglalás" class="slide level2" data-state="topic">
+<h2 data-state="topic">Összefoglalás</h2>
+<ul>
+<li>Eseménykezelés
+<ul>
+<li><code>elem.addEventListener(type, handler)</code></li>
+<li>Interakció eszköze</li>
+<li>Eseményobjektum</li>
+<li>Alapértelmezett műveletek megakadályozása</li>
+<li>Buborékolás</li>
+<li>Delegálás</li>
+</ul></li>
+</ul>
+</section>
+    </div>
+  </div>
+
+  <div id="captcha"></div>
+
+  <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.18.1/build/highlight.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/js/reveal.js"></script>
+
+  <script>
+    // Highlighting in code blocks
+    const codes = document.querySelectorAll('pre > code')
+    for (const code of codes) {
+      code.setAttribute('data-noescape', '')
+      const text = code.innerHTML
+      const markedText = text
+        .replace(/&lt;✒/g, '</mark>')
+        .replace(/✒&gt;/g, '<mark>')
+      code.innerHTML = markedText
+    }
+
+    // Adding captcha
+    const queryString = new URLSearchParams(window.location.search);
+    const captcha = queryString.get('captcha');
+    const captchaElement = document.getElementById("captcha");
+    captchaElement.innerHTML = captcha;
+
+    // Full list of configuration options available at:
+    // https://github.com/hakimel/reveal.js#configuration
+    Reveal.initialize({
+      // Display controls in the bottom right corner
+      controls: true,
+      controlsTutorial: false,
+      // Display a presentation progress bar
+      progress: true,
+      // Display the page number of the current slide
+      slideNumber: true,
+      // Add the current slide number to the URL hash so that reloading the
+      // page/copying the URL will return you to the same slide
+      hash: true,
+      // Push each slide change to the browser history
+      history: false,
+      // Enable keyboard shortcuts for navigation
+      keyboard: true,
+      // Enable the slide overview mode
+      overview: true,
+      // Vertical centering of slides
+      center: true,
+      // Enables touch navigation on devices with touch input
+      touch: true,
+      // Loop the presentation
+      loop: false,
+      // Hides the address bar on mobile devices
+      hideAddressBar: true,
+      // Transition style
+      transition: 'slide', // none/fade/slide/convex/concave/zoom
+      // Transition style for full page slide backgrounds
+      backgroundTransition: 'slide', // none/fade/slide/convex/concave/zoom
+      // Bounds for smallest/largest possible scale to apply to content
+      minScale: 0.5,
+      maxScale: 3,
+      // Modifier key used to click-zoom to part of the slide
+      zoomKey: "ctrl",
+      math: {
+        mathjax: 'https://cdn.jsdelivr.net/gh/mathjax/MathJax@3.0.1/es5/tex-mml-chtml.js',
+        config: 'TeX-AMS_HTML-full',
+        tex2jax: {
+          inlineMath: [['\\(','\\)']],
+          displayMath: [['\\[','\\]']],
+          balanceBraces: true,
+          processEscapes: false,
+          processRefs: true,
+          processEnvironments: true,
+          preview: 'TeX',
+          skipTags: ['script','noscript','style','textarea','pre','code'],
+          ignoreClass: 'tex2jax_ignore',
+          processClass: 'tex2jax_process'
+        }
+      },
+
+      // Optional reveal.js plugins
+      dependencies: [
+        { src: 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+        { src: 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/plugin/zoom-js/zoom.js', async: true },
+        //{ src: 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/socket.io/socket.io.js', async: true },
+        //{ src: 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/plugin/notes-server/client.js', async: true },
+        { src: 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/plugin/math/math.js', async: true },
+        { src: 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/plugin/notes/notes.js', async: true },
+        { src: 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/plugin/highlight/highlight.js', async: true }
+      ]
+    });
+  </script>
+
+  
+  </body>
+</html>

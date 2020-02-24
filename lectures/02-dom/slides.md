@@ -240,19 +240,22 @@ function greet(name) {
 ::: {.column style="width: 50%"}
 <pre><code>┣ <strong>DOCTYPE</strong>: html
 ┣ <strong>HTML</strong>
-┣━━ #text:
-┣━━ <strong>META</strong> charset="utf-8"
+┣━━ <strong>HEAD</strong>
+┣━━━━ #text:
+┣━━━━ <strong>META</strong> charset="utf-8"
 ┣━━━━ #text:
 ┣━━━━ <strong>TITLE</strong>
 ┣━━━━ #text:
-┣ #text:
-┣ <strong>BODY</strong>
 ┣━━ #text:
-┣━━ <strong>P</strong>
-┣━━ #text: Lorem ipsum.
-┣━━ <strong>P</strong> class="active"
-┣━━ #text: Dolor sit amet.
-┗ #text:
+┣━━ <strong>BODY</strong>
+┣━━━━ #text:
+┣━━━━ <strong>P</strong>
+┣━━━━━━ #text: Lorem ipsum.
+┣━━━━ #text:
+┣━━━━ <strong>P</strong> class="active"
+┣━━━━━━ #text: Dolor sit amet.
+┣━━━━ #text:
+┗━━ #text:
 </code></pre>
 :::
 ::::::
