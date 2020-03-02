@@ -1,0 +1,1164 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <title>Webprogramozás - Kimenet, kódszervezés, időzítők</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+  <!-- Reveal.js Theme -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/elte-fi/revealjs-elte-fi@1.0.12/dist/revealjs-elte-fi.min.css">
+  <!-- Highlighting -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.18.1/build/styles/default.min.css">
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+
+  <!-- Printing and PDF exports -->
+  <script>
+    var link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = window.location.search.match(/print-pdf/gi) 
+      ? 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/css/print/pdf.css' 
+      : 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/css/print/paper.css';
+    document.getElementsByTagName('head')[0].appendChild( link );
+  </script>
+
+  </head>
+
+<body>
+  <div class="reveal">
+    <div class="slides">
+<section class="slide level2">
+
+<div class="title">
+<p>Webprogramozás</p>
+</div>
+<h3 id="kimenet-kódszervezés-időzítők">Kimenet, kódszervezés, időzítők</h3>
+<div class="columns">
+<div class="column" style="width:33%;">
+<p><small> <strong>Visnovitz Márton</strong><br />
+egyetemi tanársegéd<br />
+visnovitz.marton@inf.elte.hu </small></p>
+</div><div class="column" style="width:33%;">
+<p><small> <strong>Gerely Viktor</strong><br />
+demonstrátor<br />
+mohmas@inf.elte.hu </small></p>
+</div><div class="column" style="width:33%;">
+<p><small> <strong>Horváth Győző</strong><br />
+egyetemi docens<br />
+horvath.gyozo@inf.elte.hu </small></p>
+</div>
+</div>
+<p><small> 1117 Budapest, Pázmány Péter sétány 1/c., 2.408<br />
+Tel: (1) 372-2500/8469<br />
+</small></p>
+</section>
+<section id="ismétlés" class="slide level2" data-state="new-section">
+<h2 data-state="new-section">Ismétlés</h2>
+</section>
+<section id="ismétlés---nyelvi-elemek" class="slide level2">
+<h2>Ismétlés - nyelvi elemek</h2>
+<ul class="task-list">
+<li><input type="checkbox" disabled="" checked="" />
+Dinamikusan típusos</li>
+<li><input type="checkbox" disabled="" checked="" />
+Interpretált nyelv</li>
+<li><input type="checkbox" disabled="" checked="" />
+Szintaxis C++-hoz hasonló</li>
+<li><input type="checkbox" disabled="" checked="" />
+Adatszerkezetek (elemi, összetett)</li>
+<li><input type="checkbox" disabled="" checked="" />
+Funkcionális aspektus</li>
+<li><input type="checkbox" disabled="" checked="" />
+OOP-s aspektus</li>
+</ul>
+</section>
+<section id="ismétlés---dom" class="slide level2">
+<h2>Ismétlés - DOM</h2>
+<ul class="task-list">
+<li><input type="checkbox" disabled="" checked="" />
+HTML elemek belső ábrázolása</li>
+<li><input type="checkbox" disabled="" checked="" />
+Programozási interfész (API)</li>
+<li><input type="checkbox" disabled="" checked="" />
+Bemeneti-kimeneti interfész</li>
+</ul>
+<p><img data-src="../../assets/images/architecture/js-dom-ui.png" /></p>
+</section>
+<section id="ismétlés---nyelvi-elemek-1" class="slide level2">
+<h2>Ismétlés - nyelvi elemek</h2>
+<ul class="task-list">
+<li><input type="checkbox" disabled="" checked="" />
+Dinamikusan típusos</li>
+<li><input type="checkbox" disabled="" checked="" />
+Interpretált nyelv</li>
+<li><input type="checkbox" disabled="" checked="" />
+Szintaxis C++-hoz hasonló</li>
+<li><input type="checkbox" disabled="" checked="" />
+Adatszerkezetek (elemi, összetett)</li>
+<li><input type="checkbox" disabled="" checked="" />
+Funkcionális aspektus</li>
+<li><input type="checkbox" disabled="" checked="" />
+OOP-s aspektus</li>
+</ul>
+</section>
+<section id="ismétlés---dom-1" class="slide level2">
+<h2>Ismétlés - DOM</h2>
+<ul class="task-list">
+<li><input type="checkbox" disabled="" checked="" />
+HTML elemek belső ábrázolása</li>
+<li><input type="checkbox" disabled="" checked="" />
+Programozási interfész (API)</li>
+<li><input type="checkbox" disabled="" checked="" />
+Bemeneti-kimeneti interfész</li>
+</ul>
+<p><img data-src="../../assets/images/architecture/js-dom-ui.png" /></p>
+</section>
+<section id="ismétlés-dom" class="slide level2">
+<h2>Ismétlés – DOM</h2>
+<ul class="task-list">
+<li><input type="checkbox" disabled="" checked="" />
+Elemek kiválasztása<ul>
+<li><code>document.querySelector('css selector')</code></li>
+<li><code>document.querySelectorAll('css selector')</code></li>
+</ul></li>
+<li><input type="checkbox" disabled="" checked="" />
+Elem (JavaScript objektum) tulajdonságai<ul>
+<li>Analógia: Webfejlesztés → Webprogramozás</li>
+<li>írás/olvasás</li>
+<li>tulajdonságok (pl. <code>innerHTML</code>)</li>
+<li>metódusok</li>
+</ul></li>
+<li><input type="checkbox" disabled="" checked="" />
+Eseménykezelés<ul>
+<li>Eseménytípusok</li>
+</ul></li>
+</ul>
+</section>
+<section id="ismétlés-eseménykezelés" class="slide level2">
+<h2>Ismétlés – Eseménykezelés</h2>
+<ul class="task-list">
+<li><input type="checkbox" disabled="" checked="" />
+<code>elem.addEventListener(type, handler)</code></li>
+<li><input type="checkbox" disabled="" checked="" />
+Interakció eszköze</li>
+<li><input type="checkbox" disabled="" checked="" />
+Mini-programok</li>
+<li><input type="checkbox" disabled="" checked="" />
+Eseményobjektum (<code>event</code>)</li>
+<li><input type="checkbox" disabled="" checked="" />
+Alapértelmezett műveletek megakadályozása<br />
+(<code>preventDefault</code>)</li>
+<li><input type="checkbox" disabled="" checked="" />
+Buborékolás</li>
+<li><input type="checkbox" disabled="" checked="" />
+Delegálás (<code>delegate</code>)</li>
+</ul>
+</section>
+<section id="elemek-létrehozása-html-generálás" class="slide level2" data-state="new-section">
+<h2 data-state="new-section">Elemek létrehozása, HTML generálás</h2>
+</section>
+<section id="új-elemek-létrehozása" class="slide level2">
+<h2>Új elemek létrehozása</h2>
+<ul>
+<li>A kiírás egy speciális formája</li>
+<li>A HTML kód szövegesen</li>
+<li><code>innerHTML</code> tulajdonság írása</li>
+<li>Akár egyszerre több elemet is</li>
+</ul>
+<pre class="html"><code>&lt;div id=&quot;output&quot;&gt;&lt;/div&gt;
+&lt;script&gt;
+  const greeting = &quot;&lt;h1&gt;Hello &lt;em&gt;World&lt;/em&gt;&lt;/h1&gt;&quot;;
+  const output = document.querySelector(&quot;#output&quot;);
+  output.innerHTML = greeting;
+&lt;/script&gt;</code></pre>
+</section>
+<section id="html-generálás" class="slide level2">
+<h2>HTML generálás</h2>
+<pre class="js"><code>// Rövid statikus szöveg megadása
+const html1 = `&lt;h1&gt;Hello there!&lt;/h1&gt;`;
+
+// Többsoros statikus szöveg megadása
+const html2 = `
+  &lt;div&gt;
+    &lt;p&gt;No, &lt;strong&gt;I&lt;/strong&gt; am your father!&lt;/p&gt;
+  &lt;/div&gt;
+`;
+
+// Változók behelyettesítése
+const callsign = &#39;Red 5&#39;;
+const html3 = `${callsign}, standing by.`;
+
+// Tömbök kiírása leképezéssel
+const callsigns = [&quot;Red 10&quot;, &quot;Red 7&quot;, &quot;Red 3&quot;, &quot;Red 6&quot;, &quot;Red 9&quot;];
+const html4 = `
+  &lt;p&gt;All wings, report in.&lt;/p&gt;
+  &lt;ul&gt;
+    ${callsigns.map(callsign =&gt; `
+      &lt;li&gt;${callsign}, standing by.&lt;/li&gt;
+    `).join(&quot;&quot;)}
+  &lt;/ul&gt;
+`;
+
+// Feltételes kiírás (elágazás)
+const chanceOfSuccess = 0.4;
+const html5 = `
+  &lt;span&gt;
+    I have a 
+    ${chanceOfSuccess &lt; 0.5 ? &quot;bad&quot; : &quot;good&quot;}
+    feeling about this.
+  &lt;/span&gt;
+`;
+
+// Függvényekkel
+function hanDescription(properties) {
+  return `
+    You
+    &lt;ul&gt;
+      ${properties.map(hanProperty).join(&quot;&quot;)}
+    &lt;/ul&gt;
+    Nerf Herder!
+  `;
+}
+
+function hanProperty(property) {
+  return `&lt;li&gt;${property}&lt;/li&gt;`;
+}
+
+const hanProperties = [
+  &quot;stuck up&quot;,
+  &quot;half witted&quot;,
+  &quot;scruffy looking&quot;
+];
+const html6 = hanDescription(hanProperties);</code></pre>
+</section>
+<section id="új-elemek-létrehozása-1" class="slide level2">
+<h2>Új elemek létrehozása</h2>
+<p>Programozottan:</p>
+<ul>
+<li>Létrehozás:
+<ul>
+<li><code>document.createElement(elementName)</code></li>
+</ul></li>
+<li>Beszúrás:
+<ul>
+<li><code>parent.appendChild(childElement)</code><br />
+szülő gyerekeihez utolsóként hozzáadja az új elemet</li>
+<li><code>parent.insertBefore(newChildElement, ref)</code><br />
+referencia elé beszúrja az új elemet</li>
+<li><code>ref.insertAdjacentElement(position, newElement)</code><br />
+egy adott elemhez képes szúr be új elemet</li>
+</ul></li>
+</ul>
+</section>
+<section id="új-elemek-beszúrása" class="slide level2">
+<h2>Új elemek beszúrása</h2>
+<div class="columns">
+<div class="column" style="width: 33%">
+<pre class="html"><code>&lt;body&gt;
+  &lt;ul&gt;
+    &lt;li&gt;First&lt;/li&gt;
+    &lt;li&gt;Second&lt;/li&gt;
+    ✒&gt; &lt;✒    
+    &lt;li&gt;Third&lt;/li&gt;
+  &lt;/ul&gt;
+  ✒&gt; &lt;✒    
+&lt;/body&gt;</code></pre>
+</div><div class="column" style="width: 67%">
+<pre class="js"><code>const p = document.createElement(&#39;p&#39;);
+document.body.appendChild(p);
+
+const newLi = document.createElement(&#39;li&#39;);
+const ul = document.querySelector(&#39;ul&#39;);
+const refLi = 
+  ul.querySelector(&#39;li:nth-of-type(3)&#39;);
+ul.insertBefore(newLi, refLi);</code></pre>
+</div>
+</div>
+</section>
+<section id="stílusattribútumok-programozása" class="slide level2" data-state="new-section">
+<h2 data-state="new-section">Stílusattribútumok programozása</h2>
+</section>
+<section id="ismétlés-1" class="slide level2">
+<h2>Ismétlés</h2>
+<pre class="html"><code>&lt;div class=&quot;rodian bounty-hunter&quot; style=&quot;bottom: 72in&quot;&gt;
+  Greedo
+&lt;/div&gt;</code></pre>
+</section>
+<section id="stílusattribútum-programozása" class="slide level2">
+<h2>Stílusattribútum programozása</h2>
+<p><code>style</code> tulajdonság olvasása/írása</p>
+<table>
+<thead>
+<tr class="header">
+<th>CSS stílustulajdonság</th>
+<th><code>style</code> objektum tulajdonsága</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>left</code></td>
+<td><code>left</code></td>
+</tr>
+<tr class="even">
+<td><code>background-color</code></td>
+<td><code>backgroundColor</code></td>
+</tr>
+<tr class="odd">
+<td><code>border-bottom-width</code></td>
+<td><code>borderBottomWidth</code></td>
+</tr>
+<tr class="even">
+<td><code>border-top-left-radius</code></td>
+<td><code>borderTopLeftRadius</code></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="stílusattribútum-programozása-1" class="slide level2">
+<h2>Stílusattribútum programozása</h2>
+<pre class="html"><code>&lt;div style=&quot;position: absolute&quot; id=&quot;movingElement&quot;&gt;&lt;/div&gt;
+&lt;script&gt;
+  document.querySelector(&quot;#movingElement&quot;).style.top  = &quot;25px&quot;;
+  document.querySelector(&quot;#movingElement&quot;).style.left = &quot;42px&quot;;
+&lt;/script&gt;</code></pre>
+</section>
+<section id="objektum-stílus" class="slide level2">
+<h2>Objektum stílus</h2>
+<ul>
+<li><code>elem.style</code>: <code>CSSStyleDeclaration</code> objektum</li>
+<li>Az összes stílustulajdonságot tartalmazza</li>
+<li>Tetszőleges tulajdonság beállítható (írás)</li>
+<li>Lekérdezhető stílustulajdonságok (olvasás):
+<ul>
+<li>a <code>style</code> attribútumon keresztül voltak megadva;</li>
+<li>JavaScriptből határoztuk meg az értéküket.</li>
+</ul></li>
+</ul>
+</section>
+<section id="példa" class="slide level2">
+<h2>Példa</h2>
+<pre class="html"><code>&lt;style&gt;
+.box {
+  position: absolute;
+  width: 100px; height: 100px;
+}
+&lt;/style&gt;
+&lt;div class=&quot;box&quot; style=&quot;left: 20px&quot;&gt;&lt;/div&gt;</code></pre>
+<pre class="js"><code>const box = document.querySelector(&quot;div&quot;);
+box.style.top = &quot;30px&quot;;
+
+box.style.top;       // &quot;30px&quot;  &lt;-- JS
+box.style.left;      // &quot;20px&quot;  &lt;-- style attribute
+box.style.width;     // &quot;&quot;
+box.style.position;  // &quot;&quot;</code></pre>
+</section>
+<section id="számított-stílus" class="slide level2">
+<h2>Számított stílus</h2>
+<ul>
+<li><code>window.getComputedStyle(elem)</code></li>
+<li>A böngésző által nyilvántartott stílustulajdonságok</li>
+<li>A rövidítések (pl. <code>border</code>, <code>background</code>, stb.) nem érhető el, csak az elemi tulajdonságok.</li>
+</ul>
+</section>
+<section id="példa-1" class="slide level2">
+<h2>Példa</h2>
+<pre class="html"><code>&lt;style&gt;
+.box {
+  position: absolute;
+  width: 100px; height: 100px;
+}
+&lt;/style&gt;
+&lt;div class=&quot;box&quot; style=&quot;left: 20px&quot;&gt;&lt;/div&gt;</code></pre>
+<pre class="js"><code>const box = document.querySelector(&quot;div&quot;);
+box.top = &quot;30px&quot;;
+
+const computedStyle = window.getComputedStyle(box);
+computedStyle.top       // &quot;30px&quot;
+computedStyle.left      // &quot;20px&quot;
+computedStyle.width     // &quot;100px&quot;
+computedStyle.position  // &quot;absolute&quot;</code></pre>
+</section>
+<section id="stílusosztály-programozása" class="slide level2">
+<h2>Stílusosztály programozása</h2>
+<p><code>classList</code> tulajdonság</p>
+<ul>
+<li><code id="add-class">add(className)</code></li>
+<li><code id="remove-class">remove(className)</code></li>
+<li><code id="toggle-class">toggle(className)</code></li>
+<li><code id="contains-class">contains(className)</code></li>
+</ul>
+<div id="html-code" hidden="">
+<div class="rodian bounty-hunter">
+Greedo
+</div>
+</div>
+<pre class="language-html"><code id="class-example"></code></pre>
+<script>
+  const htmlExample = document.querySelector("#html-code");
+  const htmlCode = document.querySelector("#html-code div");
+  const classExample = document.querySelector("#class-example");
+
+  function updateExample() {
+    classExample.innerHTML = htmlCode.outerHTML.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    window.RevealHighlight && window.RevealHighlight.highlightBlock(classExample);
+  }
+
+  document.querySelector("#add-class").addEventListener("click", function () {
+    htmlCode.classList.add("dead");
+    updateExample();
+  });
+  document.querySelector("#remove-class").addEventListener("click", function () {
+    htmlCode.classList.remove("dead");
+    updateExample();
+  });
+  document.querySelector("#toggle-class").addEventListener("click", function () {
+    htmlCode.classList.toggle("dead");
+    updateExample();
+  });
+  document.querySelector("#contains-class").addEventListener("click", function () {
+    alert(htmlCode.classList.contains("dead"));
+  });
+
+  updateExample();
+</script>
+</section>
+<section id="stílusosztály-programozása-1" class="slide level2">
+<h2>Stílusosztály programozása</h2>
+<p><code>add</code>, <code>remove</code>, <code>toggle</code>, <code>contains</code></p>
+<pre class="html"><code>&lt;div class=&quot;red green blue&quot;&gt;</code></pre>
+<pre class="js"><code>const div = document.querySelector(&#39;div&#39;);
+div.classList.remove(&quot;green&quot;);
+div.classList.add(&quot;pink&quot;);
+
+// váltogatás
+div.classList.toggle(&quot;pink&quot;);
+
+// feltételes megjelenítés
+div.classList.toggle(&quot;pink&quot;, i &lt; 10);
+
+// van-e adott stílusosztály
+div.classList.contains(&quot;red&quot;);  // true
+
+// több hozzáadása egyszerre
+div.classList.add(&quot;orange&quot;, &quot;yellow&quot;);</code></pre>
+</section>
+<section id="dom-tulajdonságok-és-metódusok" class="slide level2" data-state="new-section">
+<h2 data-state="new-section">DOM tulajdonságok és metódusok</h2>
+</section>
+<section id="attribútum-programozás" class="slide level2">
+<h2>Attribútum programozás</h2>
+<ul>
+<li><code>getAttribute(name)</code></li>
+<li><code>setAttribute(name, value)</code></li>
+<li><code>hasAttribute(name)</code></li>
+<li><code>removeAttribute(name)</code></li>
+<li><code>toggleAttribute(name[, predicate])</code></li>
+</ul>
+</section>
+<section id="példa-2" class="slide level2">
+<h2>Példa</h2>
+<pre class="html"><code>&lt;button type=&quot;submit&quot; data-id=&quot;10&quot; disabled&gt;A button&lt;/button&gt;</code></pre>
+<pre class="js"><code>const button = document.querySelector(&quot;button&quot;);
+// Reading
+button.getAttribute(&quot;type&quot;);        // &quot;submit&quot;
+button.getAttribute(&quot;data-id&quot;);     // &quot;10&quot;
+button.getAttribute(&quot;disabled&quot;);    // &quot;&quot;
+button.getAttribute(&quot;foo&quot;);         // null or &quot;&quot;
+button.hasAttribute(&quot;disabled&quot;);    // true
+// Writing
+button.setAttribute(&quot;name&quot;, &quot;send&quot;);
+button.setAttribute(&quot;hidden&quot;, &quot;&quot;);  // boolean attribute
+button.toggleAttribute(&quot;disabled&quot;); // toggle boolean attribute</code></pre>
+</section>
+<section id="attribútum-programozás-1" class="slide level2">
+<h2>Attribútum programozás</h2>
+<p><code>data-*</code> attribútum → <code>dataset</code> tulajdonság</p>
+<pre class="html"><code>&lt;div data-id=&quot;10&quot; data-some-text=&quot;foo&quot;&gt;&lt;/div&gt;</code></pre>
+<pre class="js"><code>const div = document.querySelector(&quot;div&quot;);
+// Reading
+div.dataset.id;        // &quot;10&quot;
+div.dataset.someText;  // &quot;foo&quot;
+// Writing
+div.dataset.someText = &quot;bar&quot;;
+div.dataset.user = &quot;John&quot;;               // --&gt; data-user=&quot;John&quot;
+div.dataset.dateOfBirth = &quot;2000-12-12&quot;;  // --&gt; data-date-of-birth=&quot;2000-12-12&quot;
+// Removing
+delete div.dataset.id;
+// Checking
+&quot;someText&quot; in el.dataset;  // true
+&quot;id&quot; in el.dataset;        // false</code></pre>
+</section>
+<section id="szerkezet-bejárása" class="slide level2">
+<h2>Szerkezet bejárása</h2>
+<ul>
+<li>Gyerekek
+<ul>
+<li><code>childNodes</code>, <code>firstChild</code>, <code>lastChild</code></li>
+<li><code>children</code>, <code>firstElementChild</code>, <code>lastElementChild</code></li>
+</ul></li>
+<li>Szülő/ős
+<ul>
+<li><code>parentNode</code>, <code>parentElement</code></li>
+<li><code>closest(cssSelector)</code></li>
+</ul></li>
+<li>Testvérek
+<ul>
+<li><code>nextSibling</code>, <code>previousSibling</code></li>
+<li><code>nextElementSibling</code>, <code>previousElementSibling</code></li>
+</ul></li>
+</ul>
+<p><strong>Csomópont típusa</strong></p>
+<ul>
+<li><code>nodeType === 1</code>: elem</li>
+<li><code>nodeType === 3</code>: szöveges csomópont</li>
+</ul>
+</section>
+<section id="szerkezet-módosítása" class="slide level2">
+<h2>Szerkezet módosítása</h2>
+<ul>
+<li><code>parent.appendChild(elem)</code>: beszúrás</li>
+<li><code>parent.insertBefore(elem, ref)</code>: beszúrás</li>
+<li><code>parent.removeChild(elem)</code>: törlés</li>
+<li><code>parent.replaceChild(elem, oldElem)</code>: csere</li>
+<li>Ha <code>elem</code> létezik, akkor mozgatás!</li>
+</ul>
+</section>
+<section id="példa-hányadik-elem" class="slide level2">
+<h2>Példa: hányadik elem</h2>
+<pre class="html"><code>&lt;ul&gt;
+    &lt;li&gt;első&lt;/li&gt;
+    &lt;li&gt;második&lt;/li&gt;
+    &lt;li&gt;harmadik&lt;/li&gt;
+    &lt;li&gt;negyedik&lt;/li&gt;
+    &lt;li&gt;ötödik&lt;/li&gt;
+&lt;/ul&gt;</code></pre>
+<pre class="js"><code>function getPosition(element) {
+  const parent = element.parentNode;
+  const children = Array.from(parent.children);
+
+  return children.indexOf(element) + 1;
+}
+
+const secondChild = document.querySelector(&quot;ul &gt; li:nth-child(2)&quot;);
+const position = getPosition(secondChild); // 2</code></pre>
+</section>
+<section id="kódszervezés" class="slide level2" data-state="new-section">
+<h2 data-state="new-section">Kódszervezés</h2>
+<p>Fizikai és logikai egységek</p>
+</section>
+<section id="kódszervezés-1" class="slide level2">
+<h2>Kódszervezés</h2>
+<ul>
+<li>Fizikai
+<ul>
+<li>külön fájl</li>
+<li><em>modul</em></li>
+</ul></li>
+<li>Logikai
+<ul>
+<li>függvény</li>
+<li>osztály (egységbe zárás)</li>
+<li><em>modul</em></li>
+</ul></li>
+</ul>
+</section>
+<section id="fizikai-csoportosítás" class="slide level2">
+<h2>Fizikai csoportosítás</h2>
+<ul>
+<li>Külön fájlokba funkció szerint</li>
+<li>Függőségek kézi kezelése</li>
+</ul>
+<pre class="js"><code>// math.js
+const add = (a, b) =&gt; a + b;</code></pre>
+<pre class="js"><code>// app.js
+console.log(add(40, 2));</code></pre>
+<pre class="html"><code>&lt;body&gt;
+  &lt;!-- ... --&gt;
+  ✒&gt;&lt;script src=&quot;math.js&quot;&gt;&lt;/script&gt;&lt;✒
+  &lt;script src=&quot;app.js&quot;&gt;&lt;/script&gt;
+&lt;/body&gt;</code></pre>
+</section>
+<section id="fizikai-csoportosítás-1" class="slide level2">
+<h2>Fizikai csoportosítás</h2>
+<ul>
+<li>Külön fájlokba: <strong>modul</strong></li>
+<li>Függőségek automatikus kezelése</li>
+</ul>
+<pre class="js"><code>// math.js
+const add = (a, b) =&gt; a + b;
+export { add };</code></pre>
+<pre class="js"><code>// app.js
+import { add } from &quot;./math.js&quot;;
+console.log(add(40, 2));</code></pre>
+<pre class="html"><code>&lt;body&gt;
+  &lt;!-- ... --&gt;
+  &lt;script ✒&gt;type=&quot;module&quot;&lt;✒ src=&quot;app.js&quot;&gt;&lt;/script&gt;
+&lt;/body&gt;</code></pre>
+<!-- https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules
+https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script -->
+</section>
+<section id="modulok-export" class="slide level2">
+<h2>Modulok – export</h2>
+<pre class="js"><code>// in-place export
+export const add = (a, b) =&gt; a + b;
+export const multiply = (a, b) =&gt; a * b;
+
+// separate export
+const add = (a, b) =&gt; a + b;
+const multiply = (a, b) =&gt; a * b;
+export { add, multiply };
+
+// default export
+export default const add = (a, b) =&gt; a + b;
+
+// rename exports
+const add = (a, b) =&gt; a + b;
+const multiply = (a, b) =&gt; a * b;
+export { add as customAdd, multiply as customMultiply };
+
+// export from module
+export * from &quot;./other.js&quot;;</code></pre>
+<p><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/export">Referencia</a></p>
+</section>
+<section id="modulok-import" class="slide level2">
+<h2>Modulok – import</h2>
+<pre class="js"><code>// import entities
+import { add, multiply } from &quot;./math.js&quot;;
+
+// import defaults
+import add from &quot;./math.js&quot;;
+
+// rename imports
+import { add as mathAdd } from &quot;./math.js&quot;;
+
+// import module object
+import * as MyMath from &quot;./math.js&quot;;
+
+// import just for side effects
+import &quot;./something.js&quot;;
+
+// import URL
+import * as MyMath from &quot;http://some.where.hu/math.js&quot;</code></pre>
+<p><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import">Referencia</a></p>
+</section>
+<section id="modulok" class="slide level2">
+<h2>Modulok</h2>
+<ul>
+<li>Strict mode</li>
+<li>Nem globális scope
+<ul>
+<li>nehezebb debugolás<br />
+(konzolon nem látszik)</li>
+</ul></li>
+<li>File protocol-on nem működik</li>
+<li>Node.js <code>serve</code> package
+<ul>
+<li>Node.js és npm installálása</li>
+<li><code>npx serve</code></li>
+<li><code>http://localhost:5000</code></li>
+</ul></li>
+<li>VS Code <a href="https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer">Live Server extension</a></li>
+</ul>
+</section>
+<section id="logikai-csoportosítás" class="slide level2">
+<h2>Logikai csoportosítás</h2>
+<ul>
+<li>Függvények
+<ul>
+<li>elemi egység</li>
+<li>műveletek strukturálása</li>
+</ul></li>
+</ul>
+<pre class="js"><code>// Helper/utility function
+function range(n) {
+  return Array.from({length: n}, (e, i) =&gt; i + 1);
+}
+
+// HTML generator
+function genList(list) {
+    return `&lt;ul&gt;${list.map(e =&gt; `&lt;li&gt;${e}&lt;/li&gt;`).join(&#39;&#39;)}&lt;/ul&gt;`;
+}
+
+// Business logic
+const add = (a, b) =&gt; a + b;
+
+// Event handler
+function onClick(e) {
+  // ...
+}</code></pre>
+</section>
+<section id="logikai-csoportosítás-1" class="slide level2">
+<h2>Logikai csoportosítás</h2>
+<ul>
+<li>Osztályok
+<ul>
+<li>magasabb szintű egység</li>
+<li>műveletek és adatok egységbe zárása</li>
+</ul></li>
+</ul>
+<pre class="js"><code>class Tile {
+  constructor(x, y) {
+    this.x = y;
+    this.y = y;
+  }
+
+  get coords() {
+    return {x, y};
+  }
+
+  distance(tile) {
+    return Math.sqrt(
+      (tile.x - this.x) ** 2 + (tile.y - this.y) ** 2
+    );
+  }
+}</code></pre>
+</section>
+<section id="kódszervezés-2" class="slide level2" data-state="new-section">
+<h2 data-state="new-section">Kódszervezés</h2>
+<p>Egységbe zárás</p>
+</section>
+<section id="egységbezárás-1." class="slide level2">
+<h2>Egységbezárás 1.</h2>
+<p>Globális változók és metódusok</p>
+<pre class="js"><code>let number = 0;
+
+function increase() {
+  number++;
+}
+
+function init() {
+  number = 0;
+}
+
+increase();
+console.log(number); // 1</code></pre>
+</section>
+<section id="egységbezárás-2." class="slide level2">
+<h2>Egységbezárás 2.</h2>
+<p>Objektum, ~Namespace</p>
+<pre class="js"><code>const game = {
+  number: 0,
+  increase: function() {
+    this.number++;
+  },
+  init: function () {
+    this.number = 0;
+  }
+}
+
+game.init();
+game.increase();
+console.log(game.szam); // 1</code></pre>
+</section>
+<section id="egységbezárás-3." class="slide level2">
+<h2>Egységbezárás 3.</h2>
+<p>Osztály</p>
+<pre class="js"><code>class Game {
+  constructor() {
+    this.number = 0;
+  }
+  increase() {
+    this.number++;
+  }
+}
+
+const game = new Game();
+game.increase();
+console.log(game.number); // 1</code></pre>
+</section>
+<section id="egységbezárás-4." class="slide level2">
+<h2>Egységbezárás 4.</h2>
+<p>Függvény, saját hatókörrel (felfedő modul minta), <strong>IIFE</strong></p>
+<pre class="js"><code>const game = (function () {
+  let number = 0;
+
+  function increase() {
+    number++;
+  }
+
+  function init() {
+    number = 0;
+  }
+
+  function getNumber() {
+    return number;
+  }
+
+  return { increase, getNumber};
+})();
+
+game.increase();
+console.log(game.getSzam()); // 1</code></pre>
+</section>
+<section id="egységbezárás-5." class="slide level2">
+<h2>Egységbezárás 5.</h2>
+<p>Modul, függvény</p>
+<pre class="js"><code>// game.js
+let number = 0;
+
+export function increase() {
+  number++;
+}
+
+export function init() {
+  number = 0;
+}
+
+export function getNumber() {
+  return number;
+}</code></pre>
+<pre class="js"><code>// main.js
+import { increase, init, getSzam } from &quot;./game.js&quot;;
+
+increase();
+console.log(getSzam()); // 1</code></pre>
+</section>
+<section id="egységbezárás-6." class="slide level2">
+<h2>Egységbezárás 6.</h2>
+<p>Modul, osztály</p>
+<pre class="js"><code>// game.js
+export class Jatek {
+  constructor() {
+    this.number = 0;
+  }
+  
+  increase() {
+    this.counter += 1;
+  }
+}</code></pre>
+<pre class="js"><code>import { Jatek } from &#39;./game.js&#39;;
+
+const jatek = new Jatek();
+jatek.increase();
+console.log(jatek.number);</code></pre>
+</section>
+<section id="kódszervezés-3" class="slide level2" data-state="new-section">
+<h2 data-state="new-section">Kódszervezés</h2>
+<p>Adattárolás</p>
+</section>
+<section id="todo-lista" class="slide level2">
+<h2>Todo lista</h2>
+<div class="example">
+<input id="newItem"> <button id="addItem">Add</button> <br >
+<ul id="todoList">
+</ul>
+</div>
+<script>
+  const todoList = document.querySelector("#todoList");
+  const button = document.querySelector("#addItem");
+  const input = document.querySelector("#newItem");
+
+  function handleButtonClick() {
+    const newItem = input.value;
+    todoList.innerHTML += `<li>${newItem}</li>`;
+  }
+
+  button.addEventListener("click", handleButtonClick);
+</script>
+</section>
+<section id="tárolás-a-dom-ban" class="slide level2">
+<h2>Tárolás a DOM-ban</h2>
+<pre class="html"><code>&lt;input id=&quot;newItem&quot;&gt;
+&lt;button id=&quot;addItem&quot;&gt;Add&lt;/button&gt;
+&lt;br &gt;
+&lt;ul id=&quot;todoList&quot;&gt;&lt;/ul&gt;</code></pre>
+<pre class="js"><code>function handleButtonClick() {
+  const newItem = input.value;
+  todoList.innerHTML += `&lt;li&gt;${newItem}&lt;/li&gt;`;
+}
+
+button.addEventListener(&quot;click&quot;, handleButtonClick);</code></pre>
+</section>
+<section id="tárolás-a-dom-ban-1" class="slide level2">
+<h2>Tárolás a DOM-ban</h2>
+<pre class="html"><code>&lt;input id=&quot;newItem&quot;&gt;
+&lt;button id=&quot;addItem&quot;&gt;Add&lt;/button&gt;
+&lt;br &gt;
+&lt;ul id=&quot;todoList&quot;&gt;&lt;/ul&gt;</code></pre>
+<pre class="js"><code>function handleButtonClick() {
+  const newItem = input.value;
+  const newListItem = document.createElement(&quot;li&quot;);
+  newListItem.innerHTML = newItem;
+  todoList.appendChild(newListItem);
+}
+
+button.addEventListener(&quot;click&quot;, handleButtonClick);</code></pre>
+</section>
+<section id="tárolás-a-dom-ban-2" class="slide level2">
+<h2>Tárolás a DOM-ban</h2>
+<p><img data-src="../../assets/images/architecture/js-program-dom.png" /></p>
+</section>
+<section id="tárolás-a-dom-ban-3" class="slide level2">
+<h2>Tárolás a DOM-ban</h2>
+<ul>
+<li>Mindig onnan kell kiolvasni</li>
+<li>Nem alap nyelvi elem</li>
+<li>Adat és feldolgozó függvény szétválik</li>
+<li>Probléma: egységbe zárás, tárolás</li>
+</ul>
+</section>
+<section id="tárolás-a-dom-ban-4" class="slide level2">
+<h2>Tárolás a DOM-ban</h2>
+<p>Todo lista elemei</p>
+<pre class="js"><code>const input = document.querySelector(&quot;input&quot;);
+const button = document.querySelector(&quot;button&quot;);
+const listElement = document.querySelector(&quot;ul&quot;);
+const listItems = document.querySelectorAll(&quot;li&quot;);
+
+function handleButtonClick() {
+    // Input
+    const newItem = input.value;
+    const listContent = Array.from(list).map(li =&gt; li.innerText);
+    // Process
+    listContent.push(newItem);
+    // Output
+    const newElement = document.createElement(&quot;li&quot;);
+    newElement.innerHTML = newItem;
+    listElement.appendChild(newElement);
+}
+
+button.addEventListener(&quot;click&quot;, handleButtonClick);</code></pre>
+</section>
+<section id="adat-és-megjelenés-szétválasztása" class="slide level2">
+<h2>Adat és megjelenés szétválasztása</h2>
+<ul>
+<li>Alapelv</li>
+<li>Könnyebb egységbe zárás</li>
+<li>Alapvető nyelvi elemeket használ</li>
+<li>A DOM lassú</li>
+</ul>
+</section>
+<section id="adat-és-megjelenés-szétválasztása-1" class="slide level2">
+<h2>Adat és megjelenés szétválasztása</h2>
+<p><img data-src="../../assets/images/architecture/js-program-memory.png" /></p>
+</section>
+<section id="adat-és-megjelenés-szétválasztása-2" class="slide level2">
+<h2>Adat és megjelenés szétválasztása</h2>
+<pre class="js"><code>✒&gt;const list = [];&lt;✒
+
+const input = document.querySelector(&quot;input&quot;);
+const button = document.querySelector(&quot;button&quot;);
+const listElement = document.querySelector(&quot;ul&quot;);
+
+function handleButtonClick() {
+    // Input
+    const newItem = input.value;
+    // Process
+    list.push(newItem);
+    // Output
+    const newElement = document.createElement(&quot;li&quot;);
+    newElement.innerHTML = newItem;
+    listElement.appendChild(newElement);
+}
+
+button.addEventListener(&quot;click&quot;, handleButtonClick);</code></pre>
+</section>
+<section id="adat-és-megjelenés-szétválasztása-3" class="slide level2">
+<h2>Adat és megjelenés szétválasztása</h2>
+<p><strong>A felület mint az adat leképezése (függvény)</strong></p>
+<pre class="js"><code>const list = [];
+
+✒&gt;function renderList(list) {
+  return list.map(item =&gt; `&lt;li&gt;${item}&lt;/li&gt;`).join(&quot;&quot;);
+}&lt;✒
+
+const input = document.querySelector(&quot;input&quot;);
+const button = document.querySelector(&quot;button&quot;);
+const listElement = document.querySelector(&quot;ul&quot;);
+
+function handleButtonClick() {
+    // Input
+    const newItem = input.value;
+    // Process
+    list.push(newItem);
+    // Output
+    ✒&gt;listElement.innerHTML = renderList(list);&lt;✒
+}
+
+button.addEventListener(&quot;click&quot;, handleButtonClick);</code></pre>
+</section>
+<section id="megoldás-részei" class="slide level2">
+<h2>Megoldás részei</h2>
+<p><img data-src="../../assets/images/architecture/js-program-memory-map.png" /></p>
+</section>
+<section id="időzítők" class="slide level2" data-state="new-section">
+<h2 data-state="new-section">Időzítők</h2>
+</section>
+<section id="settimeout" class="slide level2">
+<h2><code>setTimeout</code></h2>
+<ul>
+<li><code>timerId = setTimeout(fn, ms)</code>
+<ul>
+<li>Egy adott függvény futtatása <code>ms</code> ms múlva</li>
+</ul></li>
+<li><code>clearTimeout(timerId)</code>
+<ul>
+<li>A <code>timerId</code>-jú időzítő leállítása</li>
+</ul></li>
+</ul>
+<pre class="js"><code>// Külön függvény
+function tick() {
+  console.log(&#39;tick&#39;);
+}
+setTimeout(tick, 1000);
+
+// Helyben függvény
+setTimeout(function () {
+  console.log(&#39;tick&#39;);
+}, 1000);
+
+// Időzítő törlése
+const timer = setTimeout(() =&gt; {}, 1000);
+// do something, or even in an event:
+clearTimeout(timer);</code></pre>
+</section>
+<section id="setinterval" class="slide level2">
+<h2><code>setInterval</code></h2>
+<ul>
+<li><code>timerId = setInterval(fn, ms)</code>
+<ul>
+<li>Egy adott függvény futtatása <code>ms</code> ms-onként</li>
+</ul></li>
+<li><code>clearInterval(timerId)</code>
+<ul>
+<li>A <code>timerId</code>-jú időzítő leállítása</li>
+</ul></li>
+</ul>
+<pre class="js"><code>// Külön függvény
+function tick() {
+  console.log(&#39;tick&#39;);
+}
+setInterval(tick, 1000);
+
+// Helyben függvény
+setInterval(function () {
+  console.log(&#39;tick&#39;);
+}, 1000);
+
+// Időzítő törlése
+const timer = setInterval(() =&gt; {}, 1000);
+// do something, or even in an event:
+clearInterval(timer);</code></pre>
+</section>
+<section id="időzítő-használata" class="slide level2">
+<h2>Időzítő használata</h2>
+<ul>
+<li>Késleltetett végrehajtás</li>
+<li>Újrarajzolás megvárása (pl. animáció)</li>
+<li>Emberi léptékű műveletvégrehajtás (pl. animáció)</li>
+<li>Hosszú műveletek felosztása</li>
+</ul>
+</section>
+<section id="összefoglalás" class="slide level2" data-state="topic">
+<h2 data-state="topic">Összefoglalás</h2>
+<ul>
+<li>Elemek létrehozása és beszúrása</li>
+<li>Stílusok programozása</li>
+<li>Kódszervezés
+<ul>
+<li>fizikai, logikai</li>
+<li>egységbe zárás</li>
+<li>adattárolás helye</li>
+</ul></li>
+<li>Időzítők</li>
+</ul>
+</section>
+    </div>
+  </div>
+
+  <div id="captcha"></div>
+
+  <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.18.1/build/highlight.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/js/reveal.js"></script>
+
+  <script>
+    // Highlighting in code blocks
+    const codes = document.querySelectorAll('pre > code')
+    for (const code of codes) {
+      code.setAttribute('data-noescape', '')
+      const text = code.innerHTML
+      const markedText = text
+        .replace(/&lt;✒/g, '</mark>')
+        .replace(/✒&gt;/g, '<mark>')
+      code.innerHTML = markedText
+    }
+
+    // Adding captcha
+    const queryString = new URLSearchParams(window.location.search);
+    const captcha = queryString.get('captcha');
+    const captchaElement = document.getElementById("captcha");
+    captchaElement.innerHTML = captcha;
+
+    // Full list of configuration options available at:
+    // https://github.com/hakimel/reveal.js#configuration
+    Reveal.initialize({
+      // Display controls in the bottom right corner
+      controls: true,
+      controlsTutorial: false,
+      // Display a presentation progress bar
+      progress: true,
+      // Display the page number of the current slide
+      slideNumber: true,
+      // Add the current slide number to the URL hash so that reloading the
+      // page/copying the URL will return you to the same slide
+      hash: true,
+      // Push each slide change to the browser history
+      history: false,
+      // Enable keyboard shortcuts for navigation
+      keyboard: true,
+      // Enable the slide overview mode
+      overview: true,
+      // Vertical centering of slides
+      center: true,
+      // Enables touch navigation on devices with touch input
+      touch: true,
+      // Loop the presentation
+      loop: false,
+      // Hides the address bar on mobile devices
+      hideAddressBar: true,
+      // Transition style
+      transition: 'slide', // none/fade/slide/convex/concave/zoom
+      // Transition style for full page slide backgrounds
+      backgroundTransition: 'slide', // none/fade/slide/convex/concave/zoom
+      // Bounds for smallest/largest possible scale to apply to content
+      minScale: 0.5,
+      maxScale: 3,
+      // Modifier key used to click-zoom to part of the slide
+      zoomKey: "ctrl",
+      math: {
+        mathjax: 'https://cdn.jsdelivr.net/gh/mathjax/MathJax@3.0.1/es5/tex-mml-chtml.js',
+        config: 'TeX-AMS_HTML-full',
+        tex2jax: {
+          inlineMath: [['\\(','\\)']],
+          displayMath: [['\\[','\\]']],
+          balanceBraces: true,
+          processEscapes: false,
+          processRefs: true,
+          processEnvironments: true,
+          preview: 'TeX',
+          skipTags: ['script','noscript','style','textarea','pre','code'],
+          ignoreClass: 'tex2jax_ignore',
+          processClass: 'tex2jax_process'
+        }
+      },
+
+      // Optional reveal.js plugins
+      dependencies: [
+        { src: 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+        { src: 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/plugin/zoom-js/zoom.js', async: true },
+        //{ src: 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/socket.io/socket.io.js', async: true },
+        //{ src: 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/plugin/notes-server/client.js', async: true },
+        { src: 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/plugin/math/math.js', async: true },
+        { src: 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/plugin/notes/notes.js', async: true },
+        { src: 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/plugin/highlight/highlight.js', async: true }
+      ]
+    });
+  </script>
+
+  
+  </body>
+</html>

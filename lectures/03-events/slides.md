@@ -68,16 +68,16 @@ Tel: (1) 372-2500/8469\
 ## Ismétlés -- DOM
 
 - [x] Elemek kiválasztása
-    - `document.querySelector('css selector')`
-    - `document.querySelectorAll('css selector')`
+  - `document.querySelector('css selector')`
+  - `document.querySelectorAll('css selector')`
 - [x] Elem (JavaScript objektum) tulajdonságai
-    - Analógia: Webfejlesztés → Webprogramozás
-    - írás/olvasás
-    - tulajdonságok (pl. `innerHTML`)
-    - metódusok
+  - Analógia: Webfejlesztés → Webprogramozás
+  - írás/olvasás
+  - tulajdonságok (pl. `innerHTML`)
+  - metódusok
 - [x] Eseménykezelés
-    - Eseménytípusok
-    - `elem.addEventListener(típus, fgv)`
+  - Eseménytípusok
+  - `elem.addEventListener(type, handler)`
 
 ------
 

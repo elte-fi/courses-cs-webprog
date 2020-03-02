@@ -37,11 +37,11 @@ horvath.gyozo@inf.elte.hu
 Tel: (1) 372-2500/8469\
 </small>
 
---------------------------
+------
 
 ## Ismétlés {data-state="new-section"}
 
---------------------------
+------
 
 ## JavaScript nyelvi elemek
 
@@ -60,11 +60,11 @@ Tel: (1) 372-2500/8469\
   </li>
 </ul>
 
---------------------------
+------
 
 ## Felületi elemek programozása {data-state="new-section"}
 
---------------------------
+------
 
 ## Példa
 
@@ -76,7 +76,7 @@ Tel: (1) 372-2500/8469\
   + Érték kiolvasása
   + Eredmény megjelenítése
 
---------------------------
+------
 
 ## Megoldás lépései
 
@@ -87,7 +87,7 @@ Tel: (1) 372-2500/8469\
   <li>Megjeleníteni az üdvözlő szöveget (kiírás).</li>
 </ul>
 
---------------------------
+------
 
 ::: {.example}
 
@@ -127,7 +127,7 @@ hello.addEventListener('click', handleHelloClick);
 </form>
 ```
 
---------------------------
+------
 
 ## Megoldás lépései (1)
 
@@ -144,7 +144,7 @@ function greet(name) {
 }
 ```
 
---------------------------
+------
 
 ## Felhasználói felület
 
@@ -157,7 +157,7 @@ function greet(name) {
   + **JavaScript**: program a felület működtetésére
 - **→ INTERFÉSZ A HTML ELEMEKHEZ**
 
---------------------------
+------
 
 ## Dokumentum Objektum Modell (DOM)
 
@@ -166,7 +166,7 @@ function greet(name) {
 
 ![](../../assets/images/architecture/dom-ui.png)
 
---------------------------
+------
 
 ## Dokumentum Objektum Modell (DOM)
 
@@ -174,7 +174,7 @@ function greet(name) {
 
 <small>A forrás és a DOM eltérhet egymástól.</small>
 
---------------------------
+------
 
 ## Dokumentum Objektum Modell (DOM)
 
@@ -183,7 +183,7 @@ function greet(name) {
 
 ![](../../assets/images/architecture/js-dom-ui.png)
 
---------------------------
+------
 
 :::::: {.columns}
 ::: {.column}
@@ -201,7 +201,7 @@ function greet(name) {
 
 ![](../../assets/images/architecture/dom.png)
 
---------------------------
+------
 
 ## Dokumentum Objektum Modell
 
@@ -214,7 +214,7 @@ function greet(name) {
   + attribútum
   + szöveges csomópont
 
---------------------------
+------
 
 ## Szöveges csomópontok
 
@@ -260,7 +260,7 @@ function greet(name) {
 :::
 ::::::
 
---------------------------
+------
 
 ## Műveletcsoportok
 
@@ -272,11 +272,11 @@ function greet(name) {
   + módosítás
   + törlés
 
---------------------------
+------
 
 ## Elem(ek) kiválasztása {data-state="new-section"}
 
---------------------------
+------
 
 ## Elem(ek) kiválasztása
 
@@ -298,7 +298,7 @@ CSS szelektorral:
   console.log( document.querySelectorAll("form > *") );
 </script>
 ```
---------------------------
+------
 
 ## CSS szelektorok
 
@@ -315,7 +315,7 @@ CSS szelektorral:
 | következő testvér    | `ul + p`                 |
 | utána jövő testvérek | `ul ~ p`                 |
 
---------------------------
+------
 
 ## Több elem kiválasztása
 
@@ -338,7 +338,7 @@ const listItemsArray = Array.from(listItems);
 listItemsArray.forEach(li => { /*...*/ });  // OK
 ```
 
---------------------------
+------
 
 ## Kiválasztás leszármazottak közül
 
@@ -358,11 +358,11 @@ const firstDiv = document.querySelector('div.first')
 const spanInFirstDiv = ✒>firstDiv<✒.querySelector('span')
 ```
 
---------------------------
+------
 
 ## DOM elem tulajdonságai és metódusai {data-state="new-section"}
 
---------------------------
+------
 
 ## DOM elem tulajdonságai és metódusai
 
@@ -371,7 +371,7 @@ const spanInFirstDiv = ✒>firstDiv<✒.querySelector('span')
 - Analóg módszer (HTML, az esetek 80%-ban OK)
 - Felfedező módszer (fejlesztői eszköztár, óvatosan)
 
---------------------------
+------
 
 ## Analóg módszer
 
@@ -385,7 +385,7 @@ const spanInFirstDiv = ✒>firstDiv<✒.querySelector('span')
 | `readonly`      | `readOnly`      |
 | `maxlength`     | `maxLength`     |
 
---------------------------
+------
 
 ## További fontosabb tulajdonságok
 
@@ -403,7 +403,7 @@ p.innerText; // 'This is a text'
 p.innerHTML = 'This is a <strong>new</strong> text';
 ```
 
---------------------------
+------
 
 ## Megoldás lépései (2)
 
@@ -423,11 +423,11 @@ const output = document.querySelector('#output');
 output✒>.innerHTML<✒ = greet(name);
 ```
 
---------------------------
+------
 
 ## Elemi eseménykezelés {data-state="new-section"}
 
---------------------------
+------
 
 ## Eseménykezelés
 
@@ -447,7 +447,7 @@ function handleButtonClick() {
 button.addEventListener('click', handleButtonClick);
 ```
 
---------------------------
+------
 
 ## Megoldás lépései (3)
 
@@ -477,7 +477,7 @@ function handleHelloClick() {
 hello.addEventListener('click', handleHelloClick);
 ```
 
---------------------------
+------
 
 ## Megoldás lépései (3)
 
@@ -488,11 +488,11 @@ hello.addEventListener('click', handleHelloClick);
   <li class="complete">Megjeleníteni az üdvözlő szöveget (kiírás).</li>
 </ul>
 
---------------------------
+------
 
 ## A DOM mint I/O {data-state="new-section"}
 
---------------------------
+------
 
 ## A DOM mint I/O
 
@@ -507,7 +507,7 @@ hello.addEventListener('click', handleHelloClick);
 // Writing (to DOM)
 ```
 
---------------------------
+------
 
 ## A DOM mint I/O
 
@@ -530,7 +530,7 @@ hello.addEventListener('click', handleHelloClick);
 </script>
 ```
 
---------------------------
+------
 
 ## Példa DOM I/O
 
@@ -548,423 +548,7 @@ Maiden name: <input id="maidenName">
 </script>
 ```
 
---------------------------
-
-## Új elemek létrehozása
-
-- A kiírás egy speciális formája
-- A HTML kód szövegesen
-- `innerHTML` tulajdonság írása
-- Akár egyszerre több elemet is
-
-```html
-<div id="output"></div>
-<script>
-  const greeting = "<h1>Hello <em>World</em></h1>";
-  const output = document.querySelector("#output");
-  output.innerHTML = greeting;
-</script>
-```
-
---------------------------
-
-## HTML generálás
-
-```js
-// Rövid statikus szöveg megadása
-const html1 = `<h1>Hello there!</h1>`;
-
-// Többsoros statikus szöveg megadása
-const html2 = `
-  <div>
-    <p>No, <strong>I</strong> am your father!</p>
-  </div>
-`;
-
-// Változók behelyettesítése
-const callsign = 'Red 5';
-const html3 = `${callsign}, standing by.`;
-
-// Tömbök kiírása leképezéssel
-const callsigns = ["Red 10", "Red 7", "Red 3", "Red 6", "Red 9"];
-const html4 = `
-  <p>All wings, report in.</p>
-  <ul>
-    ${callsigns.map(callsign => `
-      <li>${callsign}, standing by.</li>
-    `).join("")}
-  </ul>
-`;
-
-// Feltételes kiírás (elágazás)
-const chanceOfSuccess = 0.4;
-const html5 = `
-  <span>
-    I have a 
-    ${chanceOfSuccess < 0.5 ? "bad" : "good"}
-    feeling about this.
-  </span>
-`;
-
-// Függvényekkel
-function hanDescription(properties) {
-  return `
-    You
-    <ul>
-      ${properties.map(hanProperty).join("")}
-    </ul>
-    Nerf Herder!
-  `;
-}
-
-function hanProperty(property) {
-  return `<li>${property}</li>`;
-}
-
-const hanProperties = [
-  "stuck up",
-  "half witted",
-  "scruffy looking"
-];
-const html6 = hanDescription(hanProperties);
-```
-
---------------------------
-
-## Új elemek létrehozása
-
-Programozottan:
-
-- Létrehozás:
-  + `document.createElement(elem)`
-- Beszúrás: 
-  + `parent.appendChild(child)`: szülő gyerekeihez utolsóként hozzáadja az új elemet
-  + `parent.insertBefore(newChild, refChild)`: referencia elé beszúrja az új elemet
-
---------------------------
-
-## Új elemek beszúrása
-
-::::::::::::::::::::: {.columns}
-::: {.column style="width: 33%"}
-```html
-<body>
-  <ul>
-    <li>First</li>
-    <li>Second</li>
-    ✒> <✒    
-    <li>Third</li>
-  </ul>
-  ✒> <✒    
-</body>
-```
-:::
-
-::: {.column style="width: 67%"}
-```js
-const p = document.createElement('p');
-document.body.appendChild(p);
-
-const newLi = document.createElement('li');
-const ul = document.querySelector('ul');
-const refLi = 
-  ul.querySelector('li:nth-of-type(3)');
-ul.insertBefore(newLi, refLi);
-```
-:::
-::::::::::::::::::::::
-
---------------------------
-
-## Stílusattribútumok programozása {data-state="new-section"}
-
---------------------------
-
-## Ismétlés
-
-```html
-<div class="rodian bounty-hunter" style="bottom: 72in">
-  Greedo
-</div>
-```
-
---------------------------
-
-## Stílusattribútum programozása
-
-`style` tulajdonság olvasása/írása
-
-| CSS stílustulajdonság    | `style` objektum tulajdonsága |
-| ------------------------ | ----------------------------- |
-| `left`                   | `left`                        |
-| `background-color`       | `backgroundColor`             |
-| `border-bottom-width`    | `borderBottomWidth`           |
-| `border-top-left-radius` | `borderTopLeftRadius`         |
-
---------------------------
-
-## Stílusattribútum programozása
-
-```html
-<div style="position: absolute" id="movingElement"></div>
-<script>
-  document.querySelector("#movingElement").style.top  = "25px";
-  document.querySelector("#movingElement").style.left = "42px";
-</script>
-```
-
---------------------------
-
-## Objektum stílus
-
-- `elem.style`: `CSSStyleDeclaration` objektum
-- Az összes stílustulajdonságot tartalmazza
-- Tetszőleges tulajdonság beállítható (írás)
-- Lekérdezhető stílustulajdonságok (olvasás):
-  + a `style` attribútumon keresztül voltak megadva;
-  + JavaScriptből határoztuk meg az értéküket.
-
---------------------------
-
-## Példa
-
-```html
-<style>
-.box {
-  position: absolute;
-  width: 100px; height: 100px;
-}
-</style>
-<div class="box" style="left: 20px"></div>
-```
-```js
-const box = document.querySelector("div");
-box.style.top = "30px";
-
-box.style.top;       // "30px"  <-- JS
-box.style.left;      // "20px"  <-- style attribute
-box.style.width;     // ""
-box.style.position;  // ""
-```
-
---------------------------
-
-## Számított stílus
-
-- `window.getComputedStyle(elem)`
-- A böngésző által nyilvántartott stílustulajdonságok
-- A rövidítések (pl. `border`, `background`, stb.) nem érhető el, csak az elemi tulajdonságok.
-
---------------------------
-
-## Példa
-
-```html
-<style>
-.box {
-  position: absolute;
-  width: 100px; height: 100px;
-}
-</style>
-<div class="box" style="left: 20px"></div>
-```
-```js
-const box = document.querySelector("div");
-box.top = "30px";
-
-const computedStyle = window.getComputedStyle(box);
-computedStyle.top       // "30px"
-computedStyle.left      // "20px"
-computedStyle.width     // "100px"
-computedStyle.position  // "absolute"
-```
-
---------------------------
-
-## Stílusosztály programozása
-
-`classList` tulajdonság
-
-- `add(osztály)`
-- `remove(osztály)`
-- `toggle(osztály)`
-- `contains(osztály)`
-
-```html
-<div class="rodian bounty-hunter">Greedo</div>
-```
-
---------------------------
-
-## Stílusosztály programozása
-
-`add`, `remove`, `toggle`, `contains`
-
-```html
-<div class="red green blue">
-```
-
-```js
-const div = document.querySelector('div');
-div.classList.remove("green");
-div.classList.add("pink");
-
-// váltogatás
-div.classList.toggle("pink");
-
-// feltételes megjelenítés
-div.classList.toggle("pink", i < 10);
-
-// van-e adott stílusosztály
-div.classList.contains("red");  // true
-
-// több hozzáadása egyszerre
-div.classList.add("orange", "yellow");
-```
-
---------------------------
-
-## DOM tulajdonságok és metódusok {data-state="new-section"}
-
---------------------------
-
-## Attribútum programozás
-
-- `getAttribute(name)`
-- `setAttribute(name, value)`
-- `hasAttribute(name)`
-- `removeAttribute(name)`
-- `toggleAttribute(name[, predicate])`
-
---------------------------
-
-## Példa
-
-```html
-<button type="submit" data-id="10" disabled>A button</button>
-```
-```js
-const button = document.querySelector('button');
-// Reading
-button.getAttribute('type');        // 'submit'
-button.getAttribute('data-id');     // '10'
-button.getAttribute('disabled');    // ''
-button.getAttribute('foo');         // null or ''
-button.hasAttribute('disabled');    // true
-// Writing
-button.setAttribute('name', 'send');
-button.setAttribute('hidden', '');  // boolean attribute
-button.toggleAttribute('disabled'); // toggle boolean attribute
-```
-
---------------------------
-
-## Attribútum programozás
-
-`data-*` attribútum → `dataset` tulajdonság
-
-```html
-<div data-id="10" data-some-text="foo"></div>
-```
-```js
-const div = document.querySelector('div');
-// Reading
-div.dataset.id;        // "10"
-div.dataset.someText;  // "foo"
-// Writing
-div.dataset.someText = "bar";
-div.dataset.user = "John";               // --> data-user="John"
-div.dataset.dateOfBirth = "2000-12-12";  // --> data-date-of-birth="2000-12-12"
-// Removing
-delete div.dataset.id;
-// Checking
-'someText' in el.dataset;  // true
-'id' in el.dataset;        // false
-```
-
---------------------------
-
-## Szerkezet bejárása
-
-- gyerekek
-  + `childNodes`, `firstChild`, `lastChild`
-  + `children`, `firstElementChild`, `lastElementChild`
-- szülő/ős
-  + `parentNode`, `parentElement`
-  + `closest(cssSelector)`
-- testvérek
-  + `nextSibling`, `previousSibling`
-  + `nextElementSibling`, `previousElementSibling`
-  
-Csomópont típusa
-
-- `nodeType === 1`: elem
-- `nodeType === 3`: szöveges csomópont
-
---------------------------
-
-## Szerkezet módosítása
-
-- `parent.appendChild(elem)`: beszúrás
-- `parent.insertBefore(elem, ref)`: beszúrás
-- `parent.removeChild(elem)`: törlés
-- `parent.replaceChild(elem, oldElem)`: csere
-- Ha `elem` létezik, akkor mozgatás
-
---------------------------
-
-## Példa: hányadik elem
-
-```html
-<ul>
-    <li>első</li>
-    <li>második</li>
-    <li>harmadik</li>
-    <li>negyedik</li>
-    <li>ötödik</li>
-</ul>
-```
-```js
-function getPosition(element) {
-   const parent = element.parentNode;
-   const children = Array.from(parent.children);
-
-   return children.indexOf(element) + 1;
-}
-
-const secondChild = document.querySelector('ul > li:nth-child(2)');
-const position = getPosition(secondChild); // 2
-```
-
---------------------------
-
-## Régi megoldások {data-state="new-section"}
-
---------------------------
-
-## Böngésző I/O
-
-- `alert(text)`
-- `confirm(text)`
-- `prompt(text, default)`
-
-```js
-alert('The Force will be with you. Always.');
-
-const kerdes = confirm('Judge me by my size, do you?');
-
-const target = prompt(`
-  You would prefer another target?
-  A military target?
-  Then name the system!
-`, 'Dantooine');
-
-console.log(
-  `${target} is too remote to make an effective demonstration!`
-);
-```
-
---------------------------
+------
 
 ## Elemek kiválasztása
 
@@ -977,31 +561,13 @@ console.log(
     + **`querySelector(cssSelector)`**
     + **`querySelectorAll(cssSelector)`**
 
---------------------------
-
-## Stílusosztály programozása
-
-- `className` tulajdonság
-- `class` attribútum szöveges értéke
-- olvasható/írható
-- elavult
-
-```html
-<div class="human hero">Aragorn</div>
-```
-```js
-const div = document.querySelector('div')
-div.className   // 'human hero'
-div.className = 'human king'
-```
-
---------------------------
+------
 
 ## Összefoglalás {data-state="topic"}
 
 - DOM a felhasználói felület programozási interfésze
 - Elemek kiválasztása:  
   `document.querySelector(css-selector)`
-- Tulajdonságai: analóg módszer
 - Alap eseménykezelés:  
   `elem.addEventListener('click', onClick)`
+- Tulajdonságai: analóg módszer
