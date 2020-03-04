@@ -64,27 +64,6 @@ Tel: (1) 372-2500/8469\
 
 ------
 
-## Ismétlés - nyelvi elemek
-
-- [x] Dinamikusan típusos
-- [x] Interpretált nyelv
-- [x] Szintaxis C++-hoz hasonló
-- [x] Adatszerkezetek (elemi, összetett)
-- [x] Funkcionális aspektus
-- [x] OOP-s aspektus
-
-------
-
-## Ismétlés - DOM
-
-- [x] HTML elemek belső ábrázolása
-- [x] Programozási interfész (API)
-- [x] Bemeneti-kimeneti interfész
-
-![](../../assets/images/architecture/js-dom-ui.png)
-
-------
-
 ## Ismétlés -- DOM
 
 - [x] Elemek kiválasztása
