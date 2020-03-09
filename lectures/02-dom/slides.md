@@ -91,12 +91,10 @@ Tel: (1) 372-2500/8469\
 
 ::: {.example}
 
-<form>
-  Name: <input type="text" id="name"> <br>
-  <input type="button" value="Say hello!" id="hello">
-  <br>
-  <span id="output"></span>
-</form>
+Name: <input type="text" id="name">
+<button id="hello">Say hello!</button>
+<br>
+<span id="output"></span>
 
 :::
 
@@ -119,12 +117,10 @@ hello.addEventListener('click', handleHelloClick);
 </script>
 
 ```html
-<form>
-  Name: <input type="text" id="name"> <br>
-  <input type="button" value="Say hello!" id="hello">
-  <br>
-  <span id="output"></span>
-</form>
+Name: <input type="text" id="name">
+<button id="hello">Say hello!</button>
+<br>
+<span id="output"></span>
 ```
 
 ------
@@ -288,11 +284,10 @@ CSS szelektorral:
 | Több elem: | `document.querySelectorAll(sel)` |
 
 ```html
-<form>
-  Név: 
-  <input id="name" value="Luke">
-  <button>Click me!</button>
-</form>
+Name:
+<input id="name" value="Luke">
+<button>Click me!</button>
+
 <script>
   console.log( document.querySelector("#name") );
   console.log( document.querySelectorAll("form > *") );
@@ -452,12 +447,10 @@ button.addEventListener('click', handleButtonClick);
 ## Megoldás lépései (3)
 
 ```html
-<form>
-  Name: <input type="text" id="name"> <br>
-  <input type="button" value="Say hello!" id="hello">
-  <br>
-  <span id="output"></span>
-</form>
+Name: <input type="text" id="name">
+<button id="hello">Say hello!</button>
+<br>
+<span id="output"></span>
 ```
 ```js
 function greet(name) {
