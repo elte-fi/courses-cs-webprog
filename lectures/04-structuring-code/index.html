@@ -3,13 +3,13 @@
 <head>
   <meta charset="utf-8">
   <meta name="generator" content="pandoc">
-  <title>Webprogramozás - Kimenet, kódszervezés, időzítők</title>
+  <title>Webprogramozás - Kimenet, kódszervezés</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
 
   <!-- Reveal.js Theme -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/elte-fi/revealjs-elte-fi@1.0.12/dist/revealjs-elte-fi.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/elte-fi/revealjs-elte-fi@1.1.0/dist/revealjs-elte-fi.min.css">
   <!-- Highlighting -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.18.1/build/styles/default.min.css">
   <!-- Icons -->
@@ -36,7 +36,7 @@
 <div class="title">
 <p>Webprogramozás</p>
 </div>
-<h3 id="kimenet-kódszervezés-időzítők">Kimenet, kódszervezés, időzítők</h3>
+<h3 id="kimenet-kódszervezés">Kimenet, kódszervezés</h3>
 <div class="columns">
 <div class="column" style="width:33%;">
 <p><small> <strong>Visnovitz Márton</strong><br />
@@ -807,225 +807,8 @@ const jatek = new Jatek();
 jatek.increase();
 console.log(jatek.number);</code></pre>
 </section>
-<section id="kódszervezés-3" class="slide level2" data-state="new-section">
-<h2 data-state="new-section">Kódszervezés</h2>
-<p>Adattárolás</p>
-</section>
-<section id="todo-lista" class="slide level2">
-<h2>Todo lista</h2>
-<div class="example">
-<input id="newItem"> <button id="addItem">Add</button> <br >
-<ul id="todoList">
-</ul>
-</div>
-<script>
-  const todoList = document.querySelector("#todoList");
-  const button = document.querySelector("#addItem");
-  const input = document.querySelector("#newItem");
-
-  function handleButtonClick() {
-    const newItem = input.value;
-    todoList.innerHTML += `<li>${newItem}</li>`;
-  }
-
-  button.addEventListener("click", handleButtonClick);
-</script>
-</section>
-<section id="tárolás-a-dom-ban" class="slide level2">
-<h2>Tárolás a DOM-ban</h2>
-<pre class="html"><code>&lt;input id=&quot;newItem&quot;&gt;
-&lt;button id=&quot;addItem&quot;&gt;Add&lt;/button&gt;
-&lt;br &gt;
-&lt;ul id=&quot;todoList&quot;&gt;&lt;/ul&gt;</code></pre>
-<pre class="js"><code>function handleButtonClick() {
-  const newItem = input.value;
-  todoList.innerHTML += `&lt;li&gt;${newItem}&lt;/li&gt;`;
-}
-
-button.addEventListener(&quot;click&quot;, handleButtonClick);</code></pre>
-</section>
-<section id="tárolás-a-dom-ban-1" class="slide level2">
-<h2>Tárolás a DOM-ban</h2>
-<pre class="html"><code>&lt;input id=&quot;newItem&quot;&gt;
-&lt;button id=&quot;addItem&quot;&gt;Add&lt;/button&gt;
-&lt;br &gt;
-&lt;ul id=&quot;todoList&quot;&gt;&lt;/ul&gt;</code></pre>
-<pre class="js"><code>function handleButtonClick() {
-  const newItem = input.value;
-  const newListItem = document.createElement(&quot;li&quot;);
-  newListItem.innerHTML = newItem;
-  todoList.appendChild(newListItem);
-}
-
-button.addEventListener(&quot;click&quot;, handleButtonClick);</code></pre>
-</section>
-<section id="tárolás-a-dom-ban-2" class="slide level2">
-<h2>Tárolás a DOM-ban</h2>
-<p><img data-src="../../assets/images/architecture/js-program-dom.png" /></p>
-</section>
-<section id="tárolás-a-dom-ban-3" class="slide level2">
-<h2>Tárolás a DOM-ban</h2>
-<ul>
-<li>Mindig onnan kell kiolvasni</li>
-<li>Nem alap nyelvi elem</li>
-<li>Adat és feldolgozó függvény szétválik</li>
-<li>Probléma: egységbe zárás, tárolás</li>
-</ul>
-</section>
-<section id="tárolás-a-dom-ban-4" class="slide level2">
-<h2>Tárolás a DOM-ban</h2>
-<p>Todo lista elemei</p>
-<pre class="js"><code>const input = document.querySelector(&quot;input&quot;);
-const button = document.querySelector(&quot;button&quot;);
-const listElement = document.querySelector(&quot;ul&quot;);
-const listItems = document.querySelectorAll(&quot;li&quot;);
-
-function handleButtonClick() {
-    // Input
-    const newItem = input.value;
-    const listContent = Array.from(list).map(li =&gt; li.innerText);
-    // Process
-    listContent.push(newItem);
-    // Output
-    const newElement = document.createElement(&quot;li&quot;);
-    newElement.innerHTML = newItem;
-    listElement.appendChild(newElement);
-}
-
-button.addEventListener(&quot;click&quot;, handleButtonClick);</code></pre>
-</section>
-<section id="adat-és-megjelenés-szétválasztása" class="slide level2">
-<h2>Adat és megjelenés szétválasztása</h2>
-<ul>
-<li>Alapelv</li>
-<li>Könnyebb egységbe zárás</li>
-<li>Alapvető nyelvi elemeket használ</li>
-<li>A DOM lassú</li>
-</ul>
-</section>
-<section id="adat-és-megjelenés-szétválasztása-1" class="slide level2">
-<h2>Adat és megjelenés szétválasztása</h2>
-<p><img data-src="../../assets/images/architecture/js-program-memory.png" /></p>
-</section>
-<section id="adat-és-megjelenés-szétválasztása-2" class="slide level2">
-<h2>Adat és megjelenés szétválasztása</h2>
-<pre class="js"><code>✒&gt;const list = [];&lt;✒
-
-const input = document.querySelector(&quot;input&quot;);
-const button = document.querySelector(&quot;button&quot;);
-const listElement = document.querySelector(&quot;ul&quot;);
-
-function handleButtonClick() {
-    // Input
-    const newItem = input.value;
-    // Process
-    list.push(newItem);
-    // Output
-    const newElement = document.createElement(&quot;li&quot;);
-    newElement.innerHTML = newItem;
-    listElement.appendChild(newElement);
-}
-
-button.addEventListener(&quot;click&quot;, handleButtonClick);</code></pre>
-</section>
-<section id="adat-és-megjelenés-szétválasztása-3" class="slide level2">
-<h2>Adat és megjelenés szétválasztása</h2>
-<p><strong>A felület mint az adat leképezése (függvény)</strong></p>
-<pre class="js"><code>const list = [];
-
-✒&gt;function renderList(list) {
-  return list.map(item =&gt; `&lt;li&gt;${item}&lt;/li&gt;`).join(&quot;&quot;);
-}&lt;✒
-
-const input = document.querySelector(&quot;input&quot;);
-const button = document.querySelector(&quot;button&quot;);
-const listElement = document.querySelector(&quot;ul&quot;);
-
-function handleButtonClick() {
-    // Input
-    const newItem = input.value;
-    // Process
-    list.push(newItem);
-    // Output
-    ✒&gt;listElement.innerHTML = renderList(list);&lt;✒
-}
-
-button.addEventListener(&quot;click&quot;, handleButtonClick);</code></pre>
-</section>
-<section id="megoldás-részei" class="slide level2">
-<h2>Megoldás részei</h2>
-<p><img data-src="../../assets/images/architecture/js-program-memory-map.png" /></p>
-</section>
-<section id="időzítők" class="slide level2" data-state="new-section">
-<h2 data-state="new-section">Időzítők</h2>
-</section>
-<section id="settimeout" class="slide level2">
-<h2><code>setTimeout</code></h2>
-<ul>
-<li><code>timerId = setTimeout(fn, ms)</code>
-<ul>
-<li>Egy adott függvény futtatása <code>ms</code> ms múlva</li>
-</ul></li>
-<li><code>clearTimeout(timerId)</code>
-<ul>
-<li>A <code>timerId</code>-jú időzítő leállítása</li>
-</ul></li>
-</ul>
-<pre class="js"><code>// Külön függvény
-function tick() {
-  console.log(&#39;tick&#39;);
-}
-setTimeout(tick, 1000);
-
-// Helyben függvény
-setTimeout(function () {
-  console.log(&#39;tick&#39;);
-}, 1000);
-
-// Időzítő törlése
-const timer = setTimeout(() =&gt; {}, 1000);
-// do something, or even in an event:
-clearTimeout(timer);</code></pre>
-</section>
-<section id="setinterval" class="slide level2">
-<h2><code>setInterval</code></h2>
-<ul>
-<li><code>timerId = setInterval(fn, ms)</code>
-<ul>
-<li>Egy adott függvény futtatása <code>ms</code> ms-onként</li>
-</ul></li>
-<li><code>clearInterval(timerId)</code>
-<ul>
-<li>A <code>timerId</code>-jú időzítő leállítása</li>
-</ul></li>
-</ul>
-<pre class="js"><code>// Külön függvény
-function tick() {
-  console.log(&#39;tick&#39;);
-}
-setInterval(tick, 1000);
-
-// Helyben függvény
-setInterval(function () {
-  console.log(&#39;tick&#39;);
-}, 1000);
-
-// Időzítő törlése
-const timer = setInterval(() =&gt; {}, 1000);
-// do something, or even in an event:
-clearInterval(timer);</code></pre>
-</section>
-<section id="időzítő-használata" class="slide level2">
-<h2>Időzítő használata</h2>
-<ul>
-<li>Késleltetett végrehajtás</li>
-<li>Újrarajzolás megvárása (pl. animáció)</li>
-<li>Emberi léptékű műveletvégrehajtás (pl. animáció)</li>
-<li>Hosszú műveletek felosztása</li>
-</ul>
-</section>
-<section id="összefoglalás" class="slide level2" data-state="topic">
-<h2 data-state="topic">Összefoglalás</h2>
+<section id="összefoglalás" class="slide level2">
+<h2>Összefoglalás</h2>
 <ul>
 <li>Elemek létrehozása és beszúrása</li>
 <li>Stílusok programozása</li>
@@ -1033,9 +816,7 @@ clearInterval(timer);</code></pre>
 <ul>
 <li>fizikai, logikai</li>
 <li>egységbe zárás</li>
-<li>adattárolás helye</li>
 </ul></li>
-<li>Időzítők</li>
 </ul>
 </section>
     </div>

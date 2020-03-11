@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <title>Webprogramozás - Adattárolás, időzítők</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+  <!-- Reveal.js Theme -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/elte-fi/revealjs-elte-fi@1.1.0/dist/revealjs-elte-fi.min.css">
+  <!-- Highlighting -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.18.1/build/styles/default.min.css">
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+
+  <!-- Printing and PDF exports -->
+  <script>
+    var link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = window.location.search.match(/print-pdf/gi) 
+      ? 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/css/print/pdf.css' 
+      : 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/css/print/paper.css';
+    document.getElementsByTagName('head')[0].appendChild( link );
+  </script>
+
+  </head>
+
+<body>
+  <div class="reveal">
+    <div class="slides">
+<section class="slide level2">
+
+<div class="title">
+<p>Webprogramozás</p>
+</div>
+<h3 id="adattárolás-időzítők">Adattárolás, időzítők</h3>
+<div class="columns">
+<div class="column" style="width:33%;">
+<p><small> <strong>Visnovitz Márton</strong><br />
+egyetemi tanársegéd<br />
+visnovitz.marton@inf.elte.hu </small></p>
+</div><div class="column" style="width:33%;">
+<p><small> <strong>Gerely Viktor</strong><br />
+demonstrátor<br />
+mohmas@inf.elte.hu </small></p>
+</div><div class="column" style="width:33%;">
+<p><small> <strong>Horváth Győző</strong><br />
+egyetemi docens<br />
+horvath.gyozo@inf.elte.hu </small></p>
+</div>
+</div>
+<p><small> 1117 Budapest, Pázmány Péter sétány 1/c., 2.408<br />
+Tel: (1) 372-2500/8469<br />
+</small></p>
+</section>
+<section id="ismétlés" class="slide level2" data-state="new-section">
+<h2 data-state="new-section">Ismétlés</h2>
+</section>
+<section id="ismétlés-1" class="slide level2">
+<h2>Ismétlés</h2>
+<ul>
+<li>JavaScript nyelvi elemei</li>
+<li>DOM programozás</li>
+<li>Eseménykezelés részletei</li>
+<li>JavaScript beépített objektumai</li>
+</ul>
+<p><img data-src="../../assets/images/architecture/js-dom-ui.png" /></p>
+</section>
+<section id="ismétlés-kódszervezés" class="slide level2">
+<h2>Ismétlés – Kódszervezés</h2>
+<ul>
+<li>fizikai, logikai csoportosítás
+<ul>
+<li>fájl, modul, függvény, osztály</li>
+</ul></li>
+<li>egységbe zárás
+<ul>
+<li>objektum, osztály, függvény, modul</li>
+</ul></li>
+</ul>
+</section>
+<section id="kódszervezés" class="slide level2" data-state="new-section">
+<h2 data-state="new-section">Kódszervezés</h2>
+<p>Adattárolás</p>
+</section>
+<section id="példa-todo-lista" class="slide level2">
+<h2>Példa: Todo lista</h2>
+<div class="example">
+<input id="newItem"> <button id="addItem">Add</button> <br>
+<ul id="todoList">
+</ul>
+</div>
+<script>
+  const todoList = document.querySelector("#todoList");
+  const button = document.querySelector("#addItem");
+  const input = document.querySelector("#newItem");
+
+  function handleButtonClick() {
+    const newItem = input.value;
+    todoList.innerHTML += `<li>${newItem}</li>`;
+  }
+
+  button.addEventListener("click", handleButtonClick);
+</script>
+</section>
+<section id="tárolás-a-dom-ban-1" class="slide level2">
+<h2>Tárolás a DOM-ban (1)</h2>
+<pre class="html"><code>&lt;input id=&quot;newItem&quot;&gt;
+&lt;button id=&quot;addItem&quot;&gt;Add&lt;/button&gt;
+&lt;br&gt;
+&lt;ul id=&quot;todoList&quot;&gt;&lt;/ul&gt;</code></pre>
+<pre class="js"><code>function handleButtonClick() {
+  const newItem = input.value;
+  todoList.innerHTML += `&lt;li&gt;${newItem}&lt;/li&gt;`;
+}
+
+button.addEventListener(&quot;click&quot;, handleButtonClick);</code></pre>
+</section>
+<section id="tárolás-a-dom-ban-1-1" class="slide level2">
+<h2>Tárolás a DOM-ban (1)</h2>
+<pre class="html"><code>&lt;input id=&quot;newItem&quot;&gt;
+&lt;button id=&quot;addItem&quot;&gt;Add&lt;/button&gt;
+&lt;br&gt;
+&lt;ul id=&quot;todoList&quot;&gt;✒&gt;
+  &lt;li&gt;Buy milk&lt;/li&gt;
+  &lt;li&gt;Learn JavaScript&lt;/li&gt;
+&lt;✒&lt;/ul&gt;</code></pre>
+</section>
+<section id="tárolás-a-dom-ban-2" class="slide level2">
+<h2>Tárolás a DOM-ban (2)</h2>
+<pre class="html"><code>&lt;input id=&quot;newItem&quot;&gt;
+&lt;button id=&quot;addItem&quot;&gt;Add&lt;/button&gt;
+&lt;br &gt;
+&lt;ul id=&quot;todoList&quot;&gt;&lt;/ul&gt;</code></pre>
+<pre class="js"><code>function handleButtonClick() {
+  const newItem = input.value;
+  const newListItem = document.createElement(&quot;li&quot;);
+  newListItem.innerHTML = newItem;
+  todoList.appendChild(newListItem);
+}
+
+button.addEventListener(&quot;click&quot;, handleButtonClick);</code></pre>
+</section>
+<section id="tárolás-a-dom-ban-2-1" class="slide level2">
+<h2>Tárolás a DOM-ban (2)</h2>
+<pre class="html"><code>&lt;input id=&quot;newItem&quot;&gt;
+&lt;button id=&quot;addItem&quot;&gt;Add&lt;/button&gt;
+&lt;br&gt;
+&lt;ul id=&quot;todoList&quot;&gt;&lt;/ul&gt;</code></pre>
+<pre class="js"><code>function handleButtonClick() {
+  const newItem = input.value;
+  todoList.innerHTML += `&lt;li&gt;${newItem}&lt;/li&gt;`;
+}
+
+button.addEventListener(&quot;click&quot;, handleButtonClick);</code></pre>
+</section>
+<section id="tárolás-a-dom-ban-3" class="slide level2">
+<h2>Tárolás a DOM-ban (3)</h2>
+<p>Todo lista elemei</p>
+<pre class="js"><code>const input = document.querySelector(&quot;input&quot;);
+const button = document.querySelector(&quot;button&quot;);
+const listElement = document.querySelector(&quot;ul&quot;);
+const listItems = document.querySelectorAll(&quot;li&quot;);
+
+function handleButtonClick() {
+    // Input
+    const newItem = input.value;
+    ✒&gt;const listContent = Array.from(list).map(li =&gt; li.innerText);&lt;✒
+    // Process
+    listContent.push(newItem);
+    // Output
+    ✒&gt;const newElement = document.createElement(&quot;li&quot;);&lt;✒
+    newElement.innerHTML = newItem;
+    ✒&gt;listElement.appendChild(newElement);&lt;✒
+}
+
+button.addEventListener(&quot;click&quot;, handleButtonClick);</code></pre>
+</section>
+<section id="tárolás-a-dom-ban" class="slide level2">
+<h2>Tárolás a DOM-ban</h2>
+<p><img data-src="../../assets/images/architecture/js-program-dom.png" /></p>
+</section>
+<section id="tárolás-a-dom-ban-összefoglalás" class="slide level2">
+<h2>Tárolás a DOM-ban (összefoglalás)</h2>
+<ul>
+<li>Az adatot a DOM-ban tároljuk</li>
+<li>Mindig onnan kell kiolvasni</li>
+<li>Nem alap nyelvi elem</li>
+<li>Adat és feldolgozó függvény szétválik</li>
+<li>Probléma: egységbe zárás, tárolás</li>
+</ul>
+</section>
+<section id="adat-és-megjelenés-szétválasztása" class="slide level2">
+<h2>Adat és megjelenés szétválasztása</h2>
+<ul>
+<li>Alapelv az alkalmazásfejlesztésben</li>
+<li>Könnyebb egységbe zárás</li>
+<li>Alapvető nyelvi elemeket használ</li>
+<li>A DOM (I/O) lassú</li>
+</ul>
+</section>
+<section id="adat-és-megjelenés-szétválasztása-1" class="slide level2">
+<h2>Adat és megjelenés szétválasztása</h2>
+<p><img data-src="../../assets/images/architecture/js-program-memory.png" /></p>
+</section>
+<section id="adat-és-megjelenés-szétválasztása-2" class="slide level2">
+<h2>Adat és megjelenés szétválasztása</h2>
+<pre class="js"><code>✒&gt;const list = [];&lt;✒
+
+const input = document.querySelector(&quot;input&quot;);
+const button = document.querySelector(&quot;button&quot;);
+const listElement = document.querySelector(&quot;ul&quot;);
+
+function handleButtonClick() {
+    // Input
+    const newItem = input.value;
+    // Process
+    list.push(newItem);
+    // Output
+    const newElement = document.createElement(&quot;li&quot;);
+    newElement.innerHTML = newItem;
+    listElement.appendChild(newElement);
+}
+
+button.addEventListener(&quot;click&quot;, handleButtonClick);</code></pre>
+</section>
+<section id="a-felület-mint-az-adat-leképezése" class="slide level2">
+<h2>A felület mint az adat leképezése</h2>
+<pre class="js"><code>const list = [];
+
+✒&gt;function renderList(list) {
+  return list.map(item =&gt; `&lt;li&gt;${item}&lt;/li&gt;`).join(&quot;&quot;);
+}&lt;✒
+
+{...}
+
+function handleButtonClick() {
+    // Input
+    const newItem = input.value;
+    // Process
+    list.push(newItem);
+    // Output
+    ✒&gt;listElement.innerHTML = renderList(list);&lt;✒
+}
+
+button.addEventListener(&quot;click&quot;, handleButtonClick);</code></pre>
+</section>
+<section id="megoldás-részei" class="slide level2">
+<h2>Megoldás részei</h2>
+<p><img data-src="../../assets/images/architecture/js-program-memory-map.png" /></p>
+</section>
+<section id="kiírás-a-dom-ba" class="slide level2">
+<h2>Kiírás a DOM-ba</h2>
+<ul>
+<li><strong>Imperatív megközelítés</strong>
+<ul>
+<li>Ha szükséges megőrizni az adott DOM elemet<br />
+(van belső állapotuk, pl. input, animáció, DOM-ban tárolás)</li>
+<li>Direkt manipuláció</li>
+</ul></li>
+<li><strong>Deklaratív megközelítés</strong>
+<ul>
+<li>Ha az elemek újragenerálhatóak (nincs belső állapotuk)</li>
+<li>Adat leképezése felületi elemekre</li>
+<li>UI = render(data)</li>
+<li>HTML generálók</li>
+</ul></li>
+</ul>
+</section>
+<section id="időzítők" class="slide level2" data-state="new-section">
+<h2 data-state="new-section">Időzítők</h2>
+</section>
+<section id="settimeout" class="slide level2">
+<h2><code>setTimeout</code></h2>
+<ul>
+<li><code>timerId = setTimeout(fn, ms)</code>
+<ul>
+<li>Egy adott függvény futtatása <code>ms</code> ms múlva</li>
+</ul></li>
+<li><code>clearTimeout(timerId)</code>
+<ul>
+<li>A <code>timerId</code>-jú időzítő leállítása</li>
+</ul></li>
+</ul>
+<pre class="js"><code>// Külön függvény
+function tick() {
+  console.log(&#39;tick&#39;);
+}
+setTimeout(tick, 1000);
+
+// Helyben függvény
+setTimeout(function () {
+  console.log(&#39;tick&#39;);
+}, 1000);
+
+// Időzítő törlése
+const timer = setTimeout(() =&gt; {}, 1000);
+// do something, or even in an event:
+clearTimeout(timer);</code></pre>
+</section>
+<section id="setinterval" class="slide level2">
+<h2><code>setInterval</code></h2>
+<ul>
+<li><code>timerId = setInterval(fn, ms)</code>
+<ul>
+<li>Egy adott függvény futtatása <code>ms</code> ms-onként</li>
+</ul></li>
+<li><code>clearInterval(timerId)</code>
+<ul>
+<li>A <code>timerId</code>-jú időzítő leállítása</li>
+</ul></li>
+</ul>
+<pre class="js"><code>// Külön függvény
+function tick() {
+  console.log(&#39;tick&#39;);
+}
+setInterval(tick, 1000);
+
+// Helyben függvény
+setInterval(function () {
+  console.log(&#39;tick&#39;);
+}, 1000);
+
+// Időzítő törlése
+const timer = setInterval(() =&gt; {}, 1000);
+// do something, or even in an event:
+clearInterval(timer);</code></pre>
+</section>
+<section id="időzítő-használata" class="slide level2">
+<h2>Időzítő használata</h2>
+<ul>
+<li>Késleltetett végrehajtás</li>
+<li>Újrarajzolás megvárása (pl. animáció)</li>
+<li>Emberi léptékű műveletvégrehajtás (pl. animáció)</li>
+<li>Hosszú műveletek felosztása</li>
+</ul>
+</section>
+<section id="összettett-alkalmazások-készítése" class="slide level2" data-state="new-section">
+<h2 data-state="new-section">Összettett alkalmazások készítése</h2>
+</section>
+<section id="példa-memória-játék" class="slide level2">
+<h2>Példa: Memória játék</h2>
+<ul class="task-list">
+<li><input type="checkbox" disabled="" />
+Az alkalmazás állapotának leírása</li>
+<li><input type="checkbox" disabled="" />
+Kezdőállapot beállítása, állapot tárolása</li>
+<li><input type="checkbox" disabled="" />
+A felhasználói felület generálása</li>
+<li><input type="checkbox" disabled="" />
+Események kezelése</li>
+</ul>
+</section>
+<section class="slide level2">
+
+<div class="example">
+<p><iframe src="example/index.html" style="width: 500px; height: 500px"></iframe></p>
+</div>
+</section>
+<section id="demo" class="slide level2" data-state="new-section">
+<h2 data-state="new-section">DEMO</h2>
+</section>
+<section id="összefoglalás" class="slide level2">
+<h2>Összefoglalás</h2>
+<ul>
+<li>Adatok tárolása</li>
+<li>Elemek létrehozása és beszúrása</li>
+<li>Kódszervezés
+<ul>
+<li>fizikai, logikai</li>
+<li>egységbe zárás</li>
+</ul></li>
+</ul>
+</section>
+    </div>
+  </div>
+
+  <div id="captcha"></div>
+
+  <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.18.1/build/highlight.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/js/reveal.js"></script>
+
+  <script>
+    // Highlighting in code blocks
+    const codes = document.querySelectorAll('pre > code')
+    for (const code of codes) {
+      code.setAttribute('data-noescape', '')
+      const text = code.innerHTML
+      const markedText = text
+        .replace(/&lt;✒/g, '</mark>')
+        .replace(/✒&gt;/g, '<mark>')
+      code.innerHTML = markedText
+    }
+
+    // Adding captcha
+    const queryString = new URLSearchParams(window.location.search);
+    const captcha = queryString.get('captcha');
+    const captchaElement = document.getElementById("captcha");
+    captchaElement.innerHTML = captcha;
+
+    // Full list of configuration options available at:
+    // https://github.com/hakimel/reveal.js#configuration
+    Reveal.initialize({
+      // Display controls in the bottom right corner
+      controls: true,
+      controlsTutorial: false,
+      // Display a presentation progress bar
+      progress: true,
+      // Display the page number of the current slide
+      slideNumber: true,
+      // Add the current slide number to the URL hash so that reloading the
+      // page/copying the URL will return you to the same slide
+      hash: true,
+      // Push each slide change to the browser history
+      history: false,
+      // Enable keyboard shortcuts for navigation
+      keyboard: true,
+      // Enable the slide overview mode
+      overview: true,
+      // Vertical centering of slides
+      center: true,
+      // Enables touch navigation on devices with touch input
+      touch: true,
+      // Loop the presentation
+      loop: false,
+      // Hides the address bar on mobile devices
+      hideAddressBar: true,
+      // Transition style
+      transition: 'slide', // none/fade/slide/convex/concave/zoom
+      // Transition style for full page slide backgrounds
+      backgroundTransition: 'slide', // none/fade/slide/convex/concave/zoom
+      // Bounds for smallest/largest possible scale to apply to content
+      minScale: 0.5,
+      maxScale: 3,
+      // Modifier key used to click-zoom to part of the slide
+      zoomKey: "ctrl",
+      math: {
+        mathjax: 'https://cdn.jsdelivr.net/gh/mathjax/MathJax@3.0.1/es5/tex-mml-chtml.js',
+        config: 'TeX-AMS_HTML-full',
+        tex2jax: {
+          inlineMath: [['\\(','\\)']],
+          displayMath: [['\\[','\\]']],
+          balanceBraces: true,
+          processEscapes: false,
+          processRefs: true,
+          processEnvironments: true,
+          preview: 'TeX',
+          skipTags: ['script','noscript','style','textarea','pre','code'],
+          ignoreClass: 'tex2jax_ignore',
+          processClass: 'tex2jax_process'
+        }
+      },
+
+      // Optional reveal.js plugins
+      dependencies: [
+        { src: 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+        { src: 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/plugin/zoom-js/zoom.js', async: true },
+        //{ src: 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/socket.io/socket.io.js', async: true },
+        //{ src: 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/plugin/notes-server/client.js', async: true },
+        { src: 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/plugin/math/math.js', async: true },
+        { src: 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/plugin/notes/notes.js', async: true },
+        { src: 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/plugin/highlight/highlight.js', async: true }
+      ]
+    });
+  </script>
+
+  
+  </body>
+</html>
