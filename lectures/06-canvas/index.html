@@ -122,6 +122,43 @@ const context = ✒&gt;canvas.getContext(&#39;2d&#39;)&lt;✒;</code></pre>
 <li>Bezier-görbe (<code>bezierCurveTo</code>)</li>
 </ul>
 </section>
+<section id="rajzolás-útvonalakkal-1" class="slide level2">
+<h2>Rajzolás útvonalakkal</h2>
+<pre class="js"><code>context.fillRect(5, 5, 20, 100);
+context.strokeRect(30, 5, 20, 100);
+
+context.beginPath();
+context.rect(110, 5, 20, 100);
+context.moveTo(130, 5);
+context.lineTo(160, 35);
+context.lineTo(130, 65);
+context.stroke();
+
+context.beginPath();
+context.arc(200, 50, 30, 0, 2 * Math.PI);
+context.fill();
+
+context.beginPath();
+context.moveTo(5, 200);
+context.quadraticCurveTo(55, 100, 105, 200);
+context.closePath();
+context.stroke();
+
+context.beginPath();
+context.moveTo(105, 200);
+context.bezierCurveTo(105, 130, 200, 150, 200, 90);
+context.lineTo(190, 90);
+context.lineTo(200, 80);
+context.lineTo(210, 90);
+context.lineTo(200, 90);
+context.stroke();</code></pre>
+<div class="example">
+<p><iframe 
+    src="examples/01-drawing.html"
+    style="width:520px; height: 120px"
+  ></iframe></p>
+</div>
+</section>
 <section id="beállítások" class="slide level2">
 <h2>Beállítások</h2>
 <ul>
@@ -165,43 +202,6 @@ context.rotate(-Math.PI / 4);
 context.rotate(Math.PI / 4);
 context.translate(-100, -100);</code></pre>
 <p><img data-src="../../assets/images/graphics/complex.png" /></p>
-</section>
-<section id="rajzolás-útvonalakkal-1" class="slide level2">
-<h2>Rajzolás útvonalakkal</h2>
-<pre class="js"><code>context.fillRect(5, 5, 20, 100);
-context.strokeRect(30, 5, 20, 100);
-
-context.beginPath();
-context.rect(110, 5, 20, 100);
-context.moveTo(130, 5);
-context.lineTo(160, 35);
-context.lineTo(130, 65);
-context.stroke();
-
-context.beginPath();
-context.arc(200, 50, 30, 0, 2 * Math.PI);
-context.fill();
-
-context.beginPath();
-context.moveTo(5, 200);
-context.quadraticCurveTo(55, 100, 105, 200);
-context.closePath();
-context.stroke();
-
-context.beginPath();
-context.moveTo(105, 200);
-context.bezierCurveTo(105, 130, 200, 150, 200, 90);
-context.lineTo(190, 90);
-context.lineTo(200, 80);
-context.lineTo(210, 90);
-context.lineTo(200, 90);
-context.stroke();</code></pre>
-<div class="example">
-<p><iframe 
-    src="examples/01-drawing.html"
-    style="width:520px; height: 120px"
-  ></iframe></p>
-</div>
 </section>
 <section id="animációk" class="slide level2" data-state="new-section">
 <h2 data-state="new-section">Animációk</h2>
@@ -729,6 +729,15 @@ audio.play();</code></pre>
 <p><iframe
     src="examples/09-video.html"
     style="width: 500px; height: 300px;"
+  ></iframe></p>
+</div>
+</section>
+<section id="video-canvas" class="slide level2">
+<h2>Video + Canvas</h2>
+<div class="example">
+<p><iframe
+    src="examples/10-greenscreen.html"
+    style="width: 700px; height: 450px;"
   ></iframe></p>
 </div>
 </section>

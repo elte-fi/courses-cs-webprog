@@ -99,7 +99,7 @@ A `CanvasRenderingContext2D` műveletei:
 
 [Referencia](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D)
 
----
+------
 
 ## Rajzolás útvonalakkal
 
@@ -113,6 +113,50 @@ A `CanvasRenderingContext2D` műveletei:
 - "Toll" mozgatása (`moveTo`)
 - Vonal (`lineTo`)
 - Bezier-görbe (`bezierCurveTo`)
+
+------
+
+## Rajzolás útvonalakkal
+
+```js
+context.fillRect(5, 5, 20, 100);
+context.strokeRect(30, 5, 20, 100);
+
+context.beginPath();
+context.rect(110, 5, 20, 100);
+context.moveTo(130, 5);
+context.lineTo(160, 35);
+context.lineTo(130, 65);
+context.stroke();
+
+context.beginPath();
+context.arc(200, 50, 30, 0, 2 * Math.PI);
+context.fill();
+
+context.beginPath();
+context.moveTo(5, 200);
+context.quadraticCurveTo(55, 100, 105, 200);
+context.closePath();
+context.stroke();
+
+context.beginPath();
+context.moveTo(105, 200);
+context.bezierCurveTo(105, 130, 200, 150, 200, 90);
+context.lineTo(190, 90);
+context.lineTo(200, 80);
+context.lineTo(210, 90);
+context.lineTo(200, 90);
+context.stroke();
+```
+
+<div class="example">
+  <iframe 
+    src="examples/01-drawing.html"
+    style="width:520px; height: 120px"
+  ></iframe>
+</div>
+
+------
 
 ## Beállítások
 
@@ -174,48 +218,6 @@ context.translate(-100, -100);
 ```
 
 ![](../../assets/images/graphics/complex.png)
-
-------
-
-## Rajzolás útvonalakkal
-
-```js
-context.fillRect(5, 5, 20, 100);
-context.strokeRect(30, 5, 20, 100);
-
-context.beginPath();
-context.rect(110, 5, 20, 100);
-context.moveTo(130, 5);
-context.lineTo(160, 35);
-context.lineTo(130, 65);
-context.stroke();
-
-context.beginPath();
-context.arc(200, 50, 30, 0, 2 * Math.PI);
-context.fill();
-
-context.beginPath();
-context.moveTo(5, 200);
-context.quadraticCurveTo(55, 100, 105, 200);
-context.closePath();
-context.stroke();
-
-context.beginPath();
-context.moveTo(105, 200);
-context.bezierCurveTo(105, 130, 200, 150, 200, 90);
-context.lineTo(190, 90);
-context.lineTo(200, 80);
-context.lineTo(210, 90);
-context.lineTo(200, 90);
-context.stroke();
-```
-
-<div class="example">
-  <iframe 
-    src="examples/01-drawing.html"
-    style="width:520px; height: 120px"
-  ></iframe>
-</div>
 
 ------
 
@@ -837,6 +839,17 @@ audio.play();
   <iframe
     src="examples/09-video.html"
     style="width: 500px; height: 300px;"
+  ></iframe>
+</div>
+
+------
+
+## Video + Canvas
+
+<div class="example">
+  <iframe
+    src="examples/10-greenscreen.html"
+    style="width: 700px; height: 450px;"
   ></iframe>
 </div>
 

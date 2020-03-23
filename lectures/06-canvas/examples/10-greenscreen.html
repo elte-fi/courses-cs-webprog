@@ -1,0 +1,49 @@
+<style>
+  body {
+    text-align: center;
+  }
+</style>
+
+<video controls src="../../../assets/videos/greenscreen.mp4" width="480" height="270"></video>
+<canvas width="480" height="270" id="filter"></canvas>
+<canvas width="480" height="270" id="output"></canvas>
+<br>
+<button>Start</button>
+
+<script>
+  const button = document.querySelector("button");
+  const video = document.querySelector("video");
+  const canvas = document.querySelector("#filter");
+  const context = canvas.getContext("2d");
+  const output = document.querySelector("#output");
+  const outputContext = output.getContext("2d");
+
+  video.setAttribute('crossOrigin', 'Anonymus');
+  output.style.background = "url(../../../assets/images/examples/video-background.jpg)";
+  canvas.style.display = "none";
+
+  function next() {
+    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+    // Image data as bytes
+    const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+    const pixelCount = imageData.data.length / 4;
+
+    for (let i = 0; i < pixelCount; i++) {
+      let r = imageData.data[i * 4 + 0];
+      let g = imageData.data[i * 4 + 1];
+      let b = imageData.data[i * 4 + 2];
+
+      if (g > 100 && r < 100 && b < 50) {
+        imageData.data[i * 4 + 3] = 0;
+      }
+    }
+
+    outputContext.clearRect(0, 0, canvas.width, canvas.height);
+    outputContext.putImageData(imageData, 0, 0);
+
+    requestAnimationFrame(next);
+  }
+
+  button.addEventListener("click", next);
+</script>
