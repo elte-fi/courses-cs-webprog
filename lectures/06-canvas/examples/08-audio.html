@@ -1,0 +1,27 @@
+<style>
+  button {
+    font-size: 32px;
+  }
+
+  button, audio {
+    vertical-align: middle;
+  }
+</style>
+
+<audio src="../../../assets/sounds/horn.wav" id="audio" controls></audio>
+<button id="play">Play</button>
+<button id="stop">Stop</button>
+
+<script>
+  const audio = document.querySelector("#audio");
+  const playButton = document.querySelector("#play");
+  const stopButton = document.querySelector("#stop");
+
+  playButton.addEventListener("click", function () {
+    audio.play();
+  });
+
+  stopButton.addEventListener("click", function () {
+    audio.pause();
+  });
+</script>

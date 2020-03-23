@@ -1,0 +1,29 @@
+<style>
+  button {
+    font-size: 32px;
+  }
+</style>
+
+<video
+  controls
+  id="video" 
+  src="../../../assets/videos/waves.mp4" 
+  width="500"
+></video>
+<br>
+<button id="play">Play</button>
+<button id="stop">Stop</button>
+
+<script>
+  const video = document.querySelector("#video");
+  const playButton = document.querySelector("#play");
+  const stopButton = document.querySelector("#stop");
+
+  playButton.addEventListener("click", function () {
+    video.play();
+  });
+
+  stopButton.addEventListener("click", function () {
+    video.pause();
+  });
+</script>

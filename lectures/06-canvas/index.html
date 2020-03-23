@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <title>Webprogramozás - Canvas, animációk, API-k</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+  <!-- Reveal.js Theme -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/elte-fi/revealjs-elte-fi@1.1.0/dist/revealjs-elte-fi.min.css">
+  <!-- Highlighting -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.18.1/build/styles/default.min.css">
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+
+  <!-- Printing and PDF exports -->
+  <script>
+    var link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = window.location.search.match(/print-pdf/gi) 
+      ? 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/css/print/pdf.css' 
+      : 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/css/print/paper.css';
+    document.getElementsByTagName('head')[0].appendChild( link );
+  </script>
+
+  </head>
+
+<body>
+  <div class="reveal">
+    <div class="slides">
+<section class="slide level2">
+
+<div class="title">
+<p>Webprogramozás</p>
+</div>
+<h3 id="canvas-animációk-api-k">Canvas, animációk, API-k</h3>
+<div class="columns">
+<div class="column" style="width:33%;">
+<p><small> <strong>Visnovitz Márton</strong><br />
+egyetemi tanársegéd<br />
+visnovitz.marton@inf.elte.hu </small></p>
+</div><div class="column" style="width:33%;">
+<p><small> <strong>Gerely Viktor</strong><br />
+demonstrátor<br />
+mohmas@inf.elte.hu </small></p>
+</div><div class="column" style="width:33%;">
+<p><small> <strong>Horváth Győző</strong><br />
+egyetemi docens<br />
+horvath.gyozo@inf.elte.hu </small></p>
+</div>
+</div>
+<p><small> 1117 Budapest, Pázmány Péter sétány 1/c., 2.408<br />
+Tel: (1) 372-2500/8469<br />
+</small></p>
+</section>
+<section id="ismétlés" class="slide level2" data-state="new-section">
+<h2 data-state="new-section">Ismétlés</h2>
+</section>
+<section id="ismétlés-1" class="slide level2">
+<h2>Ismétlés</h2>
+<ul>
+<li>JavaScript nyelvi elemei</li>
+<li>DOM programozás</li>
+<li>Eseménykezelés részletei</li>
+<li>Kódszervezés</li>
+<li>Adatok tárolása</li>
+</ul>
+</section>
+<section id="canvas-api" class="slide level2" data-state="new-section">
+<h2 data-state="new-section">Canvas API</h2>
+</section>
+<section id="grafikus-lehetőségek-a-böngészőben" class="slide level2">
+<h2>Grafikus lehetőségek a böngészőben</h2>
+<ul>
+<li>Képfájlok</li>
+<li><strong>CSS formázás</strong></li>
+<li><strong>(Inline) SVG (vektorgrafika)</strong></li>
+<li><strong>Canvas (raszteres grafika)</strong></li>
+</ul>
+</section>
+<section id="canvas" class="slide level2">
+<h2>Canvas</h2>
+<pre class="html"><code>&lt;canvas ✒&gt;width=&quot;200&quot; height=&quot;200&quot;&lt;✒&gt;&lt;/canvas&gt;</code></pre>
+<pre class="js"><code>// Canvas elem elérése
+const canvas = document.querySelector(&#39;canvas&#39;);
+// 2D rajzolási &quot;kontextus&quot; elérése
+const context = ✒&gt;canvas.getContext(&#39;2d&#39;)&lt;✒;</code></pre>
+<p><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/canvas">Referencia</a></p>
+</section>
+<section id="rajzolás-a-számítógépen" class="slide level2">
+<h2>Rajzolás a számítógépen</h2>
+<figure>
+<img data-src="../../assets/images/graphics/coordinates.png" alt="" /><figcaption>Koordinátarendszer</figcaption>
+</figure>
+</section>
+<section id="rajzolás-alakzatokkal-képekkel" class="slide level2">
+<h2>Rajzolás alakzatokkal, képekkel</h2>
+<p>A <code>CanvasRenderingContext2D</code> műveletei:</p>
+<ul>
+<li>Szöveg (<code>fillText</code>, <code>strokeText</code>)</li>
+<li>Téglalap (<code>fillRect</code>, <code>strokeRect</code>)</li>
+<li>Kép (<code>drawImage</code>)</li>
+<li>Törlés (<code>clearRect</code>)</li>
+</ul>
+<p><a href="https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D">Referencia</a></p>
+</section>
+<section id="rajzolás-útvonalakkal" class="slide level2">
+<h2>Rajzolás útvonalakkal</h2>
+<ul>
+<li>Útvonal kezdete (<code>beginPath</code>)</li>
+<li>Útvonal lezárása (<code>closePath</code>) ❕</li>
+<li>Útvonal kitöltése (<code>fill</code>)</li>
+<li>Útvonal megrajzolása (<code>stroke</code>)</li>
+<li>Téglalap (<code>rect</code>)</li>
+<li>Ellipszis (<code>ellipse</code>)</li>
+<li>Körív (<code>arc</code></li>
+<li>“Toll” mozgatása (<code>moveTo</code>)</li>
+<li>Vonal (<code>lineTo</code>)</li>
+<li>Bezier-görbe (<code>bezierCurveTo</code>)</li>
+</ul>
+</section>
+<section id="beállítások" class="slide level2">
+<h2>Beállítások</h2>
+<ul>
+<li>Kitöltés színe/mintázata (<code>fillStyle</code>)</li>
+<li>Vonal színe (<code>strokeStyle</code>)</li>
+<li>Vonal vastagsága (<code>lineWidth</code>)</li>
+<li>Vonalak vége (<code>lineCap</code>)</li>
+<li>Vonalak illesztése (<code>lineJoin</code>)</li>
+<li>Áttetszőség (<code>globalAlpha</code>)</li>
+</ul>
+</section>
+<section id="transzformációk" class="slide level2">
+<h2>Transzformációk</h2>
+<ul>
+<li>Forgatás (<code>rotate</code>)</li>
+<li>Méretezés (<code>scale</code>)</li>
+<li>Eltolás (<code>translate</code>)</li>
+</ul>
+</section>
+<section id="eltolás" class="slide level2">
+<h2>Eltolás</h2>
+<pre class="js"><code>context.translate(100, 100);</code></pre>
+<p><img data-src="../../assets/images/graphics/translate.png" /></p>
+</section>
+<section id="méretezés" class="slide level2">
+<h2>Méretezés</h2>
+<pre class="js"><code>context.scale(2, 2);</code></pre>
+<p><img data-src="../../assets/images/graphics/scale.png" /></p>
+</section>
+<section id="forgatás" class="slide level2">
+<h2>Forgatás</h2>
+<pre class="js"><code>context.rotate(Math.PI / 4);</code></pre>
+<p><img data-src="../../assets/images/graphics/rotate.png" /></p>
+</section>
+<section class="slide level2">
+
+<h3 id="komplex-transzformáció">Komplex transzformáció</h3>
+<pre class="js"><code>context.translate(100, 100);
+context.rotate(-Math.PI / 4);
+// Draw something
+context.rotate(Math.PI / 4);
+context.translate(-100, -100);</code></pre>
+<p><img data-src="../../assets/images/graphics/complex.png" /></p>
+</section>
+<section id="rajzolás-útvonalakkal-1" class="slide level2">
+<h2>Rajzolás útvonalakkal</h2>
+<pre class="js"><code>context.fillRect(5, 5, 20, 100);
+context.strokeRect(30, 5, 20, 100);
+
+context.beginPath();
+context.rect(110, 5, 20, 100);
+context.moveTo(130, 5);
+context.lineTo(160, 35);
+context.lineTo(130, 65);
+context.stroke();
+
+context.beginPath();
+context.arc(200, 50, 30, 0, 2 * Math.PI);
+context.fill();
+
+context.beginPath();
+context.moveTo(5, 200);
+context.quadraticCurveTo(55, 100, 105, 200);
+context.closePath();
+context.stroke();
+
+context.beginPath();
+context.moveTo(105, 200);
+context.bezierCurveTo(105, 130, 200, 150, 200, 90);
+context.lineTo(190, 90);
+context.lineTo(200, 80);
+context.lineTo(210, 90);
+context.lineTo(200, 90);
+context.stroke();</code></pre>
+<div class="example">
+<p><iframe 
+    src="examples/01-drawing.html"
+    style="width:520px; height: 120px"
+  ></iframe></p>
+</div>
+</section>
+<section id="animációk" class="slide level2" data-state="new-section">
+<h2 data-state="new-section">Animációk</h2>
+</section>
+<section class="slide level2">
+
+<p>Alapelv: a vásznon lévő kép <strong>gyors</strong> újrarajzolása</p>
+<ol type="1">
+<li>Változások újrarajzolása</li>
+<li>Teljes kép újrarajzolása</li>
+</ol>
+<p>Alkalmazás-modell:</p>
+<ol type="1">
+<li>Állapot (adatok)</li>
+<li>Nézet (rajzolás)</li>
+</ol>
+</section>
+<section id="példa" class="slide level2">
+<h2>Példa</h2>
+<div class="example">
+<p><iframe 
+    src="examples/02-animation.html"
+    style="width:520px; height: 520px"
+  ></iframe></p>
+</div>
+</section>
+<section id="animációs-ciklus" class="slide level2">
+<h2>Animációs ciklus</h2>
+<p><img data-src="../../assets/images/architecture/animation-loop.png" /></p>
+</section>
+<section id="animációs-ciklus-1" class="slide level2">
+<h2>Animációs ciklus</h2>
+<pre class="js"><code>const state = /*...*/;
+
+function next() {
+  update(); // Update current state
+  render(); // Rerender the frame
+  requestAnimationFrame(next);
+}
+
+next(); // Start the loop
+
+function update() { /*...*/ }
+function render() { /*...*/ }</code></pre>
+</section>
+<section id="idő-alapú-animáció" class="slide level2">
+<h2>Idő alapú animáció</h2>
+<p>Az állapot változása az eltelt idő függvénye (pl. fizika)</p>
+<pre class="js"><code>let lastFrameTime = performance.now();
+const state = /*...*/;
+
+function next() {
+  ✒&gt;const currentTime = performance.now();&lt;✒
+  ✒&gt;const dt = currentTime - lastFrameTime;&lt;✒
+
+  update(✒&gt;dt&lt;✒); // Update current state
+  render(); // Rerender the frame
+
+  ✒&gt;lastFrameTime = currentTime;&lt;✒
+
+  requestAnimationFrame(next);
+}
+
+next(); // Start the loop</code></pre>
+</section>
+<section id="egységbe-zárás" class="slide level2">
+<h2>Egységbe zárás</h2>
+<pre class="js"><code>class Actor {
+  constructor() {
+    /* Initialize */
+  }
+
+  update(dt) {
+    /* Update properties */
+  }
+
+  draw(context) {
+    /* Render to canvas */
+  }
+}</code></pre>
+</section>
+<section id="példa-1" class="slide level2">
+<h2>Példa</h2>
+<pre class="js"><code>class Ball {
+  vx = 500;
+  radius = 20;
+
+  constructor(x = this.radius) {
+    this.x = x;
+  }
+
+  update(dt) {
+    this.x += this.vx * dt / 1000;
+  }
+
+  render(context) {
+    context.beginPath();
+    context.arc(this.x, this.radius, this.radius, 0, Math.PI * 2);
+    context.fill();
+  }
+
+  bounceBack() {
+    this.vx *= -1;
+  }
+}</code></pre>
+<div class="example">
+<p><iframe
+    src="examples/03-class.html"
+    style="width: 500px; height: 70px"
+  ></iframe></p>
+</div>
+</section>
+<section id="spritesheetek-használata" class="slide level2">
+<h2>Spritesheetek használata</h2>
+<p><img data-src="../../assets/iamges/../images/examples/spritesheet.png" /></p>
+</section>
+<section id="spritesheetek-használata-1" class="slide level2">
+<h2>Spritesheetek használata</h2>
+<pre class="js"><code>const spritesPerRow = 4;
+const spritesCount = 16;
+const spriteDuration = 16;
+const spriteWidth = 128;
+const spriteHeight = 128;
+
+let lastFrameTime = performance.now();
+
+const spriteSheet = new Image();
+spriteSheet.src = &quot;spritesheet.png&quot;;
+
+const state = {
+  currentSprite: 0,
+  timeSinceSpriteChange: 0
+};
+
+function next() {
+  const currentTime = performance.now();
+  const dt = currentTime - lastFrameTime;
+
+  update(dt);
+  render();
+
+  lastFrameTime = currentTime;
+
+  requestAnimationFrame(next);
+}
+
+function update(dt) {
+  state.timeSinceSpriteChange += dt;
+  if (state.timeSinceSpriteChange &gt; spriteDuration) {
+    const newSprite = (state.currentSprite + 1) % spritesCount;
+    state.currentSprite = newSprite;
+    state.timeSinceSpriteChange = 0;
+  }
+}
+
+function render() {
+  context.clearRect(0, 0, canvas.width, canvas.height);
+  const spriteX = state.currentSprite % spritesPerRow;
+  const spriteY = Math.trunc(state.currentSprite / spritesPerRow);
+  context.drawImage(
+    spriteSheet, 
+    spriteWidth * spriteX,  // Source X
+    spriteHeight * spriteY, // Source Y
+    spriteWidth,            // Source width
+    spriteHeight,           // Source height
+    0,                      // Target X
+    0,                      // Target Y
+    spriteWidth,            // Target width
+    spriteHeight,           // Target height
+  );
+}
+
+next();</code></pre>
+<div class="example">
+<p><iframe
+    src="examples/04-spritesheet.html"
+    style="width: 138px; height: 138px"
+  ></iframe></p>
+</div>
+</section>
+<section id="sprite-osztály" class="slide level2">
+<h2>Sprite osztály</h2>
+<pre class="js"><code>class Sprite {
+  currentFrame = 0;
+  timeSinceLastFrame = 0;
+
+  constructor({
+    image, 
+    width, 
+    height, 
+    spritesPerRow, 
+    rowCount, 
+    frameDuration = 30
+  }) {
+    this.image = new Image();
+    this.image.src = image;
+    this.width = width;
+    this.height = height;
+    this.spritesPerRow = spritesPerRow;
+    this.rowCount = rowCount;
+    this.frameDuration = frameDuration;
+  }
+
+  get spriteCount() {
+    return this.spritesPerRow * this.rowCount;
+  }
+
+  update(dt) {
+    this.timeSinceLastFrame += dt;
+
+    if (this.timeSinceLastFrame &gt; this.frameDuration) {
+      const newFrame = (this.currentFrame + 1) % this.spriteCount;
+      this.currentFrame = newFrame;
+      this.timeSinceLastFrame = 0;
+    }
+  }
+
+  render(context, targetX, targetY, width, height) {
+    const sourceX = 
+      (this.currentFrame % this.spritesPerRow) * 
+      this.width;
+    const sourceY = 
+      Math.trunc(this.currentFrame / this.spritesPerRow) * 
+      this.height;
+
+    context.drawImage(
+      this.image,
+      sourceX, sourceY, this.width, this.height, 
+      targetX, targetY, width || this.width, height || this.height
+    );
+  }
+}</code></pre>
+</section>
+<section id="animáció-sprite-osztállyal" class="slide level2">
+<h2>Animáció Sprite osztállyal</h2>
+<pre class="js"><code>const sprite = new Sprite({
+  image: &quot;spritesheet.png&quot;,
+  width: 128, 
+  height: 128,
+  spritesPerRow: 4,
+  rowCount: 4,
+  frameDuration: 30
+});
+
+let lastFrameTime = performance.now();
+
+function next() {
+  const currentTime = performance.now();
+  const dt = currentTime - lastFrameTime;
+
+  context.clearRect(0, 0, canvas.width, canvas.height);
+
+  ✒&gt;sprite.update(dt);&lt;✒
+  ✒&gt;sprite.render(context, 0, 0);&lt;✒
+
+  lastFrameTime = currentTime;
+
+  requestAnimationFrame(next);
+}
+
+next();</code></pre>
+<div class="example">
+<p><iframe 
+    src="examples/05-sprite.html"
+    style="width: 138px; height: 138px"
+  ></iframe></p>
+</div>
+</section>
+<section id="sprite-kiterjesztése" class="slide level2">
+<h2>Sprite kiterjesztése</h2>
+<pre class="js"><code>class Runner extends Sprite {
+  direction = 1;
+  x = 0;
+  vx = 200;
+
+  update(dt) {
+    super.update(dt);
+    ✒&gt;this.x += this.vx * dt / 1000;&lt;✒
+  }
+
+  render(context) {
+    ✒&gt;context.save();
+    context.translate(this.x, 0);
+    context.scale(this.direction, 1);
+    super.render(context, -this.width, 0);
+    context.restore();&lt;✒
+  }
+
+  turnAround() {
+    this.vx *= -1;
+    this.direction *= -1;
+  }
+}</code></pre>
+</section>
+<section id="sprite-mozgatása" class="slide level2">
+<h2>Sprite mozgatása</h2>
+<pre class="js"><code>const runner = new Runner({/*...*/});
+let lastFrameTime = performance.now();
+function next() {/*...*/}
+
+function update(dt) {
+  ✒&gt;runner.update(dt);
+
+  if (runner.x &gt;= canvas.width || runner.x &lt;= 0) {
+    runner.turnAround();
+  }&lt;✒
+}
+
+function render() {
+  ✒&gt;runner.render(context);&lt;✒
+}</code></pre>
+<div class="example">
+<p><iframe
+    src="examples/06-movement.html"
+    style="width: 720px; height: 138px"
+  ></iframe></p>
+</div>
+</section>
+<section id="háttérgrafika" class="slide level2">
+<h2>Háttérgrafika</h2>
+<div class="example">
+<p><iframe
+    src="examples/07-background.html"
+    style="width: 300px; height: 300px"
+  ></iframe></p>
+</div>
+</section>
+<section id="játékok-készítése-interaktív-animáció" class="slide level2">
+<h2>Játékok készítése = Interaktív animáció</h2>
+<p>Globális eseménykezelők módosítják az animáció paramétereit</p>
+<p><img data-src="../../assets/images/architecture/game-loop.png" /></p>
+<p><a href="https://swarmed.herokuapp.com">Játék példa</a></p>
+</section>
+<section id="d-grafika" class="slide level2">
+<h2>3D grafika</h2>
+<p>A Canvas elemre: WebGL technológiával</p>
+<pre class="js"><code>const canvas = document.querySelector(&quot;canvas&quot;);
+const webGl = cavnas.getContext(&quot;webgl&quot;);
+webGl.viewport(0, 0, canvas.width, canvas.height);</code></pre>
+</section>
+<section id="demo" class="slide level2">
+<h2>Demo</h2>
+<iframe src="http://webglsamples.org/aquarium/aquarium.html" style="width: 700px; height: 500px">
+</iframe>
+<p><a href="https://github.com/WebGLSamples/WebGLSamples.github.io">Példák</a></p>
+</section>
+<section id="api-k-a-böngészőben" class="slide level2" data-state="new-section">
+<h2 data-state="new-section">API-k a böngészőben</h2>
+</section>
+<section id="api-k-a-böngészőben-1" class="slide level2">
+<h2>API-k a böngészőben</h2>
+<p>Programozási interfészek erőforrások eléréséhez/kezeléséhez</p>
+<ul>
+<li>BOM (Browser Object Model)</li>
+<li>Location API</li>
+<li>Geolocation API</li>
+<li>MediaDevices API</li>
+<li>File API</li>
+<li>…</li>
+</ul>
+</section>
+<section id="bom-window" class="slide level2">
+<h2>BOM (<code>window</code>)</h2>
+<ul>
+<li>A böngésző irányítása a <code>window</code> objektumon keresztül</li>
+<li><code>window.innerWidth</code>, <code>window.innerHeight</code>, …</li>
+<li><code>window.open()</code>, <code>window.close()</code>, …</li>
+</ul>
+<pre class="js"><code>const options = &quot;resizable,width=800,height=600,scrollbars=yes&quot;;
+const elte = window.open(&quot;http://www.elte.hu&quot;, &quot;ELTE&quot;, options);
+elte.resizeTo(400, 200);
+elte.document.querySelector(&quot;p&quot;);
+elte.opener; // window
+elte.close();</code></pre>
+<div class="example">
+<p><button id="newWindow">Open new window</button></p>
+</div>
+<script>
+  const button = document.querySelector("#newWindow");
+  button.addEventListener("click", function () {
+    const options = "resizable,width=800,height=600,scrollbars=yes";
+    const newWindow = window.open("http://www.elte.hu", "ELTE", options);
+  });
+</script>
+<p><a href="https://developer.mozilla.org/en-US/docs/Web/API/Window">Referencia</a></p>
+</section>
+<section id="location-api" class="slide level2">
+<h2>Location API</h2>
+<ul>
+<li>A címsor tartalmának olvasása</li>
+<li>Az egyes részek külön kezelhezők</li>
+<li><code>hash</code>, <code>host</code>, <code>hostname</code>, <code>href</code>, <code>origin</code>, <code>pathname</code>, <code>port</code>, <code>protocol</code>, <code>search</code>, <code>username</code>, <code>password</code></li>
+</ul>
+<pre class="js"><code>// http://example.com:8080/page.html?name=value#anchor
+location.href;      // az egész URL
+location.host;      // &quot;example.com:8080&quot;
+location.hostname;  // &quot;example.com&quot;
+location.origin;    // &quot;http://example.com:8080&quot;
+location.pathname;  // &quot;/page.html&quot;
+location.port;      // &quot;8080&quot;
+location.protocol;  // &quot;http:&quot;
+location.search;    // &quot;?name=value&quot;
+location.hash;      // &quot;#anchor&quot;</code></pre>
+</section>
+<section id="location-api-1" class="slide level2">
+<h2>Location API</h2>
+<ul>
+<li>URL módosítása
+<ul>
+<li><code>assign(newUrl)</code>: új oldal betöltése</li>
+<li><code>replace(newUrl)</code>: jelenlegi felülírása</li>
+<li><code>reload()</code>: újratöltés</li>
+</ul></li>
+<li>Események
+<ul>
+<li><code>hashchange</code>: az URL fragment megváltozása</li>
+</ul></li>
+</ul>
+<pre class="js"><code>window.location = &quot;http://www.elte.hu&quot;;
+window.location.href = &quot;http://www.elte.hu&quot;;
+window.location.assign(&quot;http://www.elte.hu&quot;);
+window.location.replace(&quot;http://www.elte.hu&quot;);
+window.location.reload();</code></pre>
+</section>
+<section id="urlsearchparams" class="slide level2">
+<h2><code>URLSearchParams</code></h2>
+<p>A <code>location.search</code> paraméter feldolgozására</p>
+<pre class="js"><code>const searchParams = new URLSearchParams(location.search);
+
+searchParams.has(&quot;paramName&quot;);
+searchParams.get(&quot;paramName&quot;);
+searchParams.getAll(&quot;paramName&quot;);
+searchParams.set(&quot;paramName&quot;);
+searchParams.append(&quot;paramName&quot;, &quot;paramValue&quot;);
+searchParams.delete(&quot;paramName&quot;);</code></pre>
+<p><a href="https://developer.mozilla.org/en-US/docs/Web/API/Location">Referencia</a></p>
+</section>
+<section id="history-api" class="slide level2">
+<h2>History API</h2>
+<p>Közlekedés az előzményekben</p>
+<ul>
+<li><code>window.history</code>
+<ul>
+<li><code>back()</code></li>
+<li><code>forward()</code></li>
+<li><code>go(n)</code></li>
+</ul></li>
+</ul>
+<pre class="js"><code>window.history.back();
+window.history.forward();
+window.history.go(-3);</code></pre>
+</section>
+<section id="history-api-1" class="slide level2">
+<h2>History API</h2>
+<p>Módosítás</p>
+<ul>
+<li><code>window.history.pushState(stateObj, name, url)</code></li>
+<li><code>window.history.replaceState(stateObj, name, url)</code></li>
+<li><code>window.onpopstate</code> esemény</li>
+</ul>
+<pre class="js"><code>window.onpopstate = function(event) {
+  console.log(JSON.stringify(event.state));
+};
+
+history.pushState({ page: 1 }, &quot;title 1&quot;, &quot;?page=1&quot;);
+history.pushState({ page: 2 }, &quot;title 2&quot;, &quot;?page=2&quot;);
+history.replaceState({ page: 3 }, &quot;title 3&quot;, &quot;?page=3&quot;);
+history.back(); // logs &quot;location: http://example.com/example.html?page=1, state: {&quot;page&quot;:1}&quot;
+history.back(); // logs &quot;location: http://example.com/example.html, state: null&quot;
+history.go(2);  // logs &quot;location: http://example.com/example.html?page=3, state: {&quot;page&quot;:3}&quot;</code></pre>
+</section>
+<section id="localstorage-api" class="slide level2">
+<h2>LocalStorage API</h2>
+<ul>
+<li>Adatok tárolása helyi gépen</li>
+<li>Kulcs-érték párok gyűjteménye</li>
+<li>Csak egyszerű értékek tárolhatók ➡ szerializáció</li>
+</ul>
+<pre class="js"><code>// Storing values
+localStorage.setItem(&quot;foo&quot;) = 42;
+// or
+localStorage.bar = 42;
+
+// Reading values
+console.log(localStorage.getItem(&quot;foo&quot;));
+// or
+console.log(localStorage.bar);
+
+// Storing complex data
+const data = [1, 3, 5, 7];
+localStorage.setItem(&#39;data&#39;, JSON.stringify(data));
+const loadedData = JSON.parse(localStorage.getItem(&#39;data&#39;));</code></pre>
+</section>
+<section id="médiaelemek-vezérlése" class="slide level2" data-state="new-section">
+<h2 data-state="new-section">Médiaelemek vezérlése</h2>
+</section>
+<section id="audio" class="slide level2">
+<h2>Audio</h2>
+<ul>
+<li>Hangállományok lejátszása</li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLAudioElement"><code>HTMLAudioElement</code></a></li>
+</ul>
+<pre class="html"><code>&lt;audio src=&quot;horn.wav&quot; id=&quot;audio1&quot; controls&gt;&lt;/audio&gt;</code></pre>
+<pre class="js"><code>// meglévő elem
+document.querySelector(&#39;audio&#39;).play();
+
+// in-memory elem
+const audio = document.createElement(&#39;audio&#39;);
+audio.src = &#39;horn.wav&#39;;
+audio.play();</code></pre>
+<div class="example">
+<p><iframe
+    src="examples/08-audio.html"
+    style="width: 500px; height: 70px;"
+  ></iframe></p>
+</div>
+</section>
+<section id="video" class="slide level2">
+<h2>Video</h2>
+<ul>
+<li>HTML <code>&lt;video&gt;</code> tag</li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLVideoElement"><code>HTMLVideoElement</code></a></li>
+</ul>
+<div class="example">
+<p><iframe
+    src="examples/09-video.html"
+    style="width: 500px; height: 300px;"
+  ></iframe></p>
+</div>
+</section>
+<section id="összefoglalás" class="slide level2">
+<h2>Összefoglalás</h2>
+<ul>
+<li>Rajzolás a <code>canvas</code> elemre</li>
+<li>Animációk, játékok a <code>canvas</code> elemmel</li>
+<li>JavaScript API-k</li>
+<li>Médiaelemek vezérlése</li>
+</ul>
+</section>
+    </div>
+  </div>
+
+  <div id="captcha"></div>
+
+  <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.18.1/build/highlight.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/js/reveal.js"></script>
+
+  <script>
+    // Highlighting in code blocks
+    const codes = document.querySelectorAll('pre > code')
+    for (const code of codes) {
+      code.setAttribute('data-noescape', '')
+      const text = code.innerHTML
+      const markedText = text
+        .replace(/&lt;✒/g, '</mark>')
+        .replace(/✒&gt;/g, '<mark>')
+      code.innerHTML = markedText
+    }
+
+    // Adding captcha
+    const queryString = new URLSearchParams(window.location.search);
+    const captcha = queryString.get('captcha');
+    const captchaElement = document.getElementById("captcha");
+    captchaElement.innerHTML = captcha;
+
+    // Full list of configuration options available at:
+    // https://github.com/hakimel/reveal.js#configuration
+    Reveal.initialize({
+      // Display controls in the bottom right corner
+      controls: true,
+      controlsTutorial: false,
+      // Display a presentation progress bar
+      progress: true,
+      // Display the page number of the current slide
+      slideNumber: true,
+      // Add the current slide number to the URL hash so that reloading the
+      // page/copying the URL will return you to the same slide
+      hash: true,
+      // Push each slide change to the browser history
+      history: false,
+      // Enable keyboard shortcuts for navigation
+      keyboard: true,
+      // Enable the slide overview mode
+      overview: true,
+      // Vertical centering of slides
+      center: true,
+      // Enables touch navigation on devices with touch input
+      touch: true,
+      // Loop the presentation
+      loop: false,
+      // Hides the address bar on mobile devices
+      hideAddressBar: true,
+      // Transition style
+      transition: 'slide', // none/fade/slide/convex/concave/zoom
+      // Transition style for full page slide backgrounds
+      backgroundTransition: 'slide', // none/fade/slide/convex/concave/zoom
+      // Bounds for smallest/largest possible scale to apply to content
+      minScale: 0.5,
+      maxScale: 3,
+      // Modifier key used to click-zoom to part of the slide
+      zoomKey: "ctrl",
+      math: {
+        mathjax: 'https://cdn.jsdelivr.net/gh/mathjax/MathJax@3.0.1/es5/tex-mml-chtml.js',
+        config: 'TeX-AMS_HTML-full',
+        tex2jax: {
+          inlineMath: [['\\(','\\)']],
+          displayMath: [['\\[','\\]']],
+          balanceBraces: true,
+          processEscapes: false,
+          processRefs: true,
+          processEnvironments: true,
+          preview: 'TeX',
+          skipTags: ['script','noscript','style','textarea','pre','code'],
+          ignoreClass: 'tex2jax_ignore',
+          processClass: 'tex2jax_process'
+        }
+      },
+
+      // Optional reveal.js plugins
+      dependencies: [
+        { src: 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+        { src: 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/plugin/zoom-js/zoom.js', async: true },
+        //{ src: 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/socket.io/socket.io.js', async: true },
+        //{ src: 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/plugin/notes-server/client.js', async: true },
+        { src: 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/plugin/math/math.js', async: true },
+        { src: 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/plugin/notes/notes.js', async: true },
+        { src: 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/plugin/highlight/highlight.js', async: true }
+      ]
+    });
+  </script>
+
+  
+  </body>
+</html>
