@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <title>Webprogramozás - Canvas, animációk, API-k</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+  <!-- Reveal.js Theme -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/elte-fi/revealjs-elte-fi@1.1.0/dist/revealjs-elte-fi.min.css">
+  <!-- Highlighting -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.18.1/build/styles/default.min.css">
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+
+  <!-- Printing and PDF exports -->
+  <script>
+    var link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = window.location.search.match(/print-pdf/gi) 
+      ? 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/css/print/pdf.css' 
+      : 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/css/print/paper.css';
+    document.getElementsByTagName('head')[0].appendChild( link );
+  </script>
+
+  </head>
+
+<body>
+  <div class="reveal">
+    <div class="slides">
+<section class="slide level2">
+
+<div class="title">
+<p>Webprogramozás</p>
+</div>
+<h3 id="aszinkron-programozás-ajax-this-hibakezelés">Aszinkron programozás, AJAX, this, hibakezelés</h3>
+<div class="columns">
+<div class="column" style="width:33%;">
+<p><small> <strong>Visnovitz Márton</strong><br />
+egyetemi tanársegéd<br />
+visnovitz.marton@inf.elte.hu </small></p>
+</div><div class="column" style="width:33%;">
+<p><small> <strong>Horváth Győző</strong><br />
+egyetemi docens<br />
+horvath.gyozo@inf.elte.hu </small></p>
+</div>
+</div>
+<p><small> 1117 Budapest, Pázmány Péter sétány 1/c., 2.408<br />
+Tel: (1) 372-2500/8469<br />
+</small></p>
+</section>
+<section id="ismétlés" class="slide level2" data-state="new-section">
+<h2 data-state="new-section">Ismétlés</h2>
+</section>
+<section id="ismétlés-1" class="slide level2">
+<h2>Ismétlés</h2>
+<ul class="task-list">
+<li><input type="checkbox" disabled="" checked="" />
+JavaScript nyelvi elemei</li>
+<li><input type="checkbox" disabled="" checked="" />
+DOM programozás</li>
+<li><input type="checkbox" disabled="" checked="" />
+Eseménykezelés részletei</li>
+<li><input type="checkbox" disabled="" checked="" />
+Kódszervezés, adatok tárolása</li>
+<li><input type="checkbox" disabled="" checked="" />
+Canvas, animációk, API-k</li>
+</ul>
+</section>
+<section id="json" class="slide level2" data-state="new-section">
+<h2 data-state="new-section">JSON</h2>
+</section>
+<section id="json-1" class="slide level2">
+<h2>JSON</h2>
+<ul>
+<li><a href="http://json.org/">JavaScript Object Notation</a></li>
+<li>Adatleíró formátum</li>
+<li>A JavaScript literálformáira épül</li>
+<li>Központ eleme
+<ul>
+<li>objektum: <code>{}</code></li>
+<li>tömb: <code>[]</code></li>
+</ul></li>
+<li>Elterjedt és népszerű</li>
+<li><code>JSON.stringify()</code></li>
+<li><code>JSON.parse()</code></li>
+</ul>
+</section>
+<section id="json---példa" class="slide level2">
+<h2>JSON - Példa</h2>
+<pre class="js"><code>{
+  &quot;Title&quot;: &quot;The Hobbit: An Unexpected Journey&quot;,
+  &quot;Year&quot;: &quot;2012&quot;,
+  &quot;Rated&quot;: &quot;PG-13&quot;,
+  &quot;Released&quot;: &quot;14 Dec 2012&quot;,
+  &quot;Runtime&quot;: &quot;169 min&quot;,
+  &quot;Genre&quot;: &quot;Adventure, Fantasy&quot;,
+  &quot;Director&quot;: &quot;Peter Jackson&quot;,
+  &quot;Language&quot;: &quot;English&quot;,
+  &quot;Country&quot;: &quot;USA, New Zealand&quot;,
+  &quot;Poster&quot;: &quot;https://m.media-amazon.com/images/&lt;...&gt;&quot;,
+  &quot;Ratings&quot;: [
+    {
+      &quot;Source&quot;: &quot;Internet Movie Database&quot;,
+      &quot;Value&quot;: &quot;7.8/10&quot;
+    },
+    {
+      &quot;Source&quot;: &quot;Rotten Tomatoes&quot;,
+      &quot;Value&quot;: &quot;64%&quot;
+    },
+    {
+      &quot;Source&quot;: &quot;Metacritic&quot;,
+      &quot;Value&quot;: &quot;58/100&quot;
+    }
+  ],
+  &quot;Metascore&quot;: &quot;58&quot;,
+  &quot;imdbRating&quot;: &quot;7.8&quot;,
+  &quot;imdbVotes&quot;: &quot;725,598&quot;,
+  &quot;imdbID&quot;: &quot;tt0903624&quot;,
+  &quot;Type&quot;: &quot;movie&quot;,
+  &quot;DVD&quot;: &quot;19 Mar 2013&quot;,
+  &quot;BoxOffice&quot;: &quot;$303,001,229&quot;,
+  &quot;Production&quot;: &quot;Warner Bros.&quot;,
+  &quot;Website&quot;: &quot;N/A&quot;,
+  &quot;Response&quot;: &quot;True&quot;
+}</code></pre>
+</section>
+<section id="json-sorosítás-oda-vissza" class="slide level2">
+<h2>JSON sorosítás oda-vissza</h2>
+<pre class="js"><code>const data = {
+  foo: &quot;string&quot;,
+  bar: [1, 2, 3]
+}
+
+// Serialization
+const serializedData = JSON.stringify(data);
+console.log(serializedData);
+// &#39;{&quot;foo&quot;:&quot;string&quot;,&quot;bar&quot;:[1,2,3]}&#39;
+
+// Deserialization
+const deserializedData = JSON.parse(serializedData);
+console.log(deserializedData);
+// Object { foo: &quot;string&quot;, bar: Array[3] }</code></pre>
+</section>
+<section id="szinkron-vs-aszinkron-programozás" class="slide level2" data-state="new-section">
+<h2 data-state="new-section">Szinkron vs aszinkron programozás</h2>
+</section>
+<section id="szinkron-műveletek" class="slide level2">
+<h2>Szinkron műveletek</h2>
+<ul>
+<li>Szinkron ~ szinkronizált ~ összekapcsolt ~ függő</li>
+<li><strong>Szinkron művelet</strong>: meg kell várni a végét, mielőtt a következőre ugranánk</li>
+<li>Az egyik művelet eleje függ a másik végétől</li>
+<li>Szekvencia</li>
+</ul>
+<p><img data-src="../../assets/images/architecture/syncronous.png" /></p>
+</section>
+<section id="szinkron-példa" class="slide level2">
+<h2>Szinkron példa</h2>
+<pre class="js"><code>console.log(&#39;first&#39;);
+alert(&#39;second&#39;);
+console.log(&#39;third&#39;);</code></pre>
+<div class="example">
+<p><button id="sync-example">Alert</button></p>
+</div>
+<script>
+document.querySelector("#sync-example").addEventListener("click", function () {
+  console.log('first');
+  alert('second');
+  console.log('third');
+});
+</script>
+</section>
+<section id="szinkron-végrehajtás" class="slide level2">
+<h2>Szinkron végrehajtás</h2>
+<p><img data-src="https://miro.medium.com/max/1205/1*rRoLpv-Zrmpa-srNhwlbvA.gif" /></p>
+</section>
+<section id="section" class="slide level2" data-background-iframe="http://latentflip.com/loupe/?code=ZnVuY3Rpb24gYSgpIHsKICAgIGNvbnNvbGUubG9nKCdhJykKfQpmdW5jdGlvbiBiKCkgewogICAgY29uc29sZS5sb2coJ2InKQogICAgYygpCn0KZnVuY3Rpb24gYygpIHsKICAgIGNvbnNvbGUubG9nKCdjJykKfQphKCkKYigp!!!" data-background-interactive="true">
+<h2 data-background-iframe="http://latentflip.com/loupe/?code=ZnVuY3Rpb24gYSgpIHsKICAgIGNvbnNvbGUubG9nKCdhJykKfQpmdW5jdGlvbiBiKCkgewogICAgY29uc29sZS5sb2coJ2InKQogICAgYygpCn0KZnVuY3Rpb24gYygpIHsKICAgIGNvbnNvbGUubG9nKCdjJykKfQphKCkKYigp!!!" data-background-interactive="true"></h2>
+</section>
+<section id="szinkron-hátránya" class="slide level2">
+<h2>Szinkron hátránya</h2>
+<ul>
+<li><strong>Hosszú műveletek</strong> megvárása
+<ul>
+<li>időzítők</li>
+<li>hálózati műveletek</li>
+<li>lemezkezelés</li>
+</ul></li>
+</ul>
+</section>
+<section id="aszinkron" class="slide level2">
+<h2>Aszinkron</h2>
+<ul>
+<li>Másik feladat elindítható az egyik vége előtt</li>
+<li>Nem függnek egymástól</li>
+</ul>
+<p><img data-src="../../assets/images/architecture/asyncronous.png" /></p>
+</section>
+<section id="szinkron-vs-aszinkron" class="slide level2">
+<h2>Szinkron vs aszinkron</h2>
+<p><img data-src="../../assets/images/architecture/sync-vs-async.png" /></p>
+</section>
+<section id="példa-szinkron-vs-aszinkron" class="slide level2">
+<h2>Példa: Szinkron vs aszinkron</h2>
+<p><strong>Szinkron</strong><br />
+<em>Mozijegyért állsz sorba. Addig nem tudod megvenni, amíg az előtted lévők nem vették meg, és ugyanez igaz a mögötted állókra is.</em></p>
+<p><strong>Aszinkron</strong><br />
+<em>Étteremben vagy sok más emberrel együtt. Megrendeled az ételedet. Mások is rendelhetnek ételt, nem kell megvárniuk, míg a tiédet elkészítik és felszolgálják. A konyhában a dolgozók folyamatosan főznek, szolgálnak fel és rendeléseket fogadnak. Az emberek akkor fogják az ételüket megkapni, amikor az elkészült.</em></p>
+</section>
+<section id="példák-aszinkron-működésre" class="slide level2">
+<h2>Példák aszinkron működésre</h2>
+<pre class="js"><code>// Timer
+console.log(&quot;first&quot;);
+
+setTimeout(function () {
+  console.log(&quot;second&quot;);
+}, 1000);
+
+console.log(&quot;third&quot;);</code></pre>
+<pre class="js"><code>// Event handler
+console.log(&quot;first&quot;);
+
+button.addEventListener(&quot;click&quot;, function () {
+  console.log(&quot;second&quot;);
+});
+
+console.log(&#39;third&#39;);</code></pre>
+</section>
+<section id="event-loop" class="slide level2">
+<h2>Event loop</h2>
+<p>Konkurrencia egy szálon</p>
+<p><img data-src="https://miro.medium.com/max/990/1*lZ-KXoVNUSOwaq7q8zUBDg.png" /></p>
+</section>
+<section id="section-1" class="slide level2" data-background-color="white" data-background-iframe="http://latentflip.com/loupe/?code=JC5vbignYnV0dG9uJywgJ2NsaWNrJywgZnVuY3Rpb24gb25DbGljaygpIHsKICAgIHNldFRpbWVvdXQoZnVuY3Rpb24gdGltZXIoKSB7CiAgICAgICAgY29uc29sZS5sb2coJ1lvdSBjbGlja2VkIHRoZSBidXR0b24hJyk7ICAgIAogICAgfSwgMjAwMCk7Cn0pOwoKY29uc29sZS5sb2coIkhpISIpOwoKc2V0VGltZW91dChmdW5jdGlvbiB0aW1lb3V0KCkgewogICAgY29uc29sZS5sb2coIkNsaWNrIHRoZSBidXR0b24hIik7Cn0sIDUwMDApOwoKY29uc29sZS5sb2coIldlbGNvbWUgdG8gbG91cGUuIik7!!!PGJ1dHRvbj5DbGljayBtZSE8L2J1dHRvbj4%3D" data-background-interactive="true">
+<h2 data-background-color="white" data-background-iframe="http://latentflip.com/loupe/?code=JC5vbignYnV0dG9uJywgJ2NsaWNrJywgZnVuY3Rpb24gb25DbGljaygpIHsKICAgIHNldFRpbWVvdXQoZnVuY3Rpb24gdGltZXIoKSB7CiAgICAgICAgY29uc29sZS5sb2coJ1lvdSBjbGlja2VkIHRoZSBidXR0b24hJyk7ICAgIAogICAgfSwgMjAwMCk7Cn0pOwoKY29uc29sZS5sb2coIkhpISIpOwoKc2V0VGltZW91dChmdW5jdGlvbiB0aW1lb3V0KCkgewogICAgY29uc29sZS5sb2coIkNsaWNrIHRoZSBidXR0b24hIik7Cn0sIDUwMDApOwoKY29uc29sZS5sb2coIldlbGNvbWUgdG8gbG91cGUuIik7!!!PGJ1dHRvbj5DbGljayBtZSE8L2J1dHRvbj4%3D" data-background-interactive="true"></h2>
+</section>
+<section id="callback-függvény" class="slide level2">
+<h2>Callback függvény</h2>
+<ul>
+<li>Paraméterként átadott függvény meghívása</li>
+<li>Ő maga nem szinkron/aszinkron</li>
+<li><strong>Az API szinkron/aszinkron</strong></li>
+</ul>
+<div class="columns">
+<div class="column" style="width: 50%">
+<pre class="js"><code>// Syncronous
+function a(b) {
+    b();  // callback
+}
+
+console.log(&quot;first&quot;);
+a(function () {
+  console.log(&quot;second&quot;);
+});
+console.log(&quot;third&quot;);
+
+// OR
+
+[1, 3, 5].map(e =&gt; e * 2);</code></pre>
+</div><div class="column" style="width: 50%">
+<pre class="js"><code>// Asyncronous
+console.log(&quot;first&quot;);
+
+setTimeout(function () {
+  console.log(&quot;second&quot;);
+}, 1000);
+
+console.log(&quot;third&quot;);</code></pre>
+</div>
+</div>
+</section>
+<section id="probléma-callback-hell" class="slide level2">
+<h2>Probléma: Callback hell</h2>
+<pre class="js"><code>setTimeout(() =&gt; {
+  console.log(&quot;first&quot;);
+  setTimeout(() =&gt; {
+    console.log(&quot;second&quot;);
+    setTimeout(() =&gt; {
+      console.log(&quot;third&quot;);
+      setTimeout(() =&gt; {
+        console.log(&quot;fourth&quot;);
+      },1000);
+    }, 1000);
+  }, 1000);
+}, 1000);</code></pre>
+</section>
+<section id="megoldás-promise" class="slide level2">
+<h2>Megoldás: Promise</h2>
+<ul>
+<li><strong>Aszinkron művelet jövőbeli értékét reprezentáló objektum</strong></li>
+<li>Állapota: <code>pending</code>, <code>fulfilled</code>, <code>rejected</code></li>
+<li>Metódosuok: <code>.then()</code>, <code>.catch()</code></li>
+</ul>
+<pre class="js"><code>function delay(ms) {
+  return ✒&gt;new Promise(function (resolve, reject) {
+    setTimeout(() =&gt; {
+      console.log(`${ms} timeout`);
+      resolve(ms);
+    }, ms);
+  });&lt;✒
+}
+
+// USAGE
+
+delay(1000).then(ms =&gt; console.log(&quot;Result&quot;, ms));</code></pre>
+</section>
+<section id="promise-lánc" class="slide level2">
+<h2>Promise lánc</h2>
+<pre class="js"><code>delay(1000)
+  .then((ms) =&gt; { return delay(500);          })
+  .then((ms) =&gt; { return delay(2000);         })
+  .then((ms) =&gt; { return 800;                 })
+  .then((ms) =&gt; { console.log(&quot;Finally&quot;, ms); })
+  .catch(() =&gt; {
+    console.log(&quot;There are some errors&quot;);
+  });</code></pre>
+</section>
+<section id="async---await" class="slide level2">
+<h2>Async - Await</h2>
+<ul>
+<li>ES8 (2017) óta része a szabványnak</li>
+<li><strong>Promise</strong>-okkal dolgozik</li>
+</ul>
+<pre class="js"><code>✒&gt;async&lt;✒ function lotOfDelays() {
+  try {
+    ✒&gt;await&lt;✒ delay(500);
+    ✒&gt;await&lt;✒ delay(2000);
+    ✒&gt;const ms = await&lt;✒ delay(800);
+    console.log(&quot;Finally&quot;, ms);
+  } catch {
+    console.log(&quot;There are some errors&quot;)
+  }
+}
+
+lotOfDelays();</code></pre>
+</section>
+<section id="web-workers" class="slide level2">
+<h2>Web workers</h2>
+<ul>
+<li>Valódi többszálúság JavaScriptben</li>
+<li>Kommunikáció szálak között: üzenetek/események</li>
+</ul>
+<pre class="js"><code>// Main thread
+const worker = new Worker(&quot;worker.js&quot;);
+
+worker.onmessage = function(e) {
+  console.log(e.data);
+};
+
+worker.postMessage(&quot;some data&quot;);</code></pre>
+<pre class="js"><code>// worker.js
+self.onmessage = function(e) {
+  self.postMessage(&quot;Recieved data: &quot; + e.data);
+};</code></pre>
+</section>
+<section id="ajax-és-fetch" class="slide level2" data-state="new-section">
+<h2 data-state="new-section">AJAX és Fetch</h2>
+</section>
+<section id="hagyományos-oldalak" class="slide level2">
+<h2>Hagyományos oldalak</h2>
+<p><img data-src="../../assets/images/architecture/sync-network.png" /></p>
+</section>
+<section id="ajax-os-oldalak" class="slide level2">
+<h2>AJAX-os oldalak</h2>
+<p><img data-src="../../assets/images/architecture/async-network.png" /></p>
+</section>
+<section id="ajax" class="slide level2">
+<h2>AJAX</h2>
+<ul>
+<li><strong>Asynchronous JavaScript and XML</strong></li>
+<li>A kapcsolatfelvétel a szerverrel szükséges</li>
+<li>Csak a szükséges adatok továbbítása a <strong>háttérben</strong></li>
+<li>A teljes oldal újratöltése nélkül</li>
+</ul>
+</section>
+<section id="ajax-os-oldal-tulajdonságai" class="slide level2">
+<h2>AJAX-os oldal tulajdonságai</h2>
+<ul>
+<li>A felhasználói felület folyamatosan használható</li>
+<li>Nincs szaggatottság, villogás, ugrálás</li>
+<li>A szerverrel való kommunikáció a háttérben történik</li>
+<li>Aszinkron módon, azaz párhuzamosan a többi eseménnyel</li>
+<li>Csak a szükséges adatok közlekednek a szerver és kliens között</li>
+</ul>
+</section>
+<section id="ajax-hívás-eszközei" class="slide level2">
+<h2>AJAX hívás eszközei</h2>
+<ul>
+<li>API
+<ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest"><code>XMLHttpRequest</code> objektum</a> és <a href="https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/Using_XMLHttpRequest">használata</a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API"><code>fetch</code></a> és <a href="https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch">használata</a></li>
+</ul></li>
+<li>Fejlesztői eszköztár
+<ul>
+<li>Hálózat fül</li>
+</ul></li>
+</ul>
+</section>
+<section id="példa" class="slide level2">
+<h2>Példa</h2>
+<p><code>http://www.omdbapi.com/?t=the+shack&amp;apikey=&lt;key&gt;</code></p>
+<div class="example">
+<input type="text" value="Star Wars" id="ajax-title"> <button id="ajax-search">Search</button> <span id="progress">Not started</span> <br>
+<output id="ajax-image">
+</output>
+</div>
+<script>
+  const progress = document.querySelector("#progress");
+  document.querySelector("#ajax-search").addEventListener("click", function () {
+      const title = document.querySelector("#ajax-title").value;
+      const xhr = new XMLHttpRequest();
+      xhr.addEventListener("load", responseHandler);
+      xhr.addEventListener("progress", progressHandler);
+      xhr.open("GET", `http://www.omdbapi.com/?t=${title}&apikey=2dd0dbee`);
+      xhr.responseType = "json";
+      xhr.send(null);
+  });
+
+  function responseHandler(e) {
+      document.querySelector("#ajax-image").innerHTML = `
+        <img src="${this.response.Poster}" style="width: 100px;" />
+      `;
+      progress.innerHTML = `Complete`;
+  }
+
+  function progressHandler(e) {
+      if (e.lengthComputable) {
+          progress.innerHTML = `${e.loaded / e.total * 100}%`;
+      }
+  }
+</script>
+</section>
+<section id="szinkron-megoldás" class="slide level2">
+<h2>Szinkron megoldás</h2>
+<pre class="js"><code>const input = document.querySelector(&quot;input&quot;);
+const button = document.querySelector(&quot;button&quot;);
+const img = document.querySelector(&quot;img&quot;);
+
+button.addEventListener(&quot;click&quot;, function () {
+  const title = input.value;
+
+  ✒&gt;const xhr = new XMLHttpRequest();&lt;✒
+
+  xhr.open(&quot;GET&quot;, `http://www.omdbapi.com/?t=${title}&amp;apikey=&lt;key&gt;`, false);
+  xhr.send(null);
+
+  const response = JSON.parse(xhr.responseText)
+  img.src = response.Poster;
+});</code></pre>
+</section>
+<section id="aszinkron-megoldás" class="slide level2">
+<h2>Aszinkron megoldás</h2>
+<p><code>load</code>, <code>loadend</code>, <code>abort</code>, <code>error</code>, <code>timeout</code> események</p>
+<pre class="js"><code>function getPoster() {
+  const title = input.value;
+  const xhr = new XMLHttpRequest();
+
+  ✒&gt;xhr.addEventListener(&quot;load&quot;, responseHandler);&lt;✒
+  xhr.open(&quot;GET&quot;, `http://www.omdbapi.com/?t=${title}&amp;apikey=&lt;key&gt;`);
+  xhr.send(null);
+}
+
+function responseHandler() {
+  const response = JSON.parse(this.responseText)
+  img.src = response.Poster;
+}</code></pre>
+</section>
+<section id="választípus" class="slide level2">
+<h2>Választípus</h2>
+<p><code>responseType</code>, <code>response</code></p>
+<pre class="js"><code>function getPoster() {
+  const title = input.value;
+  const xhr = new XMLHttpRequest();
+
+  xhr.addEventListener(&quot;load&quot;, responseHandler)
+  xhr.open(&quot;GET&quot;, `http://www.omdbapi.com/?t=${title}&amp;apikey=&lt;key&gt;`)
+  ✒&gt;xhr.responseType = &quot;json&quot;;&lt;✒
+  xhr.send(null);
+}
+
+function responseHandler() {
+  img.src = this.response.Poster;
+}</code></pre>
+</section>
+<section id="hibakezelés" class="slide level2">
+<h2>Hibakezelés</h2>
+<pre class="js"><code>function getPoster() {
+  const title = input.value;
+  const xhr = new XMLHttpRequest();
+
+  xhr.addEventListener(&quot;load&quot;, responseHandler);
+  ✒&gt;xhr.addEventListener(&quot;error&quot;, errorHandler);&lt;✒
+  xhr.open(&quot;GET&quot;, `http://www.omdbapi.com/?t=${title}&amp;apikey=&lt;key&gt;`);
+
+  xhr.responseType = &quot;json&quot;;
+  xhr.send(null);
+}
+
+function errorHandler() {
+  console.error(&quot;Error&quot;);
+}
+
+function responseHandler() {
+  img.src = this.response.Poster;
+}</code></pre>
+</section>
+<section id="folyamat" class="slide level2">
+<h2>Folyamat</h2>
+<p><code>progress</code> esemény</p>
+<pre class="js"><code>const progress = document.querySelector(&quot;progress&quot;);
+
+function getPoster() {
+  const title = document.querySelector(&quot;input&quot;).value;
+  const xhr = new XMLHttpRequest();
+
+  xhr.addEventListener(&quot;load&quot;, responseHandler);
+  ✒&gt;xhr.addEventListener(&quot;progress&quot;, progressHandler);&lt;✒
+  xhr.open(&quot;GET&quot;, `http://www.omdbapi.com/?t=${title}&amp;apikey=&lt;key&gt;`);
+  
+  xhr.responseType = &quot;json&quot;;
+  xhr.send(null);
+}
+
+✒&gt;function progressHandler(e) {
+  if (e.lengthComputable) {
+    progress.max = e.total;
+    progress.value = e.loaded;
+  }
+}&lt;✒
+
+function responseHandler(e) {
+  document.querySelector(&quot;img&quot;).src = this.response.Poster;
+  progress.value = e.loaded;
+}</code></pre>
+</section>
+<section id="fetch-api" class="slide level2">
+<h2>fetch API</h2>
+<p>Promise-okkal</p>
+<pre class="js"><code>function getPoster() {
+  const title = document.querySelector(&quot;input&quot;).value;
+
+  ✒&gt;fetch&lt;✒(`http://www.omdbapi.com/?t=${title}&amp;apikey=2dd0dbee`)
+    ✒&gt;.then&lt;✒(response =&gt; response.json())
+    ✒&gt;.then&lt;✒(response =&gt; {
+      document.querySelector(&quot;img&quot;).src = response.Poster;
+    });
+}
+
+// OR
+
+✒&gt;async&lt;✒ function getPoster() {
+  const title = document.querySelector(&quot;input&quot;).value;
+  const response = ✒&gt;await&lt;✒ fetch(`http://www.omdbapi.com/?t=${title}&amp;apikey=2dd0dbee`);
+  const json = ✒&gt;await&lt;✒ response.json();
+  document.querySelector(&quot;img&quot;).src = json.Poster;
+}</code></pre>
+</section>
+<section id="kivételkezelés" class="slide level2" data-state="new-section">
+<h2 data-state="new-section">Kivételkezelés</h2>
+</section>
+<section id="hibák-javascriptben" class="slide level2">
+<h2>Hibák JavaScriptben</h2>
+<div class="columns">
+<div class="column">
+<ul>
+<li><code>Error</code>
+<ul>
+<li><code>EvalError</code></li>
+<li><code>RangeError</code></li>
+<li><code>ReferenceError</code></li>
+<li><code>SyntaxError</code></li>
+<li><code>TypeError</code></li>
+<li><code>URIError</code></li>
+</ul></li>
+</ul>
+</div><div class="column">
+<ul>
+<li>Tulajdonságok
+<ul>
+<li><code>name</code></li>
+<li><code>message</code></li>
+</ul></li>
+</ul>
+</div>
+</div>
+</section>
+<section id="hibakezelés-1" class="slide level2">
+<h2>Hibakezelés</h2>
+<ul>
+<li>try-catch-finally
+<ul>
+<li><code>try</code>: védendő kód</li>
+<li><code>catch</code>: hibakezelő kód</li>
+<li><code>finally</code>: a végén lefutó kód (nem kötelező)</li>
+</ul></li>
+</ul>
+<pre class="js"><code>try {
+  foo.bar = true;
+} catch (e) {
+  console.log(e.name);    // ReferenceError
+  console.log(e.message); // foo is not defined
+} finally {  // Optional
+  console.log(&quot;Finally...&quot;);
+}</code></pre>
+</section>
+<section id="hiba-dobása" class="slide level2">
+<h2>Hiba dobása</h2>
+<p>Beépített hiba dobása</p>
+<pre class="js"><code>if (typeof a !== &quot;number&quot;) {
+  throw new Error(&quot;Argument is not a number!&quot;);
+}</code></pre>
+</section>
+<section id="hiba-dobása-1" class="slide level2">
+<h2>Hiba dobása</h2>
+<p>Saját hibaobjektum dobása</p>
+<pre class="js"><code>if (oszto == 0) {
+  throw {
+    name: &quot;DivisionByZeroError&quot;,
+    message: &quot;Division by zero!&quot;
+  };
+}</code></pre>
+<p>vagy</p>
+<pre class="js"><code>class DivisionByZeroError extends Error() {}
+
+if (divisor == 0) {
+  throw new DivisionByZeroError(&quot;Division by zero!&quot;);
+}</code></pre>
+</section>
+<section id="összefoglalás" class="slide level2">
+<h2>Összefoglalás</h2>
+<ul class="task-list">
+<li><input type="checkbox" disabled="" checked="" />
+Szinkron és aszinkron műveletek</li>
+<li><input type="checkbox" disabled="" checked="" />
+Promiseok</li>
+<li><input type="checkbox" disabled="" checked="" />
+Async-await</li>
+<li><input type="checkbox" disabled="" checked="" />
+AJAX / Fetch</li>
+<li><input type="checkbox" disabled="" checked="" />
+Kivételkezelés</li>
+</ul>
+</section>
+    </div>
+  </div>
+
+  <div id="captcha"></div>
+
+  <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.18.1/build/highlight.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/js/reveal.js"></script>
+
+  <script>
+    // Highlighting in code blocks
+    const codes = document.querySelectorAll('pre > code')
+    for (const code of codes) {
+      code.setAttribute('data-noescape', '')
+      const text = code.innerHTML
+      const markedText = text
+        .replace(/&lt;✒/g, '</mark>')
+        .replace(/✒&gt;/g, '<mark>')
+      code.innerHTML = markedText
+    }
+
+    // Adding captcha
+    const queryString = new URLSearchParams(window.location.search);
+    const captcha = queryString.get('captcha');
+    const captchaElement = document.getElementById("captcha");
+    captchaElement.innerHTML = captcha;
+
+    // Full list of configuration options available at:
+    // https://github.com/hakimel/reveal.js#configuration
+    Reveal.initialize({
+      // Display controls in the bottom right corner
+      controls: true,
+      controlsTutorial: false,
+      // Display a presentation progress bar
+      progress: true,
+      // Display the page number of the current slide
+      slideNumber: true,
+      // Add the current slide number to the URL hash so that reloading the
+      // page/copying the URL will return you to the same slide
+      hash: true,
+      // Push each slide change to the browser history
+      history: false,
+      // Enable keyboard shortcuts for navigation
+      keyboard: true,
+      // Enable the slide overview mode
+      overview: true,
+      // Vertical centering of slides
+      center: true,
+      // Enables touch navigation on devices with touch input
+      touch: true,
+      // Loop the presentation
+      loop: false,
+      // Hides the address bar on mobile devices
+      hideAddressBar: true,
+      // Transition style
+      transition: 'slide', // none/fade/slide/convex/concave/zoom
+      // Transition style for full page slide backgrounds
+      backgroundTransition: 'slide', // none/fade/slide/convex/concave/zoom
+      // Bounds for smallest/largest possible scale to apply to content
+      minScale: 0.5,
+      maxScale: 3,
+      // Modifier key used to click-zoom to part of the slide
+      zoomKey: "ctrl",
+      math: {
+        mathjax: 'https://cdn.jsdelivr.net/gh/mathjax/MathJax@3.0.1/es5/tex-mml-chtml.js',
+        config: 'TeX-AMS_HTML-full',
+        tex2jax: {
+          inlineMath: [['\\(','\\)']],
+          displayMath: [['\\[','\\]']],
+          balanceBraces: true,
+          processEscapes: false,
+          processRefs: true,
+          processEnvironments: true,
+          preview: 'TeX',
+          skipTags: ['script','noscript','style','textarea','pre','code'],
+          ignoreClass: 'tex2jax_ignore',
+          processClass: 'tex2jax_process'
+        }
+      },
+
+      // Optional reveal.js plugins
+      dependencies: [
+        { src: 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+        { src: 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/plugin/zoom-js/zoom.js', async: true },
+        //{ src: 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/socket.io/socket.io.js', async: true },
+        //{ src: 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/plugin/notes-server/client.js', async: true },
+        { src: 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/plugin/math/math.js', async: true },
+        { src: 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/plugin/notes/notes.js', async: true },
+        { src: 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/plugin/highlight/highlight.js', async: true }
+      ]
+    });
+  </script>
+
+  
+  </body>
+</html>

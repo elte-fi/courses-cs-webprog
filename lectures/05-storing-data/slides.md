@@ -45,10 +45,10 @@ Tel: (1) 372-2500/8469\
 
 ## Ismétlés
 
-- JavaScript nyelvi elemei
-- DOM programozás
-- Eseménykezelés részletei
-- JavaScript beépített objektumai
+- [x] JavaScript nyelvi elemei
+- [x] DOM programozás
+- [x] Eseménykezelés részletei
+- [x] JavaScript beépített objektumai
 
 ![](../../assets/images/architecture/js-dom-ui.png)
 
@@ -56,9 +56,9 @@ Tel: (1) 372-2500/8469\
 
 ## Ismétlés -- Kódszervezés
 
-- fizikai, logikai csoportosítás
+- [x] fizikai, logikai csoportosítás
   - fájl, modul, függvény, osztály
-- egységbe zárás
+- [x] egységbe zárás
   - objektum, osztály, függvény, modul
 
 ------

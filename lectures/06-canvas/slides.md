@@ -45,11 +45,11 @@ Tel: (1) 372-2500/8469\
 
 ## Ismétlés
 
-- JavaScript nyelvi elemei
-- DOM programozás
-- Eseménykezelés részletei
-- Kódszervezés
-- Adatok tárolása
+- [x] JavaScript nyelvi elemei
+- [x] DOM programozás
+- [x] Eseménykezelés részletei
+- [x] Kódszervezés
+- [x] Adatok tárolása
 
 ------
 
