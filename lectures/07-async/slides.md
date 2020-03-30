@@ -6,7 +6,7 @@ title: Webprogramozás - Canvas, animációk, API-k
 Webprogramozás
 :::
 
-### Aszinkron programozás, AJAX, this, hibakezelés
+### Aszinkron programozás, AJAX, hibakezelés
 
 :::::: {.columns}
 ::: {.column width="33%"}
