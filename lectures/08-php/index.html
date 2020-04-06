@@ -1,0 +1,1394 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <title>Szerveroldali programozás, HTTP, PHP</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+  <!-- Reveal.js Theme -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/elte-fi/revealjs-elte-fi@1.1.0/dist/revealjs-elte-fi.min.css">
+  <!-- Highlighting -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.18.1/build/styles/default.min.css">
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+
+  <!-- Printing and PDF exports -->
+  <script>
+    var link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = window.location.search.match(/print-pdf/gi) 
+      ? 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/css/print/pdf.css' 
+      : 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/css/print/paper.css';
+    document.getElementsByTagName('head')[0].appendChild( link );
+  </script>
+
+  </head>
+
+<body>
+  <div class="reveal">
+    <div class="slides">
+<section class="slide level2">
+
+<div class="title">
+<p>Webprogramozás</p>
+</div>
+<h3 id="szerveroldali-programozás-http-php">Szerveroldali programozás, HTTP, PHP</h3>
+<div class="columns">
+<div class="column" style="width:33%;">
+<p><small> <strong>Visnovitz Márton</strong><br />
+egyetemi tanársegéd<br />
+visnovitz.marton@inf.elte.hu </small></p>
+</div><div class="column" style="width:33%;">
+<p><small> <strong>Horváth Győző</strong><br />
+egyetemi docens<br />
+horvath.gyozo@inf.elte.hu </small></p>
+</div>
+</div>
+<p><small> 1117 Budapest, Pázmány Péter sétány 1/c., 2.408<br />
+Tel: (1) 372-2500/8469<br />
+</small></p>
+</section>
+<section id="szerveroldali-dinamikus-webprogramozás" class="slide level2" data-state="new-section">
+<h2 data-state="new-section">Szerveroldali dinamikus webprogramozás</h2>
+</section>
+<section id="világháló" class="slide level2">
+<h2>Világháló</h2>
+<p>A világháló (angolul <strong>World Wide Web</strong>, röviden <strong>web</strong>) egy olyan információs rendszer, amelyben</p>
+<ul>
+<li><strong>dokumentumokat</strong> és más erőforrásokat</li>
+<li><strong>egységes címmel</strong> azonosítunk,</li>
+<li>ezeket <strong>hiperhivatkozásokkal</strong> kötjük össze,</li>
+<li>elérhetőségüket <strong>internetre kötött szerverek</strong> segítségével biztosítjuk,</li>
+<li>megtekintésük pedig speciális kliensprogramokban, <strong>böngészőkben</strong> történik.</li>
+</ul>
+</section>
+<section id="web-komponensei-szabványai" class="slide level2">
+<h2>Web komponensei, szabványai</h2>
+<ul>
+<li><a href="https://www.w3.org/html/">HTML</a> (dokumentumok, hiperhivatkozások)</li>
+<li><a href="https://www.w3.org/TR/url/">URL</a> (erőforrások egységes címe)</li>
+<li>webszerver (erőforrások elérhetővé tétele)</li>
+<li>webkliens, webböngésző (erőforrások megjelenítése)</li>
+<li><a href="https://tools.ietf.org/html/rfc7230">HTTP</a> (kliens-szerver kommunikáció)</li>
+</ul>
+<p><a href="https://www.w3.org/TR/">Webes szabványok</a></p>
+</section>
+<section id="kliensoldali-webprogramozás" class="slide level2">
+<h2>Kliensoldali webprogramozás</h2>
+<div class="columns">
+<div class="column" style="width: 70%">
+<p>Egy komponens</p>
+<ul>
+<li>Kliens-szerver architektúra</li>
+<li>Statikus/dinamikus kliens</li>
+<li>Nem érdekes a szerver, csak az onnan érkező tartalom</li>
+<li>Nem is kell szerver, dolgozhatunk lokálisan</li>
+<li>Programozás a böngészőben</li>
+<li>JavaScript, DOM, stb.</li>
+</ul>
+</div><div class="column" style="width: 30%">
+<p><img data-src="../../assets/images/architecture/client.png" /></p>
+</div>
+</div>
+</section>
+<section id="kliens-szerver-architektúra" class="slide level2">
+<h2>Kliens-szerver architektúra</h2>
+<div class="columns">
+<div class="column" style="width: 70%">
+<p>Több komponens</p>
+<ul>
+<li><strong>Szerver</strong></li>
+<li>Kliens</li>
+<li>HTTP (kommunikáció)</li>
+</ul>
+<ol type="1">
+<li>Kérés (request)</li>
+<li>Válasz (response)</li>
+</ol>
+</div><div class="column" style="width: 30%">
+<p><img data-src="../../assets/images/architecture/server-client.png" /></p>
+</div>
+</div>
+</section>
+<section id="kliens-szerver-architektúra-1" class="slide level2">
+<h2>Kliens-szerver architektúra</h2>
+<p>Térben és időben elválhatnak</p>
+<p><img data-src="../../assets/images/architecture/sync-network.png" /></p>
+</section>
+<section id="statikus-szerveroldali-tartalom" class="slide level2">
+<h2>Statikus szerveroldali tartalom</h2>
+<div class="columns">
+<div class="column" style="width: 70%">
+<p>Kérés pillanatában a szerveren megtalálható az a tartalom, amely leküldésre kerül a válaszban</p>
+<ul>
+<li>Fájlkiszolgálás</li>
+<li>Kiterjesztés alapján
+<ul>
+<li><code>.html</code></li>
+<li><code>.jpg</code>, <code>.png</code>, <code>.gif</code></li>
+<li><code>.css</code></li>
+<li><code>.js</code></li>
+</ul></li>
+</ul>
+</div><div class="column" style="width: 30%">
+<p><img data-src="../../assets/images/architecture/server-client.png" /></p>
+</div>
+</div>
+</section>
+<section id="dinamikus-szerveroldali-tartalom" class="slide level2">
+<h2>Dinamikus szerveroldali tartalom</h2>
+<p>A leküldendő tartalmat egy program állítja elő.</p>
+<div class="columns">
+<div class="column" style="width: 40%">
+<p><img data-src="../../assets/images/architecture/program-client.png" /></p>
+</div>
+</div>
+</section>
+<section id="architektúrák" class="slide level2">
+<h2>Architektúrák</h2>
+<p><img data-src="../../assets/images/architecture/architectures.png" /></p>
+</section>
+<section id="szerveroldali-webprogramozás" class="slide level2">
+<h2>Szerveroldali webprogramozás</h2>
+<div class="columns">
+<div class="column" style="width: 50%">
+<ul>
+<li>Nem egyszerű fájlkiszolgálás</li>
+<li>Indítás
+<ul>
+<li><code>cgi-bin</code> könyvtár</li>
+<li>kiterjesztés (pl. <code>.cgi</code>, <code>.php</code>)</li>
+</ul></li>
+<li>Program
+<ul>
+<li><strong>bármilyen</strong></li>
+<li>bináris (C++, Pascal)</li>
+<li>script (PHP, Python, Ruby)</li>
+</ul></li>
+</ul>
+</div><div class="column" style="width: 50%">
+<p><img data-src="../../assets/images/architecture/web-server-client.png" /></p>
+</div>
+</div>
+</section>
+<section id="szerveroldali-webprogramozás-1" class="slide level2">
+<h2>Szerveroldali webprogramozás</h2>
+<ul>
+<li>Program célja, kimenete
+<ul>
+<li>HTML generálás (általában)</li>
+<li>Tartalom generálás (általánosan)</li>
+<li>HTTP protokoll betartásával</li>
+</ul></li>
+<li>Program helyességét a generált tartalom, a megkapott oldal forrása alapján ellenőrizhetjük.</li>
+</ul>
+</section>
+<section id="url-http-cgi" class="slide level2" data-state="new-section">
+<h2 data-state="new-section">URL, HTTP, CGI</h2>
+</section>
+<section id="url" class="slide level2">
+<h2>URL</h2>
+<p><img data-src="https://doepud.co.uk/images/blogs/complex_url.png" /></p>
+<p><a href="https://developer.mozilla.org/en-US/docs/Learn/Common_questions/What_is_a_URL">URL az MDN-en</a></p>
+</section>
+<section id="http-protokoll" class="slide level2">
+<h2>HTTP protokoll</h2>
+<ul>
+<li>Kérés-válasz alapú protokoll a kliens és szerver között</li>
+<li>Mindig a kliens kezdeményez</li>
+<li>Kliens: kérés
+<ul>
+<li>kérést küld a 80-as/443-as TCP portra</li>
+<li>jellemzően böngésző (hivatkozások, formok)</li>
+</ul></li>
+<li>Szerver: válasz</li>
+<li>TCP/IP réteg feletti protokoll</li>
+<li><a href="http://tools.ietf.org/html/rfc2616">Szabvány</a></li>
+</ul>
+</section>
+<section id="http-üzenetstruktúra" class="slide level2">
+<h2>HTTP üzenetstruktúra</h2>
+<div class="columns">
+<div class="column" style="width:40%">
+<pre style="font-size: 0.4em"><code>POST / HTTP/1.1
+Host: localhost:8000
+User-Agent: Mozilla/5.0 (...)
+Accept: text/html
+Accept-Language: en-Us
+Accept-Encoding: gzip, deflate
+Connection: keep-alive
+Content-Type: multipart/form-data
+Content-Length: 345
+✒&gt;                &lt;✒
+-12656974
+(more data... )</code></pre>
+</div><div class="column" style="width:20%">
+<pre style="font-size: 0.4em; text-align: center"><code>start-line
+
+
+
+
+headers
+
+
+
+blank
+body</code></pre>
+</div><div class="column" style="width:40%">
+<pre style="font-size: 0.4em"><code>HTTP/1.1 403 Forbidden
+Server: Apache
+Content-Type: text/html;charset=utf-8
+Date: Wed, 10 Aug 2016 09:23:25 GMT
+Keep-Alive: timeout=5, max=1000
+Connection: Keep-Alive
+Age: 3465
+X-Cache-Info: caching
+Content-Length: 220
+✒&gt;                &lt;✒
+&lt;!DOCTYPE html&gt;
+(more data...)</code></pre>
+</div>
+</div>
+<p><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Overview">HTTP áttekintése</a>, <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Messages">HTTP üzenetstruktúra</a>, <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP#Reference">HTTP referencia</a></p>
+</section>
+<section id="http-kérés" class="slide level2">
+<h2>HTTP kérés</h2>
+<pre><code>METÓDUS ERŐFORRÁS VERZIÓ
+FEJLÉC: ÉRTÉK
+FEJLÉC: ÉRTÉK
+FEJLÉC: ÉRTÉK
+
+ÜZENETTEST (opcionális)</code></pre>
+</section>
+<section id="http-metódusok" class="slide level2">
+<h2>HTTP metódusok</h2>
+<ul>
+<li><code>GET</code>: Megadott erőforrás letöltése</li>
+<li><code>POST</code>: Feldolgozandó adat felküldése</li>
+<li><code>DELETE</code>: Törli a megadott erőforrást</li>
+<li><code>PATCH</code>: Adott erőforrás javítása, frissízsée</li>
+<li><code>HEAD</code>: Ld. <code>GET</code>, de csak a válasz fejléceket kéri le</li>
+<li><code>PUT</code>: Feltölti a megadott erőforrást</li>
+<li><code>TRACE</code>: Visszaküldi a kapott kérést</li>
+<li><code>OPTIONS</code>: A szerver által támogatott HTTP metódusok listája</li>
+<li><code>CONNECT</code>: Kérést transzparens tunnellé alakítja (SSL)</li>
+</ul>
+</section>
+<section id="http-kérés-példa" class="slide level2">
+<h2>HTTP kérés példa</h2>
+<pre class="txt"><code>GET /index.html HTTP/1.1
+Host: webprogramozas.inf.elte.hu
+</code></pre>
+<pre class="txt"><code>GET / HTTP/1.1
+Host: webprogramozas.inf.elte.hu
+User-Agent: Mozilla/5.0 (Windows NT 6.1; rv:19.0) Gecko/20100101 Firefox/19.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: hu-hu,hu;q=0.8,en-US;q=0.5,en;q=0.3
+Accept-Encoding: gzip, deflate
+Connection: keep-alive
+</code></pre>
+</section>
+<section id="http-válasz" class="slide level2">
+<h2>HTTP válasz</h2>
+<pre class="txt"><code>VERZIÓ STÁTUSZKÓD INDOKLÁS
+FEJLÉC: ÉRTÉK
+FEJLÉC: ÉRTÉK
+FEJLÉC: ÉRTÉK
+
+ÜZENETTEST (opcionális)</code></pre>
+</section>
+<section id="http-státuszkódok" class="slide level2">
+<h2>HTTP státuszkódok</h2>
+<ul>
+<li><code>1xx</code>: Informatív (kérés megkapva)</li>
+<li><code>2xx</code>: Siker (kérés megérkezett, elfogadva)
+<ul>
+<li>200 OK</li>
+</ul></li>
+<li><code>3xx</code>: Átirányítás (további műveletre van szükség)</li>
+<li><code>4xx</code>: Kliens hiba (kérés hibás, nem teljesíthető)
+<ul>
+<li>403 Forbidden</li>
+<li>404 Not found</li>
+</ul></li>
+<li><code>5xx</code>: Szerver hiba (nem tudja teljesíteni a kérést)
+<ul>
+<li>500 Internal Server Error</li>
+</ul></li>
+</ul>
+</section>
+<section id="http-válasz-példa" class="slide level2">
+<h2>HTTP válasz példa</h2>
+<pre class="txt"><code>HTTP/1.1 200 OK
+Date: Wed, 03 Apr 2013 07:11:56 GMT
+Server: Apache/2.2.10 (Linux/SUSE)
+Last-Modified: Wed, 20 Feb 2013 08:39:44 GMT
+ETag: &quot;fe8438-6d6-4d623e65e9400&quot;
+Accept-Ranges: bytes
+Content-Length: 1750
+Content-Type: text/html
+
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+    ...
+&lt;/html&gt;</code></pre>
+</section>
+<section id="http-eszközök" class="slide level2">
+<h2>HTTP eszközök</h2>
+<p>Webfejlesztési eszköztár (<code>F12</code>) → Hálózat (Network) fül</p>
+</section>
+<section id="common-gateway-interface-cgi" class="slide level2">
+<h2>Common Gateway Interface (CGI)</h2>
+<p>Azt határozza meg, hogy egy webszerver hogyan <em>indíthat</em> el egy programot és milyen módon cserél <em>adatot</em> vele.</p>
+<div class="columns">
+<div class="column" style="width: 60%">
+<ul>
+<li>Indítás: program futtatása</li>
+<li>Adatok
+<ul>
+<li>környezeti változók</li>
+<li>standard I/O</li>
+</ul></li>
+<li><strong>Program eredménye</strong>
+<ul>
+<li>standard kimeneten</li>
+</ul></li>
+</ul>
+</div><div class="column" style="width: 40%">
+<p><img data-src="../../assets/images/architecture/web-server-client.png" /></p>
+</div>
+</div>
+</section>
+<section id="példa-c" class="slide level2">
+<h2>Példa – C++</h2>
+<pre class="cpp"><code>#include &lt;iostream&gt;
+using namespace std;
+int main()
+{
+    cout &lt;&lt; &quot;Content-Type: text/html&quot; &lt;&lt; endl;
+    cout &lt;&lt; endl;
+
+    cout &lt;&lt; &quot;&lt;!doctype html&gt;&quot; &lt;&lt; endl;
+    cout &lt;&lt; &quot;&lt;html&gt;&quot; &lt;&lt; endl;
+    cout &lt;&lt; &quot;    &lt;head&gt;&quot; &lt;&lt; endl;
+    cout &lt;&lt; &quot;        &lt;meta charset=\&quot;utf-8\&quot;&gt;&quot; &lt;&lt; endl;
+    cout &lt;&lt; &quot;        &lt;title&gt;&lt;/title&gt;&quot; &lt;&lt; endl;
+    cout &lt;&lt; &quot;    &lt;/head&gt;&quot; &lt;&lt; endl;
+    cout &lt;&lt; &quot;    &lt;body&gt;&quot; &lt;&lt; endl;
+    cout &lt;&lt; &quot;        &lt;p&gt;Hello vilag!&lt;/p&gt;&quot; &lt;&lt; endl;
+    cout &lt;&lt; &quot;    &lt;/body&gt;&quot; &lt;&lt; endl;
+    cout &lt;&lt; &quot;&lt;/html&gt;&quot; &lt;&lt; endl;
+
+    return 0;
+}</code></pre>
+</section>
+<section id="példa-c-1" class="slide level2">
+<h2>Példa – C++</h2>
+<div class="columns">
+<div class="column" style="width: 50%">
+<ul>
+<li>Parancssorból futtatva</li>
+</ul>
+<pre class="html"><code>Content-Type: text/html
+
+&lt;!doctype html&gt;
+&lt;html&gt;
+    &lt;head&gt;
+        &lt;meta charset=&quot;utf-8&quot;&gt;
+        &lt;title&gt;&lt;/title&gt;
+    &lt;/head&gt;
+    &lt;body&gt;
+        &lt;p&gt;Hello vilag!&lt;/p&gt;
+    &lt;/body&gt;
+&lt;/html&gt;</code></pre>
+</div><div class="column" style="width: 50%">
+<ul>
+<li>Böngészőből futtatva</li>
+</ul>
+<div class="example" style="margin-top: 20px">
+<p>
+Hello vilag!
+</p>
+</div>
+</div>
+</div>
+</section>
+<section id="példa-c-2" class="slide level2">
+<h2>Példa – C++</h2>
+<pre class="cpp"><code>int main()
+{
+    cout &lt;&lt; &quot;Content-Type: text/html&quot; &lt;&lt; endl;
+    cout &lt;&lt; endl;
+
+    cout &lt;&lt; &quot;&lt;!doctype html&gt;&quot; &lt;&lt; endl;
+    cout &lt;&lt; &quot;&lt;html&gt;&quot; &lt;&lt; endl;
+    cout &lt;&lt; &quot;    &lt;head&gt;&quot; &lt;&lt; endl;
+    cout &lt;&lt; &quot;        &lt;meta charset=\&quot;utf-8\&quot;&gt;&quot; &lt;&lt; endl;
+    cout &lt;&lt; &quot;        &lt;title&gt;&lt;/title&gt;&quot; &lt;&lt; endl;
+    cout &lt;&lt; &quot;    &lt;/head&gt;&quot; &lt;&lt; endl;
+    cout &lt;&lt; &quot;    &lt;body&gt;&quot; &lt;&lt; endl;
+
+    for (int i = 1; i &lt;= 5; i++) {
+        cout &lt;&lt; &quot;        &lt;p&gt;Hello vilag!&lt;/p&gt;&quot; &lt;&lt; endl;
+    }
+
+    cout &lt;&lt; &quot;    &lt;/body&gt;&quot; &lt;&lt; endl;
+    cout &lt;&lt; &quot;&lt;/html&gt;&quot; &lt;&lt; endl;
+    return 0;
+}</code></pre>
+</section>
+<section id="példa-c-3" class="slide level2">
+<h2>Példa – C++</h2>
+<div class="columns">
+<div class="column" style="width: 50%">
+<pre class="html"><code>Content-Type: text/html
+
+&lt;!doctype html&gt;
+&lt;html&gt;
+    &lt;head&gt;
+        &lt;meta charset=&quot;utf-8&quot;&gt;
+        &lt;title&gt;&lt;/title&gt;
+    &lt;/head&gt;
+    &lt;body&gt;
+        &lt;p&gt;Hello vilag!&lt;/p&gt;
+        &lt;p&gt;Hello vilag!&lt;/p&gt;
+        &lt;p&gt;Hello vilag!&lt;/p&gt;
+        &lt;p&gt;Hello vilag!&lt;/p&gt;
+        &lt;p&gt;Hello vilag!&lt;/p&gt;
+    &lt;/body&gt;
+&lt;/html&gt;</code></pre>
+</div><div class="column" style="width: 50%">
+<div class="example" style="margin-top: 20px">
+<p>
+Hello vilag!
+</p>
+<p>
+Hello vilag!
+</p>
+<p>
+Hello vilag!
+</p>
+<p>
+Hello vilag!
+</p>
+<p>
+Hello vilag!
+</p>
+</div>
+</div>
+</div>
+</section>
+<section id="php" class="slide level2" data-state="new-section">
+<h2 data-state="new-section">PHP</h2>
+</section>
+<section id="php-a-webprogramozásban" class="slide level2">
+<h2>PHP a webprogramozásban</h2>
+<p><code>http://szerver/peldak/pelda.php</code></p>
+<p><img data-src="../../assets/images/architecture/web-server-php.png" /></p>
+</section>
+<section id="php-1" class="slide level2">
+<h2>PHP</h2>
+<ul>
+<li><a href="http://www.php.net/">PHP</a> (7.4.4 – 2020.03.19.)
+<ul>
+<li>Eredetileg: <em>Personal Home Page</em></li>
+<li>Ma: <em>PHP: Hypertext Preprocesszor</em></li>
+</ul></li>
+<li><a href="http://www.php.net/manual/en/">Dokumentáció</a>
+<ul>
+<li>nyelvi és függvényreferencia, kódolási tanácsok</li>
+</ul></li>
+<li>Jellemzői
+<ul>
+<li>nyílt forráskódú</li>
+<li>általános célú</li>
+<li>szkriptnyelv</li>
+<li>HTML-be ágyazható</li>
+</ul></li>
+</ul>
+</section>
+<section id="php-használata" class="slide level2">
+<h2>PHP használata</h2>
+<ul>
+<li>Szerveroldali dinamikus webprogramozás
+<ul>
+<li>weboldalak generálása</li>
+</ul>
+<pre class="txt"><code>http://szerver/peldak/pelda.php</code></pre></li>
+<li>CLI – Command Line Interface
+<ul>
+<li>PHP scriptek parancssori futtatása</li>
+</ul>
+<pre class="txt"><code>&gt; php pelda.php</code></pre></li>
+</ul>
+</section>
+<section id="javascript-vs-php" class="slide level2">
+<h2>JavaScript vs PHP</h2>
+<div class="columns">
+<div class="column" style="width: 50%">
+<pre class="js"><code>// declaration 
+const x = [1, 3, 5, 7, 9];
+let s;
+// process 
+s = 0;
+for(let i=0; i&lt;x.length; i++) {
+  s = s + x[i];
+}
+// output 
+console.log(&#39;Sum: &#39;,  s)</code></pre>
+</div><div class="column" style="width: 50%">
+<pre class="php"><code>// declaration 
+$x = [1, 3, 5, 7, 9];
+
+// process 
+$s = 0;
+for($i=0; $i&lt;count($x); $i++) {
+    $s = $s + $x[$i];
+}
+// output 
+echo &#39;Sum: &#39;, $s;</code></pre>
+</div>
+</div>
+<p>Változók neve <code>$</code> jellel kezdődik.</p>
+</section>
+<section id="php-mint-programozási-nyelv" class="slide level2">
+<h2>PHP mint programozási nyelv</h2>
+<div class="columns">
+<div class="column" style="width: 50%">
+<ul>
+<li>Dinamikusan típusos
+<ul>
+<li>változók típusa a benne tárolt értéktől függ</li>
+<li>automatikus típuskonverziók</li>
+</ul></li>
+<li>Értelmezett</li>
+<li>Szkriptnyelv</li>
+</ul>
+</div><div class="column" style="width: 50%">
+<ul>
+<li>Részben case sensitive</li>
+<li>Utasítások végén <code>;</code></li>
+<li>Többparadigmás nyelv
+<ul>
+<li>procedurális</li>
+<li>OOP</li>
+<li>funkcionális</li>
+</ul></li>
+<li>C alapú szintaxis</li>
+<li>Nincs főprogram</li>
+</ul>
+</div>
+</div>
+<ul>
+<li>Hasonló a JavaScripthez
+<ul>
+<li>szintaxis</li>
+<li>vezérlési szerkezetek, operátorok</li>
+<li>viselkedés</li>
+</ul></li>
+</ul>
+</section>
+<section id="megjegyzések" class="slide level2">
+<h2>Megjegyzések</h2>
+<pre class="php"><code>// egysoros megjegyzés
+
+#  Perl szintaktikájú egysoros megjegyzés
+
+/*
+többsoros
+megjegyzés
+*/</code></pre>
+</section>
+<section id="típusok" class="slide level2">
+<h2>Típusok</h2>
+<div class="columns">
+<div class="column" style="width: 50%">
+<ul>
+<li>Egyszerű típusok
+<ul>
+<li>logikai (<code>bool</code>)</li>
+<li>egész (<code>int</code>)</li>
+<li>lebegőpontos (<code>float</code>)</li>
+<li>szöveg (<code>string</code>)</li>
+</ul></li>
+</ul>
+</div><div class="column" style="width: 50%">
+<ul>
+<li>Összetett típusok
+<ul>
+<li>tömb (<code>array</code>)</li>
+<li>objektum (<code>object</code>)</li>
+<li>függvény (<code>callable</code>)</li>
+</ul></li>
+<li>Speciális típusok
+<ul>
+<li>erőforrás</li>
+<li><code>NULL</code></li>
+</ul></li>
+</ul>
+</div>
+</div>
+</section>
+<section id="literálok" class="slide level2">
+<h2>Literálok</h2>
+<div class="columns">
+<div class="column" style="width: 40%">
+<pre class="php"><code>//Logikai
+true
+false
+
+//Egész
+12     //decimális
+-34
+0123   //oktális
+0x0F   //hexadecimális
+0b0101 //bináris
+
+//Lebegőpontos
+3.1415
+5.6e12
+-7E-2</code></pre>
+</div><div class="column" style="width: 60%">
+<pre class="php"><code>$a = 12;
+// Aposztróf: nem helyettesít be
+&#39;alma\t${a} alma&#39; // alma\t{$a} alma
+&#39;Több
+sor is lehet benne&#39;
+
+// Macskaköröm: behelyettesít
+&quot;alma\t${a} alma&quot; // alma   12 alma
+&quot;Ez egy
+több soros szöveg&quot;
+
+// Heredoc: behelyettesít
+&lt;&lt;&lt;EOT
+Több soros {$a}
+szöveg
+EOT
+
+// Nowdoc: nem helyettesít be
+&lt;&lt;&lt;&#39;EOT&#39;
+Ez is lehet {$a}
+több soros.
+EOT</code></pre>
+</div>
+</div>
+</section>
+<section id="típusokkal-kapcsolatos-fontos-függvények" class="slide level2">
+<h2>Típusokkal kapcsolatos fontos függvények</h2>
+<div class="columns">
+<div class="column" style="width: 50%">
+<ul>
+<li>Típusbeállítás
+<ul>
+<li>típuskényszerítés <code>(int)$a</code></li>
+<li><code>settype()</code></li>
+</ul></li>
+</ul>
+<pre class="php"><code>$a = &#39;12&#39;;
+gettype($a);  // &#39;string&#39;
+$a = (int)$a; // cast to int
+gettype($a);  // &#39;integer&#39;</code></pre>
+</div><div class="column" style="width: 50%">
+<ul>
+<li>Típuslekérdezés
+<ul>
+<li><code>gettype()</code></li>
+<li><code>is_integer()</code></li>
+<li><code>is_float()</code></li>
+<li><code>is_numeric()</code></li>
+<li><code>is_string()</code></li>
+<li><code>is_bool()</code></li>
+<li>…</li>
+</ul></li>
+</ul>
+</div>
+</div>
+<div class="columns">
+<div class="column" style="width: 50%">
+<ul>
+<li>Speciális függvények
+<ul>
+<li><code>isset()</code></li>
+<li><code>is_null()</code></li>
+<li><code>empty()</code></li>
+</ul></li>
+</ul>
+</div><div class="column" style="width: 50%">
+<ul>
+<li><a href="http://www.php.net/manual/en/language.types.type-juggling.php">Automatikus konverziók</a></li>
+<li><a href="http://www.php.net/manual/en/types.comparisons.php">Típusok összehasonlítása (táblázatok)</a></li>
+</ul>
+</div>
+</div>
+</section>
+<section id="operátorok" class="slide level2">
+<h2>Operátorok</h2>
+<ul>
+<li><a href="http://php.net/manual/en/language.operators.php">Referencia</a></li>
+<li>Kb. ugyanaz, mint JavaScriptben</li>
+<li>Különbség
+<ul>
+<li><code>+</code> kizárólag összeadás</li>
+<li><code>.</code> szövegösszefűzés</li>
+</ul></li>
+<li>Újdonság
+<ul>
+<li><code>$a &lt;=&gt; $b</code>: összehasonlítás (-1, 0, 1)</li>
+<li><code>$a ?? $b ?? $c</code>: az első nem <code>NULL</code></li>
+<li><code>$a ?: $b</code>: megegyezik <code>$a ? $a : $b</code></li>
+</ul></li>
+</ul>
+<div class="columns">
+<div class="column">
+<pre class="php"><code>&quot;piros &quot; + &quot;alma&quot;; // 0
+&quot;piros &quot; . &quot;alma&quot;; // &quot;piros alma&quot;</code></pre>
+</div><div class="column">
+<pre class="php"><code>1 &lt;=&gt; 1; // 0
+1 &lt;=&gt; 2; // -1
+2 &lt;=&gt; 1; // 1
+
+NULL ?? 1 ?? 2; // 1
+
+false ?: &#39;alma&#39;; // &#39;alma&#39;</code></pre>
+</div>
+</div>
+</section>
+<section id="vezérlési-szerkezetek" class="slide level2">
+<h2>Vezérlési szerkezetek</h2>
+<p>Ld. C++ vagy JavaScript</p>
+<p>Továbbá:</p>
+<pre class="php"><code>foreach ($tomb as $ertek) {
+  utasítások;
+}
+
+foreach ($tomb as $kulcs =&gt; $ertek) {
+  utasítások;
+}</code></pre>
+</section>
+<section id="függvények" class="slide level2" data-state="new-section">
+<h2 data-state="new-section">Függvények</h2>
+</section>
+<section id="függvények-1" class="slide level2">
+<h2>Függvények</h2>
+<pre class="cpp"><code>// C++
+int add(int a, int b) {
+  return a + b;
+}</code></pre>
+<pre class="js"><code>// JavaScript
+function add(a, b) {
+  return a + b;
+}</code></pre>
+<pre class="php"><code>// PHP
+function add($a, $b) {
+  return $a + $b;
+}
+// or
+function add(int $a, int $b): int {
+  return $a + $b;
+}</code></pre>
+</section>
+<section id="függvények-2" class="slide level2">
+<h2>Függvények</h2>
+<pre class="php"><code>// Default value
+function greet($name = &#39;somebody&#39;) {
+  return &quot;Hello ${name}!&quot;;
+}
+greet();    // &quot;Hello somebody!&quot;
+
+// Pass by reference
+$szam = 41;
+function novel(&amp;$szam) {
+  $szam += 1;
+}
+novel($szam);
+print($szam);    // 42
+
+// Anonymous function literal
+$add = function ($a, $b) {
+  return $a + $b;
+}
+print($add(10, 32)); // 42
+
+// Accessing global scope
+$globus = &#39;Föld&#39;;
+function zartFuggveny() {
+  global $globus;
+  print(&quot;Gyönyörű a ${globus}!&quot;);
+}
+// or
+function zartFuggveny() {
+  print(&quot;Gyönyörű a ${GLOBALS[&#39;globus&#39;]}!&quot;);
+}
+// or, accessing just the parent scope
+$zartFuggveny = function () use ($globus) {
+  print(&quot;Gyönyörű a ${globus}!&quot;);
+}</code></pre>
+</section>
+<section id="típusannotációk" class="slide level2">
+<h2>Típusannotációk</h2>
+<pre class="php"><code>// Szigorú típusosság
+declare(strict_types=1);
+
+function add(int $a, int $b): int {
+    return $a + $b;
+}
+
+var_dump(add(1, 2));
+var_dump(add(1.5, 2.5)); // Hibát dob
+
+// Gyenge típusosságnál automatikus konverziók történnek
+function sum(int $a, int $b) {
+    return $a + $b;
+}
+
+var_dump(sum(1.5, 2.5)); // 3</code></pre>
+</section>
+<section id="tömb" class="slide level2" data-state="new-section">
+<h2 data-state="new-section">Tömb</h2>
+</section>
+<section id="tömb-1" class="slide level2">
+<h2>Tömb</h2>
+<ul>
+<li>Gyűjtemények általános objektuma</li>
+<li>Asszociatív tömb: kulcs-érték párokból áll
+<ul>
+<li>kulcs: <code>integer</code> vagy <code>string</code></li>
+<li>érték: bármilyen típusú lehet</li>
+</ul></li>
+<li>Összetett adatszerkezet megvalósítása
+<ul>
+<li>rekord</li>
+<li>indexelt tömb</li>
+<li>asszociatív tömb</li>
+<li>többdimenziós tömb</li>
+<li>fa, sor, verem, stb.</li>
+</ul></li>
+</ul>
+</section>
+<section id="tömb-2" class="slide level2">
+<h2>Tömb</h2>
+<pre class="php"><code>// Üres tömb
+$arr = array();
+// vagy
+$arr = [];
+
+// Indexelt tömb létrehozása
+$arr = array(&#39;alma&#39;, &#39;korte&#39;, &#39;szilva&#39;);
+// vagy
+$arr = [&#39;alma&#39;, &#39;korte&#39;, &#39;szilva&#39;];
+
+// A tömb hosszának lekérdezése
+count($arr);    // =&gt; 3
+
+// Hivatkozás
+$arr[0]; //&#39;alma&#39;
+
+// Elemek módosítása
+$arr[1] = 13;
+$arr[1];        //13
+
+// Új elem beszúrása a tömb végére
+$arr[] = &#39;új&#39;;
+
+// Elem törlése
+unset($arr[1]);
+
+// Mátrix: tömbök tömbje
+$matrix = [
+  [1, 2, 3],
+  [4, 5, 6],
+  [7, 8, 9],
+);
+
+// Index beállítása
+$other = [ 1 =&gt; &#39;alma&#39;, &#39;korte&#39;, &#39;szilva&#39;];</code></pre>
+</section>
+<section id="asszociatív-tömb" class="slide level2">
+<h2>Asszociatív tömb</h2>
+<pre class="php"><code>// Asszociatív tömb
+$asszTomb = array(
+  &#39;alma&#39;    =&gt; &#39;piros&#39;,
+  &#39;korte&#39;   =&gt; &#39;sarga&#39;,
+  &#39;szilva&#39;  =&gt; &#39;kek&#39;,
+);
+// vagy
+$asszTomb = [
+  &#39;alma&#39;    =&gt; &#39;piros&#39;,
+  &#39;korte&#39;   =&gt; &#39;sarga&#39;,
+  &#39;szilva&#39;  =&gt; &#39;kek&#39;,
+];
+
+
+// Hivatkozás
+$asszTomb[&#39;alma&#39;]; //piros</code></pre>
+</section>
+<section id="tömbök-bejárása" class="slide level2">
+<h2>Tömbök bejárása</h2>
+<ul>
+<li><code>foreach</code></li>
+<li><code>reset()</code>, <code>next()</code>, <code>prev()</code>, <code>current()</code>, <code>key()</code>, <code>each()</code></li>
+</ul>
+<pre class="php"><code>$gyumolcsok = [
+  &#39;alma&#39;    =&gt; &#39;piros&#39;,
+  &#39;korte&#39;   =&gt; &#39;sárga&#39;,
+  &#39;szilva&#39;  =&gt; &#39;kék&#39;,
+];
+
+// foreach
+foreach ($gyumolcsok as $gyumolcs =&gt; $szin) {
+    print(&quot;${szin} ${gyumolcs}\n&quot;);
+}
+/*
+piros alma
+sárga korte
+kék szilva
+*/
+
+//tömbműveletekkel
+reset($gyumolcsok);
+while (list($kulcs, $ertek) = each($gyumolcsok)) {
+  print(&quot;${ertek} ${kulcs}\n&quot;);
+}</code></pre>
+</section>
+<section id="összegzés-tétel" class="slide level2">
+<h2>Összegzés tétel</h2>
+<pre class="php"><code>function osszegzes($tomb) {
+  $s = 0;
+  foreach ($tomb as $szam) {
+    $s = $s + $szam;
+  }
+  return $s;
+}
+
+$x = [1, 3, -2, 8];
+$result = osszegzes($x);</code></pre>
+</section>
+<section id="eldöntés-tétel" class="slide level2">
+<h2>Eldöntés tétel</h2>
+<pre class="php"><code>function eldontes(array $tomb, callable $fn): bool {
+  $i = 0;
+  while ($i &lt; count($tomb) &amp;&amp; !$fn($tomb[$i])) {
+    $i += 1;
+  }
+  return $i &lt; count($tomb);
+}
+// or
+function eldontes(array $tomb, callable $fn): bool {
+  reset($tomb);
+  while ((list(, $e) = each($tomb)) &amp;&amp; !$fn($e)) { }
+  return $e !== NULL;
+}
+
+$x = [1, 3, -2, 8];
+$result = eldontes($x, function($e) { return $e &lt; 0; });</code></pre>
+</section>
+<section id="adatszerkezetek" class="slide level2">
+<h2>Adatszerkezetek</h2>
+<div class="columns">
+<div class="column" style="width: 40%">
+<p>Tömb</p>
+<pre class="php"><code>$kutyuk = [
+  &#39;telefon&#39;,
+  &#39;fülhallgató&#39;,
+  &#39;pendrive&#39;,
+  &#39;e-könyv olvasó&#39;,
+];</code></pre>
+</div><div class="column" style="width: 60%">
+<p>Rekord</p>
+<pre class="php"><code>$hallgato = [
+  &#39;nev&#39;     =&gt; &#39;Mosolygó Napsugár&#39;,
+  &#39;neptun&#39;  =&gt; &#39;kod123&#39;,
+  &#39;szak&#39;    =&gt; &#39;Informatika BSc&#39;,
+];</code></pre>
+</div>
+</div>
+</section>
+<section id="adatszerkezetek-1" class="slide level2">
+<h2>Adatszerkezetek</h2>
+<pre class="php"><code>// Rekordok tömbje
+$hallgatok = [
+  [
+    &#39;nev&#39;     =&gt; &#39;Mosolygó Napsugár&#39;,
+    &#39;neptun&#39;  =&gt; &#39;kod123&#39;,
+    &#39;szak&#39;    =&gt; &#39;Informatika BSc&#39;,
+  ],
+  [
+    &#39;nev&#39;     =&gt; &#39;Kék Ibolya&#39;,
+    &#39;neptun&#39;  =&gt; &#39;kod456&#39;,
+    &#39;szak&#39;    =&gt; &#39;Informatika BSc&#39;,
+  ],
+];</code></pre>
+</section>
+<section id="adatszerkezetek-2" class="slide level2">
+<h2>Adatszerkezetek</h2>
+<pre class="php"><code>// Rekordok tömbje
+$hallgatok = [
+  [
+    &#39;nev&#39;    =&gt; &#39;Mosolygó Napsugár&#39;,
+    &#39;neptun&#39;  =&gt; &#39;kod123&#39;,
+    &#39;szak&#39;    =&gt; &#39;Informatika BSc&#39;,
+    &#39;targyak&#39;  =&gt; [
+      &#39;Programozás&#39;,
+      &#39;Webfejlesztés 2.&#39;,
+      &#39;Számítógépes alapismeretek&#39;,
+    ],
+  ],
+  [
+    &#39;nev&#39;    =&gt; &#39;Kék Ibolya&#39;,
+    &#39;neptun&#39;  =&gt; &#39;kod456&#39;,
+    &#39;szak&#39;    =&gt; &#39;Informatika BSc&#39;,
+    &#39;targyak&#39;  =&gt; [
+      &#39;Programozás&#39;,
+      &#39;Webfejlesztés 2.&#39;,
+      &#39;Diszkrét matematika&#39;,
+      &#39;Testnevelés&#39;,
+    ],
+  ],
+];</code></pre>
+</section>
+<section id="osztályok" class="slide level2" data-state="new-section">
+<h2 data-state="new-section">Osztályok</h2>
+<p>Klasszikus OOP</p>
+</section>
+<section id="osztályok-létrehozása" class="slide level2">
+<h2>Osztályok létrehozása</h2>
+<pre class="php"><code>class Gyerek {
+  public $kor;
+  public $nev;
+
+  public function __construct($nev, $kor) {
+    $this-&gt;nev = $nev;
+    $this-&gt;kor = $kor;
+  }
+
+  public function bemutatkozik() {
+    print(&quot;A nevem: {$this-&gt;nev}\n&quot;);
+  }
+}</code></pre>
+</section>
+<section id="objektum-példányosítása" class="slide level2">
+<h2>Objektum példányosítása</h2>
+<pre class="php"><code>$zsofi = new Gyerek(&#39;Zsófia&#39;, 7);
+$matyi = new Gyerek(&#39;Mátyás&#39;, 2);
+
+$zsofi-&gt;bemutatkozik();
+$matyi-&gt;bemutatkozik();
+
+$zsofi-&gt;nev = &#39;Zsozsó&#39;;
+$zsofi-&gt;bemutatkozik();</code></pre>
+<pre class="txt"><code>A nevem: Zsófia
+A nevem: Mátyás
+A nevem: Zsozsó</code></pre>
+</section>
+<section id="getterek-és-setterek" class="slide level2">
+<h2>Getterek és setterek</h2>
+<div class="columns">
+<div class="column" style="width: 45%">
+<pre class="php"><code>class Gyerek {
+  private $kor;
+  private $nev;
+  public function __construct($nev, $kor) {
+    $this-&gt;nev = $nev;
+    $this-&gt;kor = $kor;
+  }
+  public function getNev() {
+    return $this-&gt;nev;
+  }
+  public function setNev($value) {
+    $this-&gt;nev = $value;
+  }  
+  public function getKor() {
+    return $this-&gt;kor;
+  }
+  public function setKor($value) {
+    $this-&gt;kor = $value;
+  }  
+  public function bemutatkozik() { /*...*/ }
+}</code></pre>
+</div><div class="column" style="55%">
+<pre class="php"><code>$sari = new Gyerek(&#39;Sári&#39;, 7);
+$sari-&gt;bemutatkozik();
+
+$sari-&gt;setNev(&#39;Sarah&#39;);
+$sari-&gt;bemutatkozik();</code></pre>
+<pre class="txt"><code>A nevem: Sári
+A nevem: Sarah</code></pre>
+</div>
+</div>
+</section>
+<section id="öröklés" class="slide level2">
+<h2>Öröklés</h2>
+<div class="columns">
+<div class="column">
+<pre class="php"><code>class Ovodas extends Gyerek {
+  private $jel;
+
+  public function __construct($nev, $kor, $jel) {
+    parent::__construct($nev, $kor);
+    $this-&gt;jel = $jel;
+  }
+
+  public function getJel() {
+    return $this-&gt;jel;
+  }
+
+  public function setJel($value) {
+    $this-&gt;jel = $value;
+  }
+
+  public function miAJeled() {
+    print(&quot;A jelem: {$this-&gt;jel}\n&quot;);
+  }
+}</code></pre>
+</div><div class="column">
+<pre class="php"><code>$zsofi = new Gyerek(&#39;Zsófia&#39;,7);
+$zsofi-&gt;bemutatkozik();
+
+$david = new Ovodas(&#39;Dávid&#39;,4,&#39;perec&#39;);
+$david-&gt;bemutatkozik();
+$david-&gt;miAJeled();</code></pre>
+<pre class="txt"><code>A nevem: Zsófia
+A nevem: Dávid
+A jelem: perec</code></pre>
+</div>
+</div>
+</section>
+<section id="további-oop-tulajdonságok" class="slide level2">
+<h2>További OOP tulajdonságok</h2>
+<ul>
+<li>osztályok (<code>class</code>),</li>
+<li>láthatóság szabályozása (<code>public</code>, <code>protected</code>, <code>private</code>),</li>
+<li>konstruktorok, destruktorok (<code>__construct</code>, <code>__destruct</code>),</li>
+<li>statikus adattagok és metódusok (<code>static</code>),</li>
+<li>absztrakt osztályok (<code>abstract</code>),</li>
+<li>interfészek (<code>interface</code>),</li>
+<li>öröklés (<code>extends</code>),</li>
+<li>“magic” metódusok (<code>__get</code>, <code>__set</code>, stb)</li>
+<li>stb.</li>
+</ul>
+</section>
+<section id="kimenet-generálása" class="slide level2" data-state="new-section">
+<h2 data-state="new-section">Kimenet generálása</h2>
+</section>
+<section id="php-fájl" class="slide level2">
+<h2>PHP fájl</h2>
+<ul>
+<li><code>.php</code> kiterjesztésű fájl</li>
+<li><code>&lt;?php</code> és <code>?&gt;</code> tagek közötti rész kerül értelmezésre</li>
+<li>Több PHP blokk is lehet</li>
+<li>Ezeken kívüli rész automatikusan kiírásra kerül</li>
+<li>Kiírás PHP blokkon belül
+<ul>
+<li><code>echo</code>, <code>print</code> (függvény vagy kulcsszó)</li>
+<li><code>var_dump()</code>, <code>print_r()</code> (debugolás)</li>
+</ul></li>
+</ul>
+<div class="columns">
+<div class="column">
+<pre class="php"><code>&lt;?php
+//PHP kód
+?&gt;
+Szöveg
+&lt;?php
+//PHP kód
+?&gt;</code></pre>
+</div><div class="column">
+<pre class="php"><code>&lt;p&gt;Bekezdés&lt;/p&gt;
+&lt;?php
+$nev = &#39;Alma&#39;;
+echo &quot;&lt;p&gt;${nev}&lt;/p&gt;&quot;;
+echo(&quot;&lt;p&gt;${nev}&lt;/p&gt;&quot;);
+print &quot;&lt;p&gt;${nev}&lt;/p&gt;&quot;;
+print(&quot;&lt;p&gt;${nev}&lt;/p&gt;&quot;);
+?&gt;
+&lt;p&gt;Bekezdés&lt;/p&gt;</code></pre>
+</div>
+</div>
+</section>
+<section id="elvek" class="slide level2">
+<h2>Elvek</h2>
+<ul>
+<li>Cél: HTML előállítása programmal</li>
+<li>PHP fájl logikai részei
+<ul>
+<li>beolvasás</li>
+<li>feldolgozás: adat előkészítése</li>
+<li><strong>kiírás</strong>: HTML előállítása az adatból</li>
+</ul></li>
+<li>Adat és nézet szétválasztása</li>
+<li>Statikus prototípus → Dinamikus sablon</li>
+<li>Csak a dinamikus részekhez használjunk PHP-t!</li>
+<li>PHP alternatív szintaxisa (sablonnyelv)</li>
+</ul>
+</section>
+<section id="példa" class="slide level2">
+<h2>Példa</h2>
+<p>Adott hibaüzenetek sorozata. Jelenítsük ezt meg felsorolásként!</p>
+</section>
+<section id="példa-1" class="slide level2">
+<h2>Példa</h2>
+<div class="columns">
+<div class="column" style="width: 40%">
+<p>Adat</p>
+<pre class="php"><code>$errors = [
+  &#39;error1&#39;,
+  &#39;error2&#39;,
+  &#39;error3&#39;,
+];</code></pre>
+<p>Statikus prototípus</p>
+<pre class="html"><code>&lt;ul&gt;
+  &lt;li&gt;error1&lt;/li&gt;
+  &lt;li&gt;error2&lt;/li&gt;
+  &lt;li&gt;error3&lt;/li&gt;
+&lt;/ul&gt;</code></pre>
+</div><div class="column" style="width: 60%">
+<p>Dinamikus sablon</p>
+<pre class="php"><code>echo &quot;&lt;ul&gt;&quot;;
+foreach($errors as $error) {
+  echo &quot;  &lt;li&gt;${error}&lt;/li&gt;&quot;;
+}
+echo &quot;&lt;/ul&gt;&quot;;</code></pre>
+<pre class="php"><code>&lt;ul&gt;
+&lt;?php foreach($errors as $error) { ?&gt;
+    &lt;li&gt;&lt;?php echo $error ?&gt;&lt;/li&gt;
+&lt;?php } ?&gt;
+&lt;/ul&gt;</code></pre>
+<pre class="php"><code>&lt;ul&gt;
+&lt;?php foreach($errors as $error) : ?&gt;
+    &lt;li&gt;&lt;?= $error ?&gt;&lt;/li&gt;
+&lt;?php endforeach ?&gt;
+&lt;/ul&gt;</code></pre>
+</div>
+</div>
+</section>
+<section id="alternatív-szintaxis-sablonnyelv" class="slide level2">
+<h2>Alternatív szintaxis (sablonnyelv)</h2>
+<pre class="php"><code>&lt;!-- Kiírás --&gt;
+&lt;?= $valtozo ?&gt;
+
+&lt;!-- Elágazás --&gt;
+&lt;?php if (felt) : ?&gt;
+    HTML sablon kód
+&lt;?php else : ?&gt;
+    HTML sablon kód
+&lt;?php endif ?&gt;
+
+&lt;!-- Ciklus --&gt;
+&lt;?php foreach($arr as $e) : ?&gt;
+    HTML sablon kód
+&lt;?php endforeach ?&gt;</code></pre>
+</section>
+<section id="összefoglalás" class="slide level2" data-state="topic">
+<h2 data-state="topic">Összefoglalás</h2>
+<ul class="task-list">
+<li><input type="checkbox" disabled="" checked="" />
+Cél: HTML kódot előállítása</li>
+<li><input type="checkbox" disabled="" checked="" />
+HTTP, CGI</li>
+<li><input type="checkbox" disabled="" checked="" />
+PHP hasonlít a JavaScripthez, néhány különbség<br />
+(pl. <code>$</code> jeleket kell írni)</li>
+<li><input type="checkbox" disabled="" checked="" />
+Kimenet generálás: PHP csak a dinamikus tartalomhoz</li>
+</ul>
+</section>
+    </div>
+  </div>
+
+  <div id="captcha"></div>
+
+  <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.18.1/build/highlight.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/js/reveal.js"></script>
+
+  <script>
+    // Highlighting in code blocks
+    const codes = document.querySelectorAll('pre > code')
+    for (const code of codes) {
+      code.setAttribute('data-noescape', '')
+      const text = code.innerHTML
+      const markedText = text
+        .replace(/&lt;✒/g, '</mark>')
+        .replace(/✒&gt;/g, '<mark>')
+      code.innerHTML = markedText
+    }
+
+    // Adding captcha
+    const queryString = new URLSearchParams(window.location.search);
+    const captcha = queryString.get('captcha');
+    const captchaElement = document.getElementById("captcha");
+    captchaElement.innerHTML = captcha;
+
+    // Full list of configuration options available at:
+    // https://github.com/hakimel/reveal.js#configuration
+    Reveal.initialize({
+      // Display controls in the bottom right corner
+      controls: true,
+      controlsTutorial: false,
+      // Display a presentation progress bar
+      progress: true,
+      // Display the page number of the current slide
+      slideNumber: true,
+      // Add the current slide number to the URL hash so that reloading the
+      // page/copying the URL will return you to the same slide
+      hash: true,
+      // Push each slide change to the browser history
+      history: false,
+      // Enable keyboard shortcuts for navigation
+      keyboard: true,
+      // Enable the slide overview mode
+      overview: true,
+      // Vertical centering of slides
+      center: true,
+      // Enables touch navigation on devices with touch input
+      touch: true,
+      // Loop the presentation
+      loop: false,
+      // Hides the address bar on mobile devices
+      hideAddressBar: true,
+      // Transition style
+      transition: 'slide', // none/fade/slide/convex/concave/zoom
+      // Transition style for full page slide backgrounds
+      backgroundTransition: 'slide', // none/fade/slide/convex/concave/zoom
+      // Bounds for smallest/largest possible scale to apply to content
+      minScale: 0.5,
+      maxScale: 3,
+      // Modifier key used to click-zoom to part of the slide
+      zoomKey: "ctrl",
+      math: {
+        mathjax: 'https://cdn.jsdelivr.net/gh/mathjax/MathJax@3.0.1/es5/tex-mml-chtml.js',
+        config: 'TeX-AMS_HTML-full',
+        tex2jax: {
+          inlineMath: [['\\(','\\)']],
+          displayMath: [['\\[','\\]']],
+          balanceBraces: true,
+          processEscapes: false,
+          processRefs: true,
+          processEnvironments: true,
+          preview: 'TeX',
+          skipTags: ['script','noscript','style','textarea','pre','code'],
+          ignoreClass: 'tex2jax_ignore',
+          processClass: 'tex2jax_process'
+        }
+      },
+
+      // Optional reveal.js plugins
+      dependencies: [
+        { src: 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+        { src: 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/plugin/zoom-js/zoom.js', async: true },
+        //{ src: 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/socket.io/socket.io.js', async: true },
+        //{ src: 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/plugin/notes-server/client.js', async: true },
+        { src: 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/plugin/math/math.js', async: true },
+        { src: 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/plugin/notes/notes.js', async: true },
+        { src: 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/plugin/highlight/highlight.js', async: true }
+      ]
+    });
+  </script>
+
+  
+  </body>
+</html>

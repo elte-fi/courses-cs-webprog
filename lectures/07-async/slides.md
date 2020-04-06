@@ -1,5 +1,5 @@
 ---
-title: Webprogramozás - Canvas, animációk, API-k
+title: Webprogramozás - Aszinkron programozás, AJAX, hibakezelés
 ---
 
 ::: title
@@ -146,9 +146,9 @@ console.log(deserializedData);
 ## Szinkron példa
 
 ```js
-console.log('first');
-alert('second');
-console.log('third');
+console.log("first");
+alert("second");
+console.log("third");
 ```
 
 <div class="example">
@@ -157,9 +157,9 @@ console.log('third');
 
 <script>
 document.querySelector("#sync-example").addEventListener("click", function () {
-  console.log('first');
-  alert('second');
-  console.log('third');
+  console.log("first");
+  alert("second");
+  console.log("third");
 });
 </script>
 
@@ -230,7 +230,7 @@ button.addEventListener("click", function () {
   console.log("second");
 });
 
-console.log('third');
+console.log("third");
 ```
 
 ------
