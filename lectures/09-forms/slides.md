@@ -177,7 +177,7 @@ Host: webprogramozas.inf.elte.hu
 $title = $_GET["title"] ?? "I don't know";
 
 ?>
-<h1>Title: <?= $name ?></h1>
+<h1>Title: <?= $title ?></h1>
 ```
 
 ------
@@ -448,7 +448,7 @@ if (verify_post("username", "password", "email", "fullname")) {
 ```php
 function verify_post(...$inputs) {
   foreach ($inputs as $input) {
-    if (!isset($_POST["input"])) {
+    if (!isset($_POST[$input])) {
       return FALSE;
     }
   }
@@ -460,7 +460,7 @@ function verify_post(...$inputs) {
 ```php
 function verify_get(...$inputs) {
   foreach ($inputs as $input) {
-    if (!isset($_GET["input"])) {
+    if (!isset($_GET[$input])) {
       return FALSE;
     }
   }
@@ -502,7 +502,7 @@ if (verify_post("username", "password")) {
 ```php
 function array_all_keys_exist($array, $inputs) {
   foreach ($inputs as $input) {
-    if (!isset($array["input"])) {
+    if (!isset($array[$input])) {
       return FALSE;
     }
   }
@@ -511,11 +511,11 @@ function array_all_keys_exist($array, $inputs) {
 }
 
 function verify_get(...$inputs) {
-  return array_all_keys_exist($inputs);
+  return array_all_keys_exist($_GET, $inputs);
 }
 
 function verify_post(...$inputs) {
-  return array_all_keys_exist($inputs);
+  return array_all_keys_exist($_GET, $inputs);
 }
 ```
 
@@ -629,7 +629,7 @@ if (/* SUCCESS */) {
 
 ```html
 <?php foreach($messages as $message) : ?>
-  <div class="<?= $message->type ?>"><?= $error->message ?></div>
+  <div class="<?= $message->type ?>"><?= $message->message ?></div>
 <?php endforeach; ?>
 ```
 
@@ -647,7 +647,7 @@ if (verify_post("number")) {
   $number = $_POST["number"];
 
   // Validate input
-  if (!filter_var($number, FILTER_VALIDATE_FLOAT, ["min_range" => 0])) {
+  if (!filter_var($number, FILTER_VALIDATE_FLOAT) || $number < 0) {
     $messages[] = new ErrorMessage("Invalid input number");
   }
 
@@ -705,9 +705,9 @@ VAGY
 
 ```html
 <?php foreach($messages as $message) : ?>
-  <li class="<?= ✒>$message->type<✒ ?>">
+  <div class="<?= ✒>$message->type<✒ ?>">
     <?= ✒>$message->message<✒ ?>
-  </li>
+  </div>
 <?php endforeach; ?>
 ```
 
