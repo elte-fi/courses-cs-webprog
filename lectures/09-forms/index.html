@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <title>Bemenet, űrlapfeldolgozás</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+  <!-- Reveal.js Theme -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/elte-fi/revealjs-elte-fi@1.1.1/dist/revealjs-elte-fi.min.css">
+  <!-- Highlighting -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.18.1/build/styles/default.min.css">
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+
+  <!-- Printing and PDF exports -->
+  <script>
+    var link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = window.location.search.match(/print-pdf/gi) 
+      ? 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/css/print/pdf.css' 
+      : 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/css/print/paper.css';
+    document.getElementsByTagName('head')[0].appendChild( link );
+  </script>
+
+  </head>
+
+<body>
+  <div class="reveal">
+    <div class="slides">
+<section class="slide level2">
+
+<div class="title">
+<p>Webprogramozás</p>
+</div>
+<h3 id="bemenet-űrlapfeldolgozás">Bemenet, űrlapfeldolgozás</h3>
+<div class="columns">
+<div class="column" style="width:33%;">
+<p><small> <strong>Visnovitz Márton</strong><br />
+egyetemi tanársegéd<br />
+visnovitz.marton@inf.elte.hu </small></p>
+</div><div class="column" style="width:33%;">
+<p><small> <strong>Horváth Győző</strong><br />
+egyetemi docens<br />
+horvath.gyozo@inf.elte.hu </small></p>
+</div>
+</div>
+</section>
+<section id="ismétlés" class="slide level2" data-state="new-section">
+<h2 data-state="new-section">Ismétlés</h2>
+</section>
+<section id="ismétlés-1" class="slide level2">
+<h2>Ismétlés</h2>
+<p>Dinamikus szerveroldali webprogramozás: program állítja elő a tartalmat (HTML)</p>
+<div class="columns">
+<div class="column" style="width: 50%">
+<ul class="task-list">
+<li><input type="checkbox" disabled="" checked="" />
+PHP nyelv<ul>
+<li>Adatszerkezetek</li>
+<li>Programozási tételek</li>
+</ul></li>
+<li><input type="checkbox" disabled="" checked="" />
+Program szerkezete<ul>
+<li>beolvasás</li>
+<li>feldolgozás</li>
+<li><strong>kiírás</strong></li>
+</ul></li>
+<li><input type="checkbox" disabled="" checked="" />
+Kimenet (HTML)<ul>
+<li>dinamikus <strong>sablon</strong></li>
+<li>alternatív szintaxis</li>
+</ul></li>
+</ul>
+</div><div class="column" style="width: 50%">
+<p><img data-src="../../assets/images/architecture/web-server-php.png" /></p>
+</div>
+</div>
+</section>
+<section id="ismétlés-2" class="slide level2">
+<h2>Ismétlés</h2>
+<pre class="php"><code>&lt;?php 
+// Input (?)
+$tracks = [
+  [&quot;id&quot; =&gt; 1, &quot;name&quot; =&gt; &quot;guitar&quot;, &quot;muted&quot; =&gt; false],
+  [&quot;id&quot; =&gt; 2, &quot;name&quot; =&gt; &quot;bass&quot;,   &quot;muted&quot; =&gt; true ],
+  [&quot;id&quot; =&gt; 3, &quot;name&quot; =&gt; &quot;vocal&quot;,  &quot;muted&quot; =&gt; false],
+];
+
+// Processing
+$enabledTracks = array_filter($tracks, function ($track) {
+  return !$track[&quot;muted&quot;];
+});
+?&gt;</code></pre>
+<pre class="html"><code>&lt;!-- Output --&gt;
+&lt;div id=&quot;tracks&quot;&gt;
+  &lt;?php foreach($enabledTracks as $t) : ?&gt;
+    &lt;div class=&quot;track&quot;&gt;
+      &lt;?= $t[&quot;name&quot;] ?&gt;
+    &lt;/div&gt;
+  &lt;?php endforeach ?&gt;
+&lt;/div&gt;</code></pre>
+</section>
+<section id="szerveroldali-program-bemeneti-adatai" class="slide level2" data-state="new-section">
+<h2 data-state="new-section">Szerveroldali program bemeneti adatai</h2>
+</section>
+<section id="szerveroldali-program-bemeneti-adatai-1" class="slide level2">
+<h2>Szerveroldali program bemeneti adatai</h2>
+<p>A bemeneti program lehetséges forrásai:</p>
+<ul class="task-list">
+<li><input type="checkbox" disabled="" />
+<strong>Kliens</strong></li>
+<li><input type="checkbox" disabled="" />
+Környezet</li>
+<li><input type="checkbox" disabled="" />
+Fájl</li>
+<li><input type="checkbox" disabled="" />
+Munkamenet</li>
+<li><input type="checkbox" disabled="" />
+Adatbázis</li>
+<li><input type="checkbox" disabled="" />
+Másik szerver</li>
+</ul>
+</section>
+<section id="szerveroldali-program-bemeneti-adatai-2" class="slide level2">
+<h2>Szerveroldali program bemeneti adatai</h2>
+<p><img data-src="../../assets/images/architecture/server-input.png" /></p>
+</section>
+<section id="kliensről-érkező-adatok" class="slide level2">
+<h2>Kliensről érkező adatok</h2>
+<p><img data-src="../../assets/images/architecture/server-input-path.png" /></p>
+</section>
+<section id="kérésindítási-lehetőségek" class="slide level2">
+<h2>Kérésindítási lehetőségek</h2>
+<ul class="task-list">
+<li><input type="checkbox" disabled="" />
+<strong>Cím (URL) beírása (<code>GET</code>)</strong></li>
+<li><input type="checkbox" disabled="" />
+<strong>Linkre kattintás (<code>GET</code>)</strong></li>
+<li><input type="checkbox" disabled="" />
+Űrlap elküldése (<code>GET</code>, <code>POST</code>)</li>
+<li><input type="checkbox" disabled="" />
+JavaScript (<code>GET</code>, <code>POST</code>, …)<ul>
+<li>oldal újratöltés - <code>window.location</code> (<code>GET</code>)</li>
+<li>űrlap elküldés - <code>submit()</code> metódus (<code>GET</code>, <code>POST</code>)</li>
+<li>AJAX/fetch kérés (bármilyen HTTP metódus)</li>
+</ul></li>
+</ul>
+</section>
+<section id="cím-url-beírása-linkre-kattintás" class="slide level2">
+<h2>Cím (URL) beírása / Linkre kattintás</h2>
+<pre class="txt"><code>&lt;protocol&gt;://&lt;host&gt;:&lt;port&gt;/&lt;path&gt;?✒&gt;&lt;query&gt;&lt;✒#&lt;fragment&gt;</code></pre>
+<p><strong>Példa</strong></p>
+<pre class="html"><code>&lt;a href=&quot;http://server.hu/index.php?✒&gt;adat=ELTE&lt;✒&quot;&gt;Valami&lt;/a&gt;</code></pre>
+</section>
+<section id="adat-a-címsorban" class="slide level2">
+<h2>Adat a címsorban</h2>
+<ul>
+<li>A <code>?</code>-et követő név-érték párok sorozata</li>
+<li><code>&amp;</code> jellel elválasztva
+<ul>
+<li><code>foo=1&amp;bar=2</code></li>
+</ul></li>
+<li>Szükség esetén “URL encoding”
+<ul>
+<li><code>urlencode("Tom &amp; Jerry");</code></li>
+<li><code>title=Tom+%26+Jerry"</code></li>
+</ul></li>
+<li>A HTTP kérés nyitó sorában továbbítjuk</li>
+</ul>
+<pre><code>GET /index.php✒&gt;?title=Tom+%26+Jerry&lt;✒ HTTP/1.1
+Host: webprogramozas.inf.elte.hu</code></pre>
+</section>
+<section id="feldolgozás-php-ban" class="slide level2">
+<h2>Feldolgozás PHP-ban</h2>
+<ul>
+<li>Környezeti változókon (<code>$_SERVER</code>) keresztül
+<ul>
+<li><code>$_SERVER["QUERY_STRING"]</code></li>
+</ul></li>
+<li>A <code>$_GET</code> <em>szuperglobális</em> változón keresztül
+<ul>
+<li>a PHP előre felparseolja</li>
+<li>asszociatív tömbként hozzáférhető</li>
+<li>pl: <code>$_GET["title"]</code></li>
+</ul></li>
+</ul>
+</section>
+<section id="feldolgozás-példa" class="slide level2">
+<h2>Feldolgozás példa</h2>
+<pre class="php"><code>&lt;?php
+
+$title = $_GET[&quot;title&quot;] ?? &quot;I don&#39;t know&quot;;
+
+?&gt;
+&lt;h1&gt;Title: &lt;?= $name ?&gt;&lt;/h1&gt;</code></pre>
+</section>
+<section id="kérésindítási-lehetőségek-1" class="slide level2">
+<h2>Kérésindítási lehetőségek</h2>
+<ul class="task-list">
+<li><input type="checkbox" disabled="" checked="" />
+Cím (URL) beírása (<code>GET</code>)</li>
+<li><input type="checkbox" disabled="" checked="" />
+Linkre kattintás (<code>GET</code>)</li>
+<li><input type="checkbox" disabled="" />
+<strong>Űrlap elküldése (<code>GET</code>, <code>POST</code>)</strong></li>
+<li><input type="checkbox" disabled="" />
+JavaScript (<code>GET</code>, <code>POST</code>, …)<ul>
+<li>oldal újratöltés - <code>window.location</code> (<code>GET</code>)</li>
+<li>űrlap elküldés - <code>submit()</code> metódus (<code>GET</code>, <code>POST</code>)</li>
+<li>AJAX/fetch kérés (bármilyen HTTP metódus)</li>
+</ul></li>
+</ul>
+</section>
+<section id="űrlap-elküldése-a-form-elem" class="slide level2">
+<h2>Űrlap elküldése: a <code>&lt;form&gt;</code> elem</h2>
+<ul>
+<li>Attribútumok
+<ul>
+<li><code>action</code>: szerveroldali erőforrás megjelölése</li>
+<li><code>method</code>: HTTP metódus (<code>GET</code> vagy <code>POST</code>)</li>
+<li><code>enctype</code>: a form-adatok kódolása a küldés során</li>
+</ul></li>
+<li><code>enctype</code>
+<ul>
+<li><code>application/x-www-form-urlencoded</code> (alapértelmezett)</li>
+<li><code>multipart/form-data</code> (fájlfeltöltés, csak <code>POST</code> esetén)</li>
+<li><code>text/plain</code> (levélküldés)</li>
+</ul></li>
+</ul>
+<pre class="html"><code>&lt;form method=&quot;get&quot; action=&quot;index.php&quot;&gt;
+  &lt;label for=&quot;title&quot;&gt;
+  &lt;input type=&quot;text&quot; id=&quot;title&quot; name=&quot;title&quot;&gt;
+  &lt;button type=&quot;submit&quot;&gt;Send&lt;/button&gt;
+&lt;/form&gt;</code></pre>
+</section>
+<section id="űrlap-elküldése" class="slide level2">
+<h2>Űrlap elküldése</h2>
+<ul>
+<li>Elküldés
+<ul>
+<li>a type <code>submit</code> gomb megnyomása</li>
+<li>JavaScript: <code>form.submit()</code> meghívása</li>
+</ul></li>
+<li><a href="http://www.w3.org/TR/REC-html40/interact/forms.html#h-17.13">Lépések</a>
+<ol type="1">
+<li>Elküldhető elemek kiválasztása</li>
+<li>Kérési adatok összeállítása</li>
+<li>Kérési adatok kódolása</li>
+<li>A kódolt kérési adatok elküldése</li>
+</ol></li>
+</ul>
+</section>
+<section id="űrlap-elküldése-1" class="slide level2">
+<h2>Űrlap elküldése</h2>
+<ol type="1">
+<li>Elküldhető elemek kiválasztása
+<ul>
+<li>van <code>name</code> attribútum</li>
+<li>nem <code>disabled</code></li>
+<li>bejelölt checkbox</li>
+<li>bejelölt radio</li>
+<li>kiválasztott select</li>
+</ul></li>
+</ol>
+</section>
+<section id="űrlap-elküldése-2" class="slide level2">
+<h2>Űrlap elküldése</h2>
+<ol start="2" type="1">
+<li>Kérési adatok összeállítása
+<ul>
+<li>Elküldhető formelemekből <code>név=érték</code> párokat készít</li>
+<li>ezeket <code>&amp;</code> jellel fűzi össze</li>
+<li><code>name=Győző&amp;pwd=secret&amp;check1=value1&amp;check2=on</code></li>
+</ul></li>
+<li>Kérési adatok kódolása
+<ul>
+<li>ld. <code>enctype</code> attribútum</li>
+<li><code>name=Gy%C5%91z%C5%91&amp;pwd=secret&amp;check1=value1&amp;check2=on</code></li>
+<li>→ Kérésszöveg (Query String)</li>
+</ul></li>
+</ol>
+</section>
+<section id="űrlap-elküldése-3" class="slide level2">
+<h2>Űrlap elküldése</h2>
+<ol start="4" type="1">
+<li>A kódolt kérési adatok elküldése
+<ul>
+<li><strong>GET</strong>
+<ul>
+<li>URL: <code>action-url</code> + <code>?</code> + <code>query-string</code> (ld. korábban)</li>
+<li>URL mérete limitált a gyakorlatban (2 kB)</li>
+</ul></li>
+<li><strong>POST</strong>
+<ul>
+<li>a HTTP kérés <strong>üzenettörzs</strong>ében utazik a kérésszöveg</li>
+<li>sok adat küldhető</li>
+</ul></li>
+</ul></li>
+</ol>
+</section>
+<section id="getpost-http-kérések" class="slide level2">
+<h2><code>GET</code>/<code>POST</code> HTTP kérések</h2>
+<p><code>GET</code> kérés</p>
+<pre class="html"><code>METÓDUS /&lt;path&gt;?✒&gt;&lt;query&gt;&lt;✒ VERZIÓ
+Host: &lt;host&gt;
+FEJLÉC: ÉRTÉK
+...</code></pre>
+<p><code>POST</code> kérés</p>
+<pre class="html"><code>METÓDUS /&lt;path&gt;?✒&gt;&lt;query&gt;&lt;✒ VERZIÓ
+Host: &lt;host&gt;
+FEJLÉC: ÉRTÉK
+FEJLÉC: ÉRTÉK
+FEJLÉC: ÉRTÉK
+
+✒&gt;ÜZENETTEST&lt;✒</code></pre>
+</section>
+<section id="űrlap-elküldése-példa" class="slide level2">
+<h2>Űrlap elküldése – példa</h2>
+<p>Űrlap:</p>
+<pre class="html"><code>&lt;form action=&quot;http://host/page.php&quot; method=&quot;post&quot;&gt;
+  &lt;input type=&quot;text&quot; name=&quot;foo&quot; value=&quot;bar&quot;&gt;
+  &lt;input type=&quot;password&quot; value=&quot;secret&quot;&gt;
+  &lt;input type=&quot;hidden&quot; name=&quot;password&quot; value=&quot;secret&quot;&gt;
+  &lt;input type=&quot;checkbox&quot; name=&quot;check1&quot; value=&quot;baz&quot; checked&gt;
+  &lt;input type=&quot;checkbox&quot; name=&quot;check2&quot; checked&gt;
+  &lt;button type=&quot;submit&quot;&gt;Submit&lt;/button&gt;
+&lt;/form&gt;</code></pre>
+<p>Kérésszöveg (Query string)</p>
+<pre class="txt"><code>foo=bar&amp;password=secret&amp;check1=baz&amp;check2=on</code></pre>
+</section>
+<section id="űrlapelemek" class="slide level2">
+<h2>Űrlapelemek</h2>
+<ul>
+<li>Szöveges elemek
+<ul>
+<li><code>&lt;input&gt;</code> type: <code>text</code>, <code>password</code>, <code>hidden</code></li>
+<li><code>&lt;textarea&gt;</code></li>
+<li>mindig elküldésre kerülnek</li>
+<li>akár üres szöveggel is</li>
+<li><code>textarea</code>-nál vigyázni kell: minden elküldésre kerül, ami a <code>&lt;textarea&gt;&lt;/textarea&gt;</code> elem között van</li>
+</ul></li>
+</ul>
+</section>
+<section id="űrlapelemek-1" class="slide level2">
+<h2>Űrlapelemek</h2>
+<ul>
+<li><code>checkbox</code>, <code>radio</code>
+<ul>
+<li>csak bejelölve kerül elküldésre</li>
+<li>ha nincs <code>value</code> → <code>on</code> érték</li>
+</ul></li>
+<li><code>select</code>
+<ul>
+<li>ha nincs <code>value</code> → <code>option</code> szövege az érték</li>
+<li><code>size</code>&gt;1 esetén ha nincs kiválasztva → nem küldi el</li>
+<li><code>multiple</code> esetén → ugyanazon névvel több név=érték pár (pl. <code>sel=foo&amp;sel=bar</code>)</li>
+</ul></li>
+</ul>
+</section>
+<section id="űrlapelemek-2" class="slide level2">
+<h2>Űrlapelemek</h2>
+<ul>
+<li><code>button</code>/<code>submit</code>
+<ul>
+<li>ha van neve → elküldésre kerül az értékével (felirat)</li>
+</ul></li>
+<li><code>file</code>
+<ul>
+<li><code>enctype="multipart/form-data"</code></li>
+<li><code>method="POST"</code></li>
+</ul></li>
+<li><code>hidden</code>
+<ul>
+<li>nem lehet a <code>value</code> értéket megváltoztatni</li>
+</ul></li>
+</ul>
+</section>
+<section id="feldolgozás-php-ban-1" class="slide level2">
+<h2>Feldolgozás PHP-ban</h2>
+<ul>
+<li><code>method="get"</code> esetén ugyanúgy, mint a<br />
+link/URL esetén a <code>$_GET</code> tömbön keresztül</li>
+<li><code>method="post"</code> esetén a <code>$_POST</code> szuperglobális<br />
+változón (tömb) keresztül</li>
+</ul>
+</section>
+<section id="feldolgozás-általános-séma" class="slide level2">
+<h2>Feldolgozás általános séma</h2>
+<p><img data-src="../../assets/images/architecture/php-input-handling.png" /></p>
+</section>
+<section id="példa-négyzetgyök-kiszámítása" class="slide level2">
+<h2>Példa: négyzetgyök kiszámítása</h2>
+<p>Kérjünk be egy számot és írjuk ki a négyzetgyökét!</p>
+</section>
+<section id="beolvasás-előfeldolgozás" class="slide level2">
+<h2>Beolvasás, (elő)feldolgozás</h2>
+<pre class="php"><code>&lt;?php
+$errors = [];
+// Input, process
+if (isset($_POST[&quot;number&quot;])) {
+  // Reading, preprocessing
+  $number = (int)$_POST[&quot;number&quot;];
+
+  // Validating
+  if ($number &lt; 0) {
+    $errors[] = &quot;The number is negative&quot;;
+  }
+
+  // Processing if there were no errors
+  if (empty($errors)) {
+    $square_root = sqrt($number);
+  }
+}
+
+?&gt;</code></pre>
+</section>
+<section id="kiírás" class="slide level2">
+<h2>Kiírás</h2>
+<pre class="html"><code>&lt;!-- HTML form --&gt;
+&lt;form method=&quot;post&quot;&gt;
+  &lt;input type=&quot;number&quot; name=&quot;number&quot;&gt;
+  &lt;button type=&quot;submit&quot;&gt;Send&lt;/button&gt;
+&lt;/form&gt;
+
+&lt;!-- Output result --&gt;
+&lt;?php if (isset($square_root)): ?&gt;
+  &lt;output&gt;
+    The square root of &lt;?= $number ?&gt; is &lt;?= $square_root ?&gt;
+  &lt;/output&gt;
+&lt;?php endif; ?&gt;
+
+&lt;!-- Output errors --&gt;
+&lt;?php foreach($errors as $error): ?&gt;
+  &lt;div class=&quot;error&quot;&gt;&lt;?= $error ?&gt;&lt;/div&gt;
+&lt;?php endforeach; ?&gt;
+</code></pre>
+</section>
+<section id="több-bemenet" class="slide level2">
+<h2>Több bemenet</h2>
+<p>Pl. regisztráció</p>
+<pre class="php"><code>if (isset($_POST[&quot;username&quot;]) &amp;&amp; isset($_POST[&quot;password&quot;]) &amp;&amp; $_POST[&quot;email&quot;] /* &amp;&amp; ...*/) {
+  /* Processing */
+}</code></pre>
+</section>
+<section id="több-bemenet-1" class="slide level2">
+<h2>Több bemenet</h2>
+<p>Helyette</p>
+<pre class="php"><code>if (verify_post(&quot;username&quot;, &quot;password&quot;, &quot;email&quot;, &quot;fullname&quot;)) {
+  /* Processing */
+}</code></pre>
+</section>
+<section id="bemenet-megléte-verify_" class="slide level2">
+<h2>Bemenet megléte: <code>verify_*</code></h2>
+<pre class="php"><code>function verify_post(...$inputs) {
+  foreach ($inputs as $input) {
+    if (!isset($_POST[&quot;input&quot;])) {
+      return FALSE;
+    }
+  }
+
+  return TRUE;
+}</code></pre>
+<pre class="php"><code>function verify_get(...$inputs) {
+  foreach ($inputs as $input) {
+    if (!isset($_GET[&quot;input&quot;])) {
+      return FALSE;
+    }
+  }
+
+  return TRUE;
+}</code></pre>
+</section>
+<section id="használat" class="slide level2">
+<h2>Használat</h2>
+<pre class="php"><code>&lt;?php
+
+if (verify_post(&quot;username&quot;, &quot;password&quot;)) {
+  $username = $_POST[&quot;username&quot;];
+  $password = $_POST[&quot;password&quot;];
+  /* check credentials */
+}
+
+?&gt;</code></pre>
+<pre class="html"><code>&lt;form method=&quot;post&quot; action=&quot;login.php&quot;&gt;
+  &lt;label for=&quot;username&quot;&gt;Username: &lt;/label&gt;
+  &lt;input type=&quot;text&quot; id=&quot;username&quot; name=&quot;username&quot;&gt;
+  &lt;label for=&quot;password&quot;&gt;Password: &lt;/label&gt;
+  &lt;input type=&quot;password&quot; id=&quot;password&quot; name=&quot;password&quot;&gt;
+  &lt;button type=&quot;submit&quot;&gt;Log in&lt;/button&gt;
+&lt;/form&gt;</code></pre>
+</section>
+<section id="bemenet-megléte-clean-megoldás" class="slide level2">
+<h2>Bemenet megléte: “clean” megoldás</h2>
+<pre class="php"><code>function array_all_keys_exist($array, $inputs) {
+  foreach ($inputs as $input) {
+    if (!isset($array[&quot;input&quot;])) {
+      return FALSE;
+    }
+  }
+
+  return TRUE;
+}
+
+function verify_get(...$inputs) {
+  return array_all_keys_exist($inputs);
+}
+
+function verify_post(...$inputs) {
+  return array_all_keys_exist($inputs);
+}</code></pre>
+</section>
+<section id="validáció-filter_" class="slide level2">
+<h2>Validáció: <code>filter_*()</code></h2>
+<p><code>filter_var()</code> és <code>filter_var_array()</code></p>
+<p><a href="http://php.net/manual/en/book.filter.php">Dokumentáció</a></p>
+<pre class="php"><code>// is_numeric helyett
+if (!filter_var($input[&#39;sugar&#39;], FILTER_VALIDATE_FLOAT)) {
+  $errors[] = &#39;A sugár nem szám!&#39;;
+}
+
+// Összetettebb: szűrés és validálás
+$email = filter_var($_POST[&#39;email&#39;], FILTER_SANITIZE_EMAIL);
+if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+  $errors[] = &quot;Nem jó e-mail formátum!&quot;; 
+}
+
+// Opciók
+filter_var($string, FILTER_VALIDATE_REGEXP, [
+  &quot;options&quot;=&gt;[
+    &quot;regexp&quot;=&gt;&quot;/^M(.*)/&quot;,
+  ]
+]);</code></pre>
+</section>
+<section id="php-filterek" class="slide level2">
+<h2>PHP filterek</h2>
+<ul>
+<li><code>FILTER_DEFAULT</code> (szöveg)</li>
+<li><code>FILTER_VALIDATE_BOOLEAN</code></li>
+<li><code>FILTER_VALIDATE_EMAIL</code></li>
+<li><code>FILTER_VALIDATE_FLOAT</code></li>
+<li><code>FILTER_VALIDATE_INT</code></li>
+<li><code>FILTER_VALIDATE_IP</code></li>
+<li><code>FILTER_VALIDATE_MAC</code></li>
+<li><code>FILTER_VALIDATE_REGEXP</code></li>
+<li><code>FILTER_VALIDATE_URL</code></li>
+</ul>
+</section>
+<section id="hibák-üzenetek-kezelése-rekordokkal" class="slide level2">
+<h2>Hibák, üzenetek kezelése rekordokkal</h2>
+<pre class="php"><code>$messages = [];
+
+if (/* ERROR */) {
+  $messages = [
+    &quot;type&quot; =&gt; &quot;error&quot;,
+    &quot;message&quot; =&gt; &quot;ERROR MESSAGE&quot;
+  ];
+}
+
+if (/* SUCCESS */) {
+  $messages = [
+    &quot;type&quot; =&gt; &quot;success&quot;,
+    &quot;message&quot; =&gt; &quot;SUCCESS MESSAGE&quot;
+  ];
+}</code></pre>
+</section>
+<section id="hibák-üzenetek-kezelése-objektumokkal" class="slide level2">
+<h2>Hibák, üzenetek kezelése objektumokkal</h2>
+<pre class="php"><code>abstract class Message {
+  public $type;
+  public $message;
+
+  public function __construct($type, $message) {
+    $this-&gt;type = $type;
+    $this-&gt;message = $message;
+  }
+}
+
+class ErrorMessage extends Message {
+  public function __construct($message) {
+    parent::__construct(&quot;error&quot;, $message);
+  }
+}
+
+class SuccessMessage extends Message {
+  public function __construct($message) {
+    parent::__construct(&quot;success&quot;, $message);
+  }
+}</code></pre>
+</section>
+<section id="hibák-üzenetek-kezelése-objektumokkal-1" class="slide level2">
+<h2>Hibák, üzenetek kezelése objektumokkal</h2>
+<pre class="php"><code>$messages = [];
+
+if (/* ERROR */) {
+  $messages[] = new ErrorMessage(&quot;ERROR MESSAGE&quot;);
+}
+
+if (/* SUCCESS */) {
+  $messages[] = new SuccessMessage(&quot;SUCCESS MESSAGE&quot;);
+}</code></pre>
+<pre class="html"><code>&lt;?php foreach($messages as $message) : ?&gt;
+  &lt;div class=&quot;&lt;?= $message-&gt;type ?&gt;&quot;&gt;&lt;?= $error-&gt;message ?&gt;&lt;/div&gt;
+&lt;?php endforeach; ?&gt;</code></pre>
+</section>
+<section id="általános-feldolgozási-logika" class="slide level2">
+<h2>Általános feldolgozási logika</h2>
+<pre class="php"><code>// Array for errors
+$messages = [];
+
+// Check for input
+if (verify_post(&quot;number&quot;)) {
+  // Read (and preprocess input)
+  $number = $_POST[&quot;number&quot;];
+
+  // Validate input
+  if (!filter_var($number, FILTER_VALIDATE_FLOAT, [&quot;min_range&quot; =&gt; 0])) {
+    $messages[] = new ErrorMessage(&quot;Invalid input number&quot;);
+  }
+
+  // Process if there were no errors
+  if (empty($errors)) {
+    $square_root = sqrt($number);
+    $messages[] = new SuccessMessage(&quot;Calculation complete&quot;);
+  }
+}</code></pre>
+</section>
+<section id="üzenetek-kiírása-rekordokkal" class="slide level2">
+<h2>Üzenetek kiírása (rekordokkal)</h2>
+<pre class="html"><code>&lt;?php if ($messages) : ?&gt;
+  &lt;ul&gt;
+    &lt;?php foreach($messages as $message) : ?&gt;
+      &lt;li class=&quot;✒&gt;&lt;?= $message[&#39;type&#39;] ?&gt;&lt;✒&quot;&gt;
+        &lt;?= ✒&gt;$message[&#39;message&#39;]&lt;✒ ?&gt;
+      &lt;/li&gt;
+    &lt;?php endforeach; ?&gt;
+  &lt;/ul&gt;
+&lt;?php endif; ?&gt;</code></pre>
+<p>VAGY</p>
+<pre class="html"><code>&lt;?php foreach($messages as $message) : ?&gt;
+  &lt;div class=&quot;&lt;?= ✒&gt;$message[&#39;type&#39;]&lt;✒ ?&gt;&quot;&gt;
+    &lt;?= ✒&gt;$message[&#39;message&#39;]&lt;✒ ?&gt;
+  &lt;/div&gt;
+&lt;?php endforeach; ?&gt;</code></pre>
+</section>
+<section id="üzenetek-kiírása-objektumokkal" class="slide level2">
+<h2>Üzenetek kiírása (objektumokkal)</h2>
+<pre class="html"><code>&lt;?php if ($messages) : ?&gt;
+  &lt;ul&gt;
+    &lt;?php foreach($messages as $message) : ?&gt;
+      &lt;li class=&quot;&lt;?= ✒&gt;$message-&gt;type&lt;✒ ?&gt;&quot;&gt;
+        &lt;?= ✒&gt;$message-&gt;message&lt;✒ ?&gt;
+      &lt;/li&gt;
+    &lt;?php endforeach; ?&gt;
+  &lt;/ul&gt;
+&lt;?php endif; ?&gt;</code></pre>
+<p>VAGY</p>
+<pre class="html"><code>&lt;?php foreach($messages as $message) : ?&gt;
+  &lt;li class=&quot;&lt;?= ✒&gt;$message-&gt;type&lt;✒ ?&gt;&quot;&gt;
+    &lt;?= ✒&gt;$message-&gt;message&lt;✒ ?&gt;
+  &lt;/li&gt;
+&lt;?php endforeach; ?&gt;</code></pre>
+</section>
+<section id="kérésindítási-lehetőségek-2" class="slide level2">
+<h2>Kérésindítási lehetőségek</h2>
+<ul class="task-list">
+<li><input type="checkbox" disabled="" checked="" />
+Cím (URL) beírása (<code>GET</code>)</li>
+<li><input type="checkbox" disabled="" checked="" />
+Linkre kattintás (<code>GET</code>)</li>
+<li><input type="checkbox" disabled="" checked="" />
+Űrlap elküldése (<code>GET</code>, <code>POST</code>)</li>
+<li><input type="checkbox" disabled="" />
+<strong>JavaScript (<code>GET</code>, <code>POST</code>, …)</strong><ul>
+<li>oldal újratöltés - <code>window.location</code> (<code>GET</code>)</li>
+<li>űrlap elküldés - <code>submit()</code> metódus (<code>GET</code>, <code>POST</code>)</li>
+<li>AJAX/fetch kérés (bármilyen HTTP metódus)</li>
+</ul></li>
+</ul>
+</section>
+<section id="lehetőségek-javascripttel" class="slide level2">
+<h2>Lehetőségek JavaScripttel</h2>
+<p>Oldal újratöltése programozottan (<code>GET</code>)</p>
+<pre class="js"><code>window.location = &quot;http://example.com?✒&gt;name=value&lt;✒&quot;;</code></pre>
+<p>Űrlap elküldése programozottan (<code>GET</code>, <code>POST</code>)</p>
+<pre class="js"><code>const form = document.querySelector(&quot;form&quot;);
+✒&gt;form.submit()&lt;✒;</code></pre>
+<p>AJAX/fetch kérés küldése szervernek</p>
+<pre class="js"><code>async function () {
+  const formData = new FormData();
+  formData.append(&quot;name&quot;, &quot;value&quot;);
+
+  const response = fetch(&quot;http://example.com?✒&gt;name=value&lt;✒&quot;, {
+    ✒&gt;method: &quot;POST&quot;&lt;✒,
+    ✒&gt;body: formData&lt;✒
+  })
+}</code></pre>
+</section>
+<section id="kérésindítási-lehetőségek-3" class="slide level2">
+<h2>Kérésindítási lehetőségek</h2>
+<ul class="task-list">
+<li><input type="checkbox" disabled="" checked="" />
+Cím (URL) beírása (<code>GET</code>)</li>
+<li><input type="checkbox" disabled="" checked="" />
+Linkre kattintás (<code>GET</code>)</li>
+<li><input type="checkbox" disabled="" checked="" />
+Űrlap elküldése (<code>GET</code>, <code>POST</code>)</li>
+<li><input type="checkbox" disabled="" checked="" />
+JavaScript (<code>GET</code>, <code>POST</code>, …)<ul>
+<li>oldal újratöltés - <code>window.location</code> (<code>GET</code>)</li>
+<li>űrlap elküldés - <code>submit()</code> metódus (<code>GET</code>, <code>POST</code>)</li>
+<li>AJAX/fetch kérés (bármilyen HTTP metódus)</li>
+</ul></li>
+</ul>
+</section>
+<section id="tervezés-oldalak" class="slide level2">
+<h2>Tervezés – oldalak</h2>
+<p><img data-src="../../assets/images/architecture/form-valid.png" /></p>
+</section>
+<section id="ergonómiai-megfontolások" class="slide level2">
+<h2>Ergonómiai megfontolások</h2>
+<ul>
+<li>Hiba esetén:
+<ul class="task-list">
+<li><input type="checkbox" disabled="" checked="" />
+Az alkalmazás funkcionálisan teljesíti az elvárásokat</li>
+<li><input type="checkbox" disabled="" checked="" />
+Látszanak a hibaüzenetek</li>
+<li><input type="checkbox" disabled="" />
+Felhasználó látja, mit írt be, tud javítani</li>
+<li><input type="checkbox" disabled="" />
+Ott látja a hibát, ahol az előfordult</li>
+</ul></li>
+<li>Siker esetén:
+<ul class="task-list">
+<li><input type="checkbox" disabled="" checked="" />
+Az alkalmazás funkcionálisan teljesíti az elvárásokat</li>
+<li><input type="checkbox" disabled="" checked="" />
+Látszanak az eredmény/sikeresség</li>
+<li><input type="checkbox" disabled="" />
+Látszik, hogy mi volt a bemenet</li>
+</ul></li>
+</ul>
+</section>
+<section id="űrlap-állapottartása" class="slide level2">
+<h2>Űrlap állapottartása</h2>
+<p>Ha az adott oldalon maradunk, akkor írjuk vissza az űrlapba a korábban küldött adatokat!</p>
+<pre class="html"><code>&lt;form method=&quot;post&quot;&gt;
+  &lt;input type=&quot;number&quot; name=&quot;number&quot; ✒&gt;value=&quot;&lt;?= $number ?? &#39;&#39; ?&gt;&quot;&lt;✒&gt;
+  &lt;button type=&quot;submit&quot;&gt;Send&lt;/button&gt;
+&lt;/form&gt;</code></pre>
+</section>
+<section id="űrlap-állapottartása-1" class="slide level2">
+<h2>Űrlap állapottartása</h2>
+<pre class="html"><code>&lt;input name=&quot;input1&quot; type=&quot;text&quot; value=&quot;&lt;?= $input1 ?? &#39;&#39; ?&gt;&quot;&gt;
+&lt;textarea name=&quot;input2&quot;&gt;&lt;?= $input2 ?&gt;&lt;/textarea&gt;
+
+&lt;input name=&quot;input3&quot; type=&quot;checkbox&quot; value=&quot;value3&quot;
+  &lt;?= $input3 === &quot;value3&quot; ? &quot; checked&quot; : &quot;&quot; ?&gt;
+&gt;
+&lt;input name=&quot;input4&quot; type=&quot;radio&quot; value=&quot;value4&quot;
+  &lt;?= $input4 === &quot;value4&quot; ? &quot; checked&quot; : &quot;&quot; ?&gt;
+&gt;
+
+&lt;select name=&quot;input5&quot;&gt;
+  &lt;option value=&quot;value51&quot;
+    &lt;?= $input5 === &quot;value51&quot; ? &quot; selected&quot; : &quot;&quot; ?&gt;
+  &gt;Value 3&lt;/option&gt;
+  &lt;option value=&quot;value52&quot;
+    &lt;?= $input5 === &quot;value52&quot; ? &quot; selected&quot; : &quot;&quot; ?&gt;
+  &gt;Value 4&lt;/option&gt;
+&lt;/select&gt;</code></pre>
+</section>
+<section id="ergonómiai-megfontolások-1" class="slide level2">
+<h2>Ergonómiai megfontolások</h2>
+<ul>
+<li>Hiba esetén:
+<ul class="task-list">
+<li><input type="checkbox" disabled="" checked="" />
+Az alkalmazás funkcionálisan teljesíti az elvárásokat</li>
+<li><input type="checkbox" disabled="" checked="" />
+Látszanak a hibaüzenetek</li>
+<li><input type="checkbox" disabled="" checked="" />
+Felhasználó látja, mit írt be, tud javítani</li>
+<li><input type="checkbox" disabled="" />
+<strong>Ott látja a hibát, ahol az előfordult</strong> (JavaScript)</li>
+</ul></li>
+<li>Siker esetén:
+<ul class="task-list">
+<li><input type="checkbox" disabled="" checked="" />
+Az alkalmazás funkcionálisan teljesíti az elvárásokat</li>
+<li><input type="checkbox" disabled="" checked="" />
+Látszanak az eredmény/sikeresség</li>
+<li><input type="checkbox" disabled="" checked="" />
+Látszik, hogy mi volt a bemenet</li>
+</ul></li>
+</ul>
+</section>
+<section id="összefoglalás---kliens-bemenet" class="slide level2">
+<h2>Összefoglalás - kliens bemenet</h2>
+<p><img data-src="../../assets/images/architecture/client-http-php.png" /></p>
+</section>
+<section id="szerveroldali-program-bemeneti-adatai-3" class="slide level2">
+<h2>Szerveroldali program bemeneti adatai</h2>
+<p>A bemeneti program lehetséges forrásai:</p>
+<ul class="task-list">
+<li><input type="checkbox" disabled="" checked="" />
+Kliens</li>
+<li><input type="checkbox" disabled="" />
+<strong>Környezet</strong></li>
+<li><input type="checkbox" disabled="" />
+Fájl</li>
+<li><input type="checkbox" disabled="" />
+Munkamenet</li>
+<li><input type="checkbox" disabled="" />
+Adatbázis</li>
+<li><input type="checkbox" disabled="" />
+Másik szerver</li>
+</ul>
+</section>
+<section id="kérés-körülményei-és-http-fejlécek" class="slide level2">
+<h2>Kérés körülményei és HTTP fejlécek</h2>
+<ul>
+<li>Kérés körülményei → környezeti változók (<code>$_SERVER</code>)
+<ul>
+<li>HTTP kérés metódusa → <code>REQUEST_METHOD</code></li>
+<li>kliens IP címe → <code>REMOTE_ADDRESS</code></li>
+<li>üzenettest hossza bájtban → <code>CONTENT_LENGTH</code></li>
+</ul></li>
+<li>HTTP fejlécek → környezeti változók
+<ul>
+<li><code>HTTP_*</code></li>
+<li>Pl. <code>Accept</code> fejléc → <code>HTTP_ACCEPT</code> környezeti változó</li>
+</ul></li>
+</ul>
+<pre class="txt"><code>[REMOTE_ADDR] =&gt; 188.142.184.197
+[REMOTE_PORT] =&gt; 49323
+[REQUEST_METHOD] =&gt; GET
+[HTTP_ACCEPT] =&gt; text/html,application/xhtml+xml,application/xml
+[HTTP_ACCEPT_LANGUAGE] =&gt; hu-hu,hu;q=0.8,en-US;q=0.5,en;q=0.3</code></pre>
+</section>
+<section id="url" class="slide level2">
+<h2>URL</h2>
+<ul>
+<li><p>Kérés URL-je (szabad paraméter: <code>&lt;query&gt;</code>)</p>
+<pre class="txt"><code>&lt;protocol&gt;://&lt;host&gt;:&lt;port&gt;/&lt;path&gt;?&lt;query&gt;#&lt;fragment&gt;</code></pre></li>
+<li><p>URL → környezeti változók (fontos: <code>QUERY_STRING</code>)</p>
+<ul>
+<li><code>&lt;protocol&gt;</code> → <code>SERVER_PROTOCOL</code></li>
+<li><code>&lt;host&gt;</code> → <code>SERVER_NAME</code></li>
+<li><code>&lt;port&gt;</code> → <code>SERVER_PORT</code></li>
+<li><code>&lt;path&gt;</code> → <code>SCRIPT_NAME (PATH_INFO)</code></li>
+<li><code>&lt;query&gt;</code> → <code>QUERY_STRING</code></li>
+</ul></li>
+</ul>
+</section>
+<section id="http-üzenettörzs" class="slide level2">
+<h2>HTTP üzenettörzs</h2>
+<ul>
+<li>HTTP üzenettörzs szabad paraméter</li>
+<li><strong>Standard bemenet</strong>en jelenik meg</li>
+<li>Környezeti változó
+<ul>
+<li><code>CONTENT_LENGTH</code>: adatmennyiség hossza</li>
+</ul></li>
+</ul>
+</section>
+<section id="környezeti-változók-példa" class="slide level2">
+<h2>Környezeti változók – példa</h2>
+<pre class="txt"><code>[HTTP_HOST] =&gt; webprogramozas.inf.elte.hu
+[HTTP_USER_AGENT] =&gt; Mozilla/5.0 (Windows NT 6.1; WOW64; rv:19.0) Gecko/20100101 Firefox/19.0
+[HTTP_ACCEPT] =&gt; text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+[HTTP_ACCEPT_LANGUAGE] =&gt; hu-hu,hu;q=0.8,en-US;q=0.5,en;q=0.3
+[HTTP_ACCEPT_ENCODING] =&gt; gzip, deflate
+[HTTP_REFERER] =&gt; http://webprogramozas.inf.elte.hu/~gyozke/wf2/temp/
+[HTTP_COOKIE] =&gt; WACID=1263304129000A11327866; __utma=32143338.519822639.1361532995.1362426295.1363347264.4; __utmz=32143338.1362426295.3.3.utmcsr=google|utmccn=(organic)|utmcmd=organic|utmctr=(not%20provided)
+[HTTP_CONNECTION] =&gt; keep-alive
+[PATH] =&gt; /usr/sbin:/bin:/usr/bin:/sbin
+[SERVER_SIGNATURE] =&gt; &lt;address&gt;Apache/2.2.10 (Linux/SUSE) Server at webprogramozas.inf.elte.hu Port 80&lt;/address&gt;
+[SERVER_SOFTWARE] =&gt; Apache/2.2.10 (Linux/SUSE)
+[SERVER_NAME] =&gt; webprogramozas.inf.elte.hu
+[SERVER_ADDR] =&gt; 157.181.161.8
+[SERVER_PORT] =&gt; 80
+[REMOTE_ADDR] =&gt; 188.142.184.197
+[DOCUMENT_ROOT] =&gt; /srv/www/webprog
+[SERVER_ADMIN] =&gt; root@webprogramozas.inf.elte.hu
+[SCRIPT_FILENAME] =&gt; /home/gyozke/public_html/wf2/temp/getpost.php
+[REMOTE_PORT] =&gt; 49323
+[GATEWAY_INTERFACE] =&gt; CGI/1.1
+[SERVER_PROTOCOL] =&gt; HTTP/1.1
+[REQUEST_METHOD] =&gt; GET
+[QUERY_STRING] =&gt; 
+[REQUEST_URI] =&gt; /~gyozke/wf2/temp/getpost.php
+[SCRIPT_NAME] =&gt; /~gyozke/wf2/temp/getpost.php
+[PHP_SELF] =&gt; /~gyozke/wf2/temp/getpost.php
+[REQUEST_TIME] =&gt; 1365626159</code></pre>
+</section>
+<section id="szuperglobális-tömbök" class="slide level2">
+<h2>Szuperglobális tömbök</h2>
+<ul>
+<li><code>$_GET</code>: <code>QUERY_STRING</code>ben érkező név=érték pároknak megfelelő tömb, ahol a név a kulcs.</li>
+<li><code>$_POST</code>: a standard inputon érkező név=érték pároknak megfelelő tömb, ahol a név a kulcs.</li>
+<li><code>$_SERVER</code>: az összes környezeti változót tartalmazza</li>
+<li><code>$_FILES</code>: a feltöltött fájlok helyét tartalmazza</li>
+<li><code>$_COOKIES</code>: a kliensről érkező sütik jelennek meg benne</li>
+</ul>
+</section>
+<section id="összefoglalás" class="slide level2">
+<h2>Összefoglalás</h2>
+<ul class="task-list">
+<li><input type="checkbox" disabled="" checked="" />
+PHP program bemenete: URL (<code>GET</code>)</li>
+<li><input type="checkbox" disabled="" checked="" />
+PHP program bemenete: HTTP (<code>POST</code>)</li>
+<li><input type="checkbox" disabled="" checked="" />
+Bemenet feldolgozásának általános sablonja</li>
+<li><input type="checkbox" disabled="" checked="" />
+Hibák kezelése a feldolgozásban</li>
+<li><input type="checkbox" disabled="" checked="" />
+Környezeti változók, a HTTP kérés paraméterei</li>
+</ul>
+</section>
+<section id="összefoglalás-1" class="slide level2">
+<h2>Összefoglalás</h2>
+<p><img data-src="../../assets/images/architecture/client-http-php.png" /></p>
+</section>
+    </div>
+  </div>
+
+  <div id="captcha"></div>
+
+  <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.18.1/build/highlight.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/js/reveal.js"></script>
+
+  <script>
+    // Highlighting in code blocks
+    const codes = document.querySelectorAll('pre > code')
+    for (const code of codes) {
+      code.setAttribute('data-noescape', '')
+      const text = code.innerHTML
+      const markedText = text
+        .replace(/&lt;✒/g, '</mark>')
+        .replace(/✒&gt;/g, '<mark>')
+      code.innerHTML = markedText
+    }
+
+    // Adding captcha
+    const queryString = new URLSearchParams(window.location.search);
+    const captcha = queryString.get('captcha');
+    const captchaElement = document.getElementById("captcha");
+    captchaElement.innerHTML = captcha;
+
+    // Full list of configuration options available at:
+    // https://github.com/hakimel/reveal.js#configuration
+    Reveal.initialize({
+      // Display controls in the bottom right corner
+      controls: true,
+      controlsTutorial: false,
+      // Display a presentation progress bar
+      progress: true,
+      // Display the page number of the current slide
+      slideNumber: true,
+      // Add the current slide number to the URL hash so that reloading the
+      // page/copying the URL will return you to the same slide
+      hash: true,
+      // Push each slide change to the browser history
+      history: false,
+      // Enable keyboard shortcuts for navigation
+      keyboard: true,
+      // Enable the slide overview mode
+      overview: true,
+      // Vertical centering of slides
+      center: true,
+      // Enables touch navigation on devices with touch input
+      touch: true,
+      // Loop the presentation
+      loop: false,
+      // Hides the address bar on mobile devices
+      hideAddressBar: true,
+      // Transition style
+      transition: 'slide', // none/fade/slide/convex/concave/zoom
+      // Transition style for full page slide backgrounds
+      backgroundTransition: 'slide', // none/fade/slide/convex/concave/zoom
+      // Bounds for smallest/largest possible scale to apply to content
+      minScale: 0.5,
+      maxScale: 3,
+      // Modifier key used to click-zoom to part of the slide
+      zoomKey: "ctrl",
+      math: {
+        mathjax: 'https://cdn.jsdelivr.net/gh/mathjax/MathJax@3.0.1/es5/tex-mml-chtml.js',
+        config: 'TeX-AMS_HTML-full',
+        tex2jax: {
+          inlineMath: [['\\(','\\)']],
+          displayMath: [['\\[','\\]']],
+          balanceBraces: true,
+          processEscapes: false,
+          processRefs: true,
+          processEnvironments: true,
+          preview: 'TeX',
+          skipTags: ['script','noscript','style','textarea','pre','code'],
+          ignoreClass: 'tex2jax_ignore',
+          processClass: 'tex2jax_process'
+        }
+      },
+
+      // Optional reveal.js plugins
+      dependencies: [
+        { src: 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+        { src: 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/plugin/zoom-js/zoom.js', async: true },
+        //{ src: 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/socket.io/socket.io.js', async: true },
+        //{ src: 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/plugin/notes-server/client.js', async: true },
+        { src: 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/plugin/math/math.js', async: true },
+        { src: 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/plugin/notes/notes.js', async: true },
+        { src: 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/plugin/highlight/highlight.js', async: true }
+      ]
+    });
+  </script>
+
+  
+  </body>
+</html>
