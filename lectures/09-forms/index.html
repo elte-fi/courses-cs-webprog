@@ -196,7 +196,7 @@ Host: webprogramozas.inf.elte.hu</code></pre>
 $title = $_GET[&quot;title&quot;] ?? &quot;I don&#39;t know&quot;;
 
 ?&gt;
-&lt;h1&gt;Title: &lt;?= $name ?&gt;&lt;/h1&gt;</code></pre>
+&lt;h1&gt;Title: &lt;?= $title ?&gt;&lt;/h1&gt;</code></pre>
 </section>
 <section id="kérésindítási-lehetőségek-1" class="slide level2">
 <h2>Kérésindítási lehetőségek</h2>
@@ -457,7 +457,7 @@ if (isset($_POST[&quot;number&quot;])) {
 <h2>Bemenet megléte: <code>verify_*</code></h2>
 <pre class="php"><code>function verify_post(...$inputs) {
   foreach ($inputs as $input) {
-    if (!isset($_POST[&quot;input&quot;])) {
+    if (!isset($_POST[$input])) {
       return FALSE;
     }
   }
@@ -466,7 +466,7 @@ if (isset($_POST[&quot;number&quot;])) {
 }</code></pre>
 <pre class="php"><code>function verify_get(...$inputs) {
   foreach ($inputs as $input) {
-    if (!isset($_GET[&quot;input&quot;])) {
+    if (!isset($_GET[$input])) {
       return FALSE;
     }
   }
@@ -497,7 +497,7 @@ if (verify_post(&quot;username&quot;, &quot;password&quot;)) {
 <h2>Bemenet megléte: “clean” megoldás</h2>
 <pre class="php"><code>function array_all_keys_exist($array, $inputs) {
   foreach ($inputs as $input) {
-    if (!isset($array[&quot;input&quot;])) {
+    if (!isset($array[$input])) {
       return FALSE;
     }
   }
@@ -506,11 +506,11 @@ if (verify_post(&quot;username&quot;, &quot;password&quot;)) {
 }
 
 function verify_get(...$inputs) {
-  return array_all_keys_exist($inputs);
+  return array_all_keys_exist($_GET, $inputs);
 }
 
 function verify_post(...$inputs) {
-  return array_all_keys_exist($inputs);
+  return array_all_keys_exist($_GET, $inputs);
 }</code></pre>
 </section>
 <section id="validáció-filter_" class="slide level2">
@@ -603,7 +603,7 @@ if (/* SUCCESS */) {
   $messages[] = new SuccessMessage(&quot;SUCCESS MESSAGE&quot;);
 }</code></pre>
 <pre class="html"><code>&lt;?php foreach($messages as $message) : ?&gt;
-  &lt;div class=&quot;&lt;?= $message-&gt;type ?&gt;&quot;&gt;&lt;?= $error-&gt;message ?&gt;&lt;/div&gt;
+  &lt;div class=&quot;&lt;?= $message-&gt;type ?&gt;&quot;&gt;&lt;?= $message-&gt;message ?&gt;&lt;/div&gt;
 &lt;?php endforeach; ?&gt;</code></pre>
 </section>
 <section id="általános-feldolgozási-logika" class="slide level2">
@@ -617,7 +617,7 @@ if (verify_post(&quot;number&quot;)) {
   $number = $_POST[&quot;number&quot;];
 
   // Validate input
-  if (!filter_var($number, FILTER_VALIDATE_FLOAT, [&quot;min_range&quot; =&gt; 0])) {
+  if (!filter_var($number, FILTER_VALIDATE_FLOAT) || $number &lt; 0) {
     $messages[] = new ErrorMessage(&quot;Invalid input number&quot;);
   }
 
@@ -659,9 +659,9 @@ if (verify_post(&quot;number&quot;)) {
 &lt;?php endif; ?&gt;</code></pre>
 <p>VAGY</p>
 <pre class="html"><code>&lt;?php foreach($messages as $message) : ?&gt;
-  &lt;li class=&quot;&lt;?= ✒&gt;$message-&gt;type&lt;✒ ?&gt;&quot;&gt;
+  &lt;div class=&quot;&lt;?= ✒&gt;$message-&gt;type&lt;✒ ?&gt;&quot;&gt;
     &lt;?= ✒&gt;$message-&gt;message&lt;✒ ?&gt;
-  &lt;/li&gt;
+  &lt;/div&gt;
 &lt;?php endforeach; ?&gt;</code></pre>
 </section>
 <section id="kérésindítási-lehetőségek-2" class="slide level2">
