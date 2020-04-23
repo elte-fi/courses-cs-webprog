@@ -3,13 +3,13 @@
 <head>
   <meta charset="utf-8">
   <meta name="generator" content="pandoc">
-  <title>Webprogramozás - Canvas, animációk, API-k</title>
+  <title>Webprogramozás - Aszinkron programozás, AJAX, hibakezelés</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
 
   <!-- Reveal.js Theme -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/elte-fi/revealjs-elte-fi@1.1.0/dist/revealjs-elte-fi.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/elte-fi/revealjs-elte-fi@1.1.1/dist/revealjs-elte-fi.min.css">
   <!-- Highlighting -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.18.1/build/styles/default.min.css">
   <!-- Icons -->
@@ -36,7 +36,7 @@
 <div class="title">
 <p>Webprogramozás</p>
 </div>
-<h3 id="aszinkron-programozás-ajax-this-hibakezelés">Aszinkron programozás, AJAX, this, hibakezelés</h3>
+<h3 id="aszinkron-programozás-ajax-hibakezelés">Aszinkron programozás, AJAX, hibakezelés</h3>
 <div class="columns">
 <div class="column" style="width:33%;">
 <p><small> <strong>Visnovitz Márton</strong><br />
@@ -160,17 +160,17 @@ console.log(deserializedData);
 </section>
 <section id="szinkron-példa" class="slide level2">
 <h2>Szinkron példa</h2>
-<pre class="js"><code>console.log(&#39;first&#39;);
-alert(&#39;second&#39;);
-console.log(&#39;third&#39;);</code></pre>
+<pre class="js"><code>console.log(&quot;first&quot;);
+alert(&quot;second&quot;);
+console.log(&quot;third&quot;);</code></pre>
 <div class="example">
 <p><button id="sync-example">Alert</button></p>
 </div>
 <script>
 document.querySelector("#sync-example").addEventListener("click", function () {
-  console.log('first');
-  alert('second');
-  console.log('third');
+  console.log("first");
+  alert("second");
+  console.log("third");
 });
 </script>
 </section>
@@ -228,7 +228,7 @@ button.addEventListener(&quot;click&quot;, function () {
   console.log(&quot;second&quot;);
 });
 
-console.log(&#39;third&#39;);</code></pre>
+console.log(&quot;third&quot;);</code></pre>
 </section>
 <section id="event-loop" class="slide level2">
 <h2>Event loop</h2>
