@@ -409,7 +409,7 @@ if (!$file) {
   die(&quot;File not found!&quot;);
 }
 
-foreach ($filmek as $film) {
+foreach ($films as $film) {
   fputcsv($file, $film, &quot;\t&quot;);
 }
 
@@ -672,16 +672,16 @@ interface IStorage {
     }
 
     $this-&gt;filepath = realpath($filename);
-    $this-&gt;contents = $this-&gt;load();
+    $this-&gt;load();
   }
 
   public function __destruct() {
-    $this-&gt;save($this-&gt;contents);
+    $this-&gt;save();
   }
 
   public function add($record) {
     $id = uniqid();
-    $this-&gt;contents[$id] = $record_to_save;
+    $this-&gt;contents[$id] = $record;
     return $id;
   }
 
@@ -736,11 +736,11 @@ interface IStorage {
 class SerializeStorage extends Storage {
   public function load() {
     $file_contents = file_get_contents($this-&gt;filepath);
-    return unserialize($file_contents) ?? [];
+    $this-&gt;contents = unserialize($file_contents) ?? [];
   }
 
   public function save() {
-    $file_content = serialiaze(contents, JSON_PRETTY_PRINT);
+    $file_content = serialize($this-&gt;contents);
     file_put_contents($this-&gt;filepath, $file_content);
   }
 }</code></pre>
@@ -779,7 +779,7 @@ $filmStorage = new FilmStorage();
 $films = $filmStorage-&gt;getMoviesByYear(2016);</code></pre>
 <pre class="php"><code>class FilmStorage extends JsonStorage {
   public function __construct() {
-    parent::__construct(&#39;films.json&#39;);
+    parent::__construct(&quot;films.json&quot;);
   }
 
   public function getMoviesByYear($year) {
@@ -810,7 +810,7 @@ abstract class SerializeObjectStorage extends ObjectStorage {/* */}</code></pre>
 </section>
 <section id="storage-osztályokkal-1" class="slide level2">
 <h2>Storage osztályokkal</h2>
-<pre class="php"><code>class Movie {
+<pre class="php"><code>class Film {
   public $title;
   public $year;
   public $director;
@@ -820,12 +820,10 @@ abstract class SerializeObjectStorage extends ObjectStorage {/* */}</code></pre>
     $this-&gt;director = $director;
     $this-&gt;year = $year;
   }
-}</code></pre>
-<pre class="php"><code>class FilmStorage extends SerializeObjectStorage {
-  public function __construct() {
-    parent::__construct(&quot;films.storage&quot;);
-  }
-}</code></pre>
+}
+
+$filmStorage = new SerializeObjectStorage(&quot;films.storage&quot;);
+$filmStorage-&gt;add(new Film(&quot;Star Wars&quot;, &quot;George Lucas&quot;, &quot;1977&quot;));</code></pre>
 </section>
 <section id="összefoglalás" class="slide level2" data-state="topic">
 <h2 data-state="topic">Összefoglalás</h2>
@@ -867,16 +865,16 @@ abstract class Storage implements IStorage, IFileIO {
     }
 
     $this-&gt;filepath = realpath($filename);
-    $this-&gt;contents = $this-&gt;load();
+    $this-&gt;load();
   }
 
   public function __destruct() {
-    $this-&gt;save($this-&gt;contents);
+    $this-&gt;save();
   }
 
   public function add($record) {
     $id = uniqid();
-    $this-&gt;contents[$id] = $record_to_save;
+    $this-&gt;contents[$id] = $record;
     return $id;
   }
 
@@ -943,11 +941,11 @@ class JsonStorage extends Storage {
 class SerializeStorage extends Storage {
   public function load() {
     $file_contents = file_get_contents($this-&gt;filepath);
-    return unserialize($file_contents) ?? [];
+    $this-&gt;contents = unserialize($file_contents) ?? [];
   }
 
   public function save() {
-    $file_content = serialiaze(contents, JSON_PRETTY_PRINT);
+    $file_content = serialize($this-&gt;contents);
     file_put_contents($this-&gt;filepath, $file_content);
   }
 }
@@ -955,11 +953,11 @@ class SerializeStorage extends Storage {
 class SerializeObjectStorage extends ObjectStorage {
   public function load() {
     $file_contents = file_get_contents($this-&gt;filepath);
-    return unserialize($file_contents) ?? [];
+    $this-&gt;contents = unserialize($file_contents) ?? [];
   }
 
   public function save() {
-    $file_content = serialiaze(contents, JSON_PRETTY_PRINT);
+    $file_content = serialize($this-&gt;contents);
     file_put_contents($this-&gt;filepath, $file_content);
   }
 }</code></pre>

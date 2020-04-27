@@ -372,7 +372,7 @@ if (!$file) {
   die("File not found!");
 }
 
-foreach ($filmek as $film) {
+foreach ($films as $film) {
   fputcsv($file, $film, "\t");
 }
 
@@ -683,16 +683,16 @@ abstract class Storage implements IStorage, IFileIO {
     }
 
     $this->filepath = realpath($filename);
-    $this->contents = $this->load();
+    $this->load();
   }
 
   public function __destruct() {
-    $this->save($this->contents);
+    $this->save();
   }
 
   public function add($record) {
     $id = uniqid();
-    $this->contents[$id] = $record_to_save;
+    $this->contents[$id] = $record;
     return $id;
   }
 
@@ -751,11 +751,11 @@ class JsonStorage extends Storage {
 class SerializeStorage extends Storage {
   public function load() {
     $file_contents = file_get_contents($this->filepath);
-    return unserialize($file_contents) ?? [];
+    $this->contents = unserialize($file_contents) ?? [];
   }
 
   public function save() {
-    $file_content = serialiaze(contents, JSON_PRETTY_PRINT);
+    $file_content = serialize($this->contents);
     file_put_contents($this->filepath, $file_content);
   }
 }
@@ -804,7 +804,7 @@ $films = $filmStorage->getMoviesByYear(2016);
 ```php
 class FilmStorage extends JsonStorage {
   public function __construct() {
-    parent::__construct('films.json');
+    parent::__construct("films.json");
   }
 
   public function getMoviesByYear($year) {
@@ -844,7 +844,7 @@ abstract class SerializeObjectStorage extends ObjectStorage {/* */}
 ## Storage osztályokkal
 
 ```php
-class Movie {
+class Film {
   public $title;
   public $year;
   public $director;
@@ -855,14 +855,9 @@ class Movie {
     $this->year = $year;
   }
 }
-```
 
-```php
-class FilmStorage extends SerializeObjectStorage {
-  public function __construct() {
-    parent::__construct("films.storage");
-  }
-}
+$filmStorage = new SerializeObjectStorage("films.storage");
+$filmStorage->add(new Film("Star Wars", "George Lucas", "1977"));
 ```
 
 ------
@@ -908,16 +903,16 @@ abstract class Storage implements IStorage, IFileIO {
     }
 
     $this->filepath = realpath($filename);
-    $this->contents = $this->load();
+    $this->load();
   }
 
   public function __destruct() {
-    $this->save($this->contents);
+    $this->save();
   }
 
   public function add($record) {
     $id = uniqid();
-    $this->contents[$id] = $record_to_save;
+    $this->contents[$id] = $record;
     return $id;
   }
 
@@ -984,11 +979,11 @@ class JsonStorage extends Storage {
 class SerializeStorage extends Storage {
   public function load() {
     $file_contents = file_get_contents($this->filepath);
-    return unserialize($file_contents) ?? [];
+    $this->contents = unserialize($file_contents) ?? [];
   }
 
   public function save() {
-    $file_content = serialiaze(contents, JSON_PRETTY_PRINT);
+    $file_content = serialize($this->contents);
     file_put_contents($this->filepath, $file_content);
   }
 }
@@ -996,11 +991,11 @@ class SerializeStorage extends Storage {
 class SerializeObjectStorage extends ObjectStorage {
   public function load() {
     $file_contents = file_get_contents($this->filepath);
-    return unserialize($file_contents) ?? [];
+    $this->contents = unserialize($file_contents) ?? [];
   }
 
   public function save() {
-    $file_content = serialiaze(contents, JSON_PRETTY_PRINT);
+    $file_content = serialize($this->contents);
     file_put_contents($this->filepath, $file_content);
   }
 }
