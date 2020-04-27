@@ -1,0 +1,1061 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <title>Környezeti változók, adattárolás</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+  <!-- Reveal.js Theme -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/elte-fi/revealjs-elte-fi@1.1.1/dist/revealjs-elte-fi.min.css">
+  <!-- Highlighting -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.18.1/build/styles/default.min.css">
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+
+  <!-- Printing and PDF exports -->
+  <script>
+    var link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = window.location.search.match(/print-pdf/gi) 
+      ? 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/css/print/pdf.css' 
+      : 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/css/print/paper.css';
+    document.getElementsByTagName('head')[0].appendChild( link );
+  </script>
+
+  </head>
+
+<body>
+  <div class="reveal">
+    <div class="slides">
+<section class="slide level2">
+
+<div class="title">
+<p>Webprogramozás</p>
+</div>
+<h3 id="környezeti-változók-adattárolás">Környezeti változók, adattárolás</h3>
+<div class="columns">
+<div class="column" style="width:33%;">
+<p><small> <strong>Visnovitz Márton</strong><br />
+egyetemi tanársegéd<br />
+visnovitz.marton@inf.elte.hu </small></p>
+</div><div class="column" style="width:33%;">
+<p><small> <strong>Horváth Győző</strong><br />
+egyetemi docens<br />
+horvath.gyozo@inf.elte.hu </small></p>
+</div>
+</div>
+</section>
+<section id="ismétlés" class="slide level2" data-state="new-section">
+<h2 data-state="new-section">Ismétlés</h2>
+</section>
+<section id="ismétlés-1" class="slide level2">
+<h2>Ismétlés</h2>
+<ul class="task-list">
+<li><input type="checkbox" disabled="" checked="" />
+Output<ul class="task-list">
+<li><input type="checkbox" disabled="" checked="" />
+dinamikus sablon</li>
+<li><input type="checkbox" disabled="" checked="" />
+alternatív szintaxis</li>
+</ul></li>
+<li><input type="checkbox" disabled="" />
+Input<ul class="task-list">
+<li><input type="checkbox" disabled="" checked="" />
+Kliens</li>
+<li><input type="checkbox" disabled="" />
+Környezet</li>
+<li><input type="checkbox" disabled="" />
+Fájl</li>
+<li><input type="checkbox" disabled="" />
+Adatbázis</li>
+<li><input type="checkbox" disabled="" />
+Munkamenet</li>
+</ul></li>
+<li><input type="checkbox" disabled="" checked="" />
+Űrlapfeldolgozás<ul class="task-list">
+<li><input type="checkbox" disabled="" checked="" />
+Beolvasás, ellenőrzés (<code>$_POST</code>, <code>$_GET</code>)</li>
+<li><input type="checkbox" disabled="" checked="" />
+Adatok (nincsen: <code>$_POST</code>, <code>$_GET</code>, HTML)</li>
+<li><input type="checkbox" disabled="" checked="" />
+Kimenet (HTML)</li>
+</ul></li>
+</ul>
+</section>
+<section id="adatok-a-klienstől-php-ig" class="slide level2">
+<h2>Adatok a klienstől PHP-ig</h2>
+<p><img data-src="../../assets/images/architecture/client-http-php.png" /></p>
+</section>
+<section id="szerverprogram-bemeneti-adatai" class="slide level2">
+<h2>Szerverprogram bemeneti adatai</h2>
+<p><img data-src="../../assets/images/architecture/server-input.png" /></p>
+</section>
+<section id="környezeti-változók" class="slide level2" data-state="new-section">
+<h2 data-state="new-section">Környezeti változók</h2>
+</section>
+<section id="szerveroldali-program-bemeneti-adatai" class="slide level2">
+<h2>Szerveroldali program bemeneti adatai</h2>
+<p>A bemeneti program lehetséges forrásai:</p>
+<ul class="task-list">
+<li><input type="checkbox" disabled="" checked="" />
+Kliens</li>
+<li><input type="checkbox" disabled="" />
+<strong>Környezet</strong></li>
+<li><input type="checkbox" disabled="" />
+Fájl</li>
+<li><input type="checkbox" disabled="" />
+Munkamenet</li>
+<li><input type="checkbox" disabled="" />
+Adatbázis</li>
+<li><input type="checkbox" disabled="" />
+Másik szerver</li>
+</ul>
+</section>
+<section id="kérés-körülményei-és-http-fejlécek" class="slide level2">
+<h2>Kérés körülményei és HTTP fejlécek</h2>
+<ul>
+<li>Kérés körülményei → környezeti változók (<code>$_SERVER</code>)
+<ul>
+<li>HTTP kérés metódusa → <code>REQUEST_METHOD</code></li>
+<li>kliens IP címe → <code>REMOTE_ADDRESS</code></li>
+<li>üzenettest hossza bájtban → <code>CONTENT_LENGTH</code></li>
+</ul></li>
+<li>HTTP fejlécek → környezeti változók
+<ul>
+<li><code>HTTP_*</code></li>
+<li>Pl. <code>Accept</code> fejléc → <code>HTTP_ACCEPT</code> környezeti változó</li>
+</ul></li>
+</ul>
+<pre class="txt"><code>[REMOTE_ADDR] =&gt; 188.142.184.197
+[REMOTE_PORT] =&gt; 49323
+[REQUEST_METHOD] =&gt; GET
+[HTTP_ACCEPT] =&gt; text/html,application/xhtml+xml,application/xml
+[HTTP_ACCEPT_LANGUAGE] =&gt; hu-hu,hu;q=0.8,en-US;q=0.5,en;q=0.3</code></pre>
+</section>
+<section id="url" class="slide level2">
+<h2>URL</h2>
+<ul>
+<li><p>Kérés URL-je (szabad paraméter: <code>&lt;query&gt;</code>)</p>
+<pre class="txt"><code>&lt;protocol&gt;://&lt;host&gt;:&lt;port&gt;/&lt;path&gt;?&lt;query&gt;#&lt;fragment&gt;</code></pre></li>
+<li><p>URL → környezeti változók (fontos: <code>QUERY_STRING</code>)</p>
+<ul>
+<li><code>&lt;protocol&gt;</code> → <code>SERVER_PROTOCOL</code></li>
+<li><code>&lt;host&gt;</code> → <code>SERVER_NAME</code></li>
+<li><code>&lt;port&gt;</code> → <code>SERVER_PORT</code></li>
+<li><code>&lt;path&gt;</code> → <code>SCRIPT_NAME (PATH_INFO)</code></li>
+<li><code>&lt;query&gt;</code> → <code>QUERY_STRING</code></li>
+</ul></li>
+</ul>
+</section>
+<section id="http-üzenettörzs" class="slide level2">
+<h2>HTTP üzenettörzs</h2>
+<ul>
+<li>HTTP üzenettörzs szabad paraméter</li>
+<li><strong>Standard bemenet</strong>en jelenik meg</li>
+<li>Környezeti változó
+<ul>
+<li><code>CONTENT_LENGTH</code>: adatmennyiség hossza</li>
+</ul></li>
+</ul>
+</section>
+<section id="környezeti-változók-példa" class="slide level2">
+<h2>Környezeti változók – példa</h2>
+<pre class="txt"><code>[HTTP_HOST] =&gt; webprogramozas.inf.elte.hu
+[HTTP_USER_AGENT] =&gt; Mozilla/5.0 (Windows NT 6.1; WOW64; rv:19.0) Gecko/20100101 Firefox/19.0
+[HTTP_ACCEPT] =&gt; text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+[HTTP_ACCEPT_LANGUAGE] =&gt; hu-hu,hu;q=0.8,en-US;q=0.5,en;q=0.3
+[HTTP_ACCEPT_ENCODING] =&gt; gzip, deflate
+[HTTP_REFERER] =&gt; http://webprogramozas.inf.elte.hu/~gyozke/wf2/temp/
+[HTTP_COOKIE] =&gt; WACID=1263304129000A11327866; __utma=32143338.519822639.1361532995.1362426295.1363347264.4; __utmz=32143338.1362426295.3.3.utmcsr=google|utmccn=(organic)|utmcmd=organic|utmctr=(not%20provided)
+[HTTP_CONNECTION] =&gt; keep-alive
+[PATH] =&gt; /usr/sbin:/bin:/usr/bin:/sbin
+[SERVER_SIGNATURE] =&gt; &lt;address&gt;Apache/2.2.10 (Linux/SUSE) Server at webprogramozas.inf.elte.hu Port 80&lt;/address&gt;
+[SERVER_SOFTWARE] =&gt; Apache/2.2.10 (Linux/SUSE)
+[SERVER_NAME] =&gt; webprogramozas.inf.elte.hu
+[SERVER_ADDR] =&gt; 157.181.161.8
+[SERVER_PORT] =&gt; 80
+[REMOTE_ADDR] =&gt; 188.142.184.197
+[DOCUMENT_ROOT] =&gt; /srv/www/webprog
+[SERVER_ADMIN] =&gt; root@webprogramozas.inf.elte.hu
+[SCRIPT_FILENAME] =&gt; /home/gyozke/public_html/wf2/temp/getpost.php
+[REMOTE_PORT] =&gt; 49323
+[GATEWAY_INTERFACE] =&gt; CGI/1.1
+[SERVER_PROTOCOL] =&gt; HTTP/1.1
+[REQUEST_METHOD] =&gt; GET
+[QUERY_STRING] =&gt; 
+[REQUEST_URI] =&gt; /~gyozke/wf2/temp/getpost.php
+[SCRIPT_NAME] =&gt; /~gyozke/wf2/temp/getpost.php
+[PHP_SELF] =&gt; /~gyozke/wf2/temp/getpost.php
+[REQUEST_TIME] =&gt; 1365626159</code></pre>
+</section>
+<section id="szuperglobális-tömbök" class="slide level2">
+<h2>Szuperglobális tömbök</h2>
+<ul>
+<li><code>$_GET</code>: <code>QUERY_STRING</code>ben érkező név=érték pároknak megfelelő tömb, ahol a név a kulcs.</li>
+<li><code>$_POST</code>: a standard inputon érkező név=érték pároknak megfelelő tömb, ahol a név a kulcs.</li>
+<li><code>$_SERVER</code>: az összes környezeti változót tartalmazza</li>
+<li><code>$_FILES</code>: a feltöltött fájlok helyét tartalmazza</li>
+<li><code>$_COOKIES</code>: a kliensről érkező sütik jelennek meg benne</li>
+</ul>
+</section>
+<section id="adattárolás" class="slide level2" data-state="new-section">
+<h2 data-state="new-section">Adattárolás</h2>
+<p>Közös adat mint erőforrás megosztása</p>
+</section>
+<section id="szerveroldali-program-bemeneti-adatai-1" class="slide level2">
+<h2>Szerveroldali program bemeneti adatai</h2>
+<p>A bemeneti program lehetséges forrásai:</p>
+<ul class="task-list">
+<li><input type="checkbox" disabled="" checked="" />
+Kliens</li>
+<li><input type="checkbox" disabled="" checked="" />
+Környezet</li>
+<li><input type="checkbox" disabled="" />
+<strong>Fájl</strong></li>
+<li><input type="checkbox" disabled="" />
+Munkamenet</li>
+<li><input type="checkbox" disabled="" />
+Adatbázis</li>
+<li><input type="checkbox" disabled="" />
+Másik szerver</li>
+</ul>
+</section>
+<section id="szkriptbeli-változók" class="slide level2">
+<h2>Szkriptbeli változók</h2>
+<ul>
+<li>Élettartamuk a szkript futása</li>
+<li>Utána megszűnnek</li>
+</ul>
+<pre class="php"><code>if (isset($szamlalo)) {
+  $szamlalo += 1;
+} else {
+  $szamlalo = 0;
+}
+
+var_dump($szamlalo);</code></pre>
+</section>
+<section id="külső-adattárolás" class="slide level2">
+<h2>Külső adattárolás</h2>
+<p><img data-src="../../assets/images/architecture/web-server-php-db.png" /></p>
+</section>
+<section class="slide level2">
+
+<div class="columns">
+<div class="column" style="width: 45%">
+<h3 id="fájl">Fájl</h3>
+<ul>
+<li>bármikor elérhető, nincs szükség plusz szoftverekre</li>
+<li>könnyen értelmezhető (ember, program)</li>
+<li>könnyen használható</li>
+<li>viszonylag kis méretű</li>
+</ul>
+</div><div class="column" style="width: 45%">
+<h3 id="adatbázis">Adatbázis</h3>
+<ul>
+<li>biztonságos</li>
+<li>típusos adatok / séma</li>
+<li>bonyolult adatszerkezetek</li>
+<li>összetett kereshetőség</li>
+<li>fejlett konkurenciakezelés</li>
+</ul>
+</div>
+</div>
+</section>
+<section id="fájlkezelés-php-ban" class="slide level2" data-state="new-section">
+<h2 data-state="new-section">Fájlkezelés PHP-ban</h2>
+</section>
+<section id="fájlműveletek-php-ban" class="slide level2">
+<h2>Fájlműveletek PHP-ban</h2>
+<ul>
+<li>Lehetőség fájlok használatára (írás, olvasás, stb.)</li>
+<li>A szerver helyi fájljai elérhetőek (fájlrendszer)</li>
+<li>Sokféle nyelvi lehetőség</li>
+<li>Tipikus folyamat
+<ul>
+<li>megnyitás</li>
+<li>feldolgozás</li>
+<li>bezárás</li>
+</ul></li>
+</ul>
+</section>
+<section id="alacsony-szintű-általános-fájlműveletek" class="slide level2">
+<h2>Alacsony szintű általános fájlműveletek</h2>
+<div class="columns">
+<div class="column" style="width:33%">
+<ul>
+<li><code>fopen()</code></li>
+<li><code>fclose()</code></li>
+<li><code>feof()</code></li>
+</ul>
+</div><div class="column" style="width:33%">
+<ul>
+<li><code>fread()</code></li>
+<li><code>fscanf()</code></li>
+<li><code>fgets()</code></li>
+<li><code>fgetcsv()</code></li>
+</ul>
+</div><div class="column" style="width:33%">
+<ul>
+<li><code>fwrite()</code></li>
+<li><code>fprintf()</code></li>
+<li><code>fputcsv()</code></li>
+</ul>
+</div>
+</div>
+</section>
+<section id="fájlrendszer-műveletek" class="slide level2">
+<h2>Fájlrendszer-műveletek</h2>
+<div class="columns">
+<div class="column" style="width:33%">
+<ul>
+<li><code>mkdir()</code></li>
+<li><code>rmdir()</code></li>
+<li><code>copy()</code></li>
+<li><code>rename()</code></li>
+<li><code>unlink()</code></li>
+</ul>
+</div><div class="column" style="width:33%">
+<ul>
+<li><code>basename()</code></li>
+<li><code>dirname()</code></li>
+<li><code>realpath()</code></li>
+<li><code>chown()</code></li>
+<li><code>chmod()</code></li>
+<li><code>chgrp()</code></li>
+<li><code>stat()</code></li>
+</ul>
+</div><div class="column" style="width:33%">
+<ul>
+<li><code>is_dir()</code></li>
+<li><code>is_file()</code></li>
+<li><code>is_readable()</code></li>
+<li><code>is_writable()</code></li>
+<li><code>is_link()</code></li>
+<li><code>is_executable()</code></li>
+</ul>
+</div>
+</div>
+</section>
+<section id="magas-szintű-fájlműveletek" class="slide level2">
+<h2>Magas szintű fájlműveletek</h2>
+<ul>
+<li>Beolvasás
+<ul>
+<li><code>$array = file($filename[, $modifiers])</code><br />
+fájl soronként a tömbbe</li>
+<li><strong><code>$data = file_get_contents($filename)</code></strong><br />
+egész fájl szövegként</li>
+<li><code>readfile($filename)</code><br />
+fájl kimenetre írása (pl. képek kiírása)</li>
+</ul></li>
+<li>Kiírás
+<ul>
+<li><strong><code>file_put_contents($filename, $data)</code></strong><br />
+szöveg fájlba írása</li>
+</ul></li>
+</ul>
+</section>
+<section id="fájlszerkezet--vs-adatszerkezet-vezérelt-tárolás" class="slide level2" data-state="new-section">
+<h2 data-state="new-section">Fájlszerkezet- vs adatszerkezet-vezérelt tárolás</h2>
+</section>
+<section id="összehasonlítás" class="slide level2">
+<h2>Összehasonlítás</h2>
+<div class="columns">
+<div class="column" style="width:33%">
+<p><strong>Fájlszerkezet-vezérelt</strong></p>
+<ul>
+<li>Saját mikroformátum</li>
+<li>Áttekinthetőség</li>
+<li>Interoperabilitás</li>
+<li>→ Magas és alacsony szintű fájlműveletek</li>
+</ul>
+</div><div class="column" style="width:33%">
+<p><strong>Adatszerkezet-vezérelt</strong></p>
+<ul>
+<li>Adatszerkezet mentése és betöltése</li>
+<li>A fájl tartalma és szerkezete nem érdekes</li>
+<li>Az adat rendelkezésre állása az érdekes</li>
+<li>Adatszerkezet → szöveges formátum</li>
+<li>→ <strong>sorosítás</strong> + magas szintű fájlműveletek</li>
+</ul>
+</div>
+</div>
+</section>
+<section id="fájlszerkezet-vezérelt" class="slide level2">
+<h2>Fájlszerkezet-vezérelt</h2>
+<p>Adott egy <strong>rekordokból álló tömb</strong>. Végezzük el a kiírását úgy, hogy egy sorban egy rekordnyi információ legyen, az egyes értékeket soron belül <strong>tabulátorral</strong> válasszuk el!</p>
+<pre class="php"><code>$films = [
+  [
+    &quot;title&quot;     =&gt; &quot;The Passion of the Christ&quot;,
+    &quot;director&quot;  =&gt; &quot;Mel Gibson&quot;,
+    &quot;year&quot;      =&gt; &quot;2004&quot;,
+  ],
+  [
+    &quot;title&quot;     =&gt; &quot;Alien&quot;,
+    &quot;director&quot;  =&gt; &quot;Ridley Scott&quot;,
+    &quot;year&quot;      =&gt; &quot;1979&quot;,
+  ],
+];</code></pre>
+</section>
+<section id="fájlszerkezet-vezérelt-mentés" class="slide level2">
+<h2>Fájlszerkezet-vezérelt (mentés)</h2>
+<pre class="php"><code>$file = @fopen(&quot;films.txt&quot;, &quot;w&quot;);
+
+if (!$file) {
+  die(&quot;File not found!&quot;);
+}
+
+foreach ($filmek as $film) {
+  fputcsv($file, $film, &quot;\t&quot;);
+}
+
+fclose($file);</code></pre>
+<pre class="txt"><code>Passion of the Christ   Mel Gibson  2004
+Alien   Ridley Scott    1979</code></pre>
+</section>
+<section id="fájlszerkezet-vezérelt-betöltés" class="slide level2">
+<h2>Fájlszerkezet-vezérelt (betöltés)</h2>
+<p>Az előző példában kapott fájlt olvassuk be rekordok tömbjeként!</p>
+<pre class="txt"><code>Passion of the Christ   Mel Gibson  2004
+Alien   Ridley Scott    1979</code></pre>
+<pre class="php"><code>$films = [];
+$file = @fopen(&quot;films.txt&quot;, &quot;r&quot;);
+
+if (!$file) {
+  die(&quot;File not found!&quot;);
+}
+
+while ($row = fgetcsv($f, 0, &quot;\t&quot;)) {
+  $films[] = [
+    &quot;title&quot;    =&gt; $row[0],
+    &quot;director&quot; =&gt; $row[1],
+    &quot;year&quot;     =&gt; $row[2],
+  ];
+}
+fclose($f);</code></pre>
+</section>
+<section id="konkurens-fájlhasználat" class="slide level2">
+<h2>Konkurens fájlhasználat</h2>
+<div class="columns">
+<div class="column" style="width:40%">
+<p>Ha egyszerre többen hívják meg a szkriptet<br />
+→ konkurens használat</p>
+<ul>
+<li><code>flock($f, $op)</code>
+<ul>
+<li><code>$op</code>
+<ul>
+<li><code>LOCK_SH</code> (read)</li>
+<li><code>LOCK_EX</code> (write)</li>
+<li><code>LOCK_UN</code> (unlock)</li>
+</ul></li>
+</ul></li>
+</ul>
+</div><div class="column" style="width:60%">
+<pre class="php"><code>$file = @fopen(&quot;films.txt&quot;, &quot;w&quot;);
+
+if (!$file) {
+  die(&quot;File not found!&quot;);
+}
+
+✒&gt;if (flock($file, LOCK_EX)) {&lt;✒
+  foreach ($filmek as $film) {
+    fputcsv($file, $film, &quot;\t&quot;);
+  }
+  ✒&gt;flock($file, LOCK_UN);&lt;✒
+}
+
+fclose($file);</code></pre>
+</div>
+</div>
+</section>
+<section id="konkurens-fájlhasználat-1" class="slide level2">
+<h2>Konkurens fájlhasználat</h2>
+<div class="columns">
+<div class="column" style="width:40%">
+<p>Olvasáshoz is érdemes lockolni a fájlt, hogy közben ne kezdődhessen el egy írási folyamat.</p>
+</div><div class="column" style="width:60%">
+<pre class="php"><code>$films = [];
+$file = @fopen(&quot;films.txt&quot;, &quot;r&quot;);
+
+if (!$file) {
+  die(&quot;File not found!&quot;);
+}
+
+✒&gt;if (flock($file, LOCK_SH)) {&lt;✒
+  while ($row = fgetcsv($f, 0, &quot;\t&quot;)) {
+    $films[] = [
+      &quot;title&quot;    =&gt; $row[0],
+      &quot;director&quot; =&gt; $row[1],
+      &quot;year&quot;     =&gt; $row[2],
+    ];
+  }
+  ✒&gt;flock($file, LOCK_UN);&lt;✒
+}
+fclose($file);</code></pre>
+</div>
+</div>
+</section>
+<section id="adatszerkezet-vezérelt" class="slide level2">
+<h2>Adatszerkezet-vezérelt</h2>
+<ul>
+<li>Egy adatszerkezet visszaalakítható<br />
+szöveges megfelelője.</li>
+<li>Sorosító függvények
+<ul>
+<li><code>serialize($érték)</code> → szöveg</li>
+<li><code>unserialize($szöveg)</code> → érték</li>
+<li><code>json_encode($érték)</code> → szöveg</li>
+<li><code>json_decode($szöveg)</code> → érték</li>
+</ul></li>
+</ul>
+</section>
+<section id="példa" class="slide level2">
+<h2>Példa</h2>
+<pre class="php"><code>$films = [
+  [
+    &quot;title&quot;     =&gt; &quot;The Passion of the Christ&quot;,
+    &quot;director&quot;  =&gt; &quot;Mel Gibson&quot;,
+    &quot;year&quot;      =&gt; &quot;2004&quot;,
+  ],
+  [
+    &quot;title&quot;     =&gt; &quot;Alien&quot;,
+    &quot;director&quot;  =&gt; &quot;Ridley Scott&quot;,
+    &quot;year&quot;      =&gt; &quot;1979&quot;,
+  ],
+];</code></pre>
+</section>
+<section id="serialize-unserialize" class="slide level2">
+<h2><code>serialize</code>, <code>unserialize</code></h2>
+<p>PHP saját sorosítási formátuma, típusinformációt is tartalmaz.</p>
+<pre class="php"><code>✒&gt;$data = serialize($films);&lt;✒
+// a:2:{i:0;a:3:{s:5:&quot;title&quot;;s:25:&quot;The Passion of the Christ&quot;;s:8:&quot;director&quot;;s:10:&quot;Mel Gibson&quot;;s:4:&quot;year&quot;;s:4:&quot;2004&quot;;}i:1;a:3:{s:5:&quot;title&quot;;s:5:&quot;Alien&quot;;s:8:&quot;director&quot;;s:12:&quot;Ridley Scott&quot;;s:4:&quot;year&quot;;s:4:&quot;1979&quot;;}}
+✒&gt;$films2 = unserialize($data);&lt;✒
+/*
+array(2) {
+  [0]=&gt;
+  array(3) {
+    [&quot;title&quot;]=&gt;
+    string(25) &quot;The Passion of the Christ&quot;
+    [&quot;director&quot;]=&gt;
+    string(10) &quot;Mel Gibson&quot;
+    [&quot;year&quot;]=&gt;
+    string(4) &quot;2004&quot;
+  }
+  [1]=&gt;
+  array(3) {
+    [&quot;title&quot;]=&gt;
+    string(5) &quot;Alien&quot;
+    [&quot;director&quot;]=&gt;
+    string(12) &quot;Ridley Scott&quot;
+    [&quot;year&quot;]=&gt;
+    string(4) &quot;1979&quot;
+  }
+}
+*/</code></pre>
+</section>
+<section id="json_encode-json_decode" class="slide level2">
+<h2><code>json_encode</code>, <code>json_decode</code></h2>
+<p>JSON formátum - széles körben elterjedt.<br />
+JavaScript: <code>JSON.stringify()</code>, <code>JSON.parse()</code></p>
+<pre class="php"><code>✒&gt;$data = json_encode($films, JSON_PRETTY_PRINT);&lt;✒
+/*
+[
+    {
+        &quot;title&quot;: &quot;The Passion of the Christ&quot;,
+        &quot;director&quot;: &quot;Mel Gibson&quot;,
+        &quot;year&quot;: &quot;2004&quot;
+    },
+    {
+        &quot;title&quot;: &quot;Alien&quot;,
+        &quot;director&quot;: &quot;Ridley Scott&quot;,
+        &quot;year&quot;: &quot;2000&quot;
+    }
+]
+*/
+✒&gt;$films2 = json_decode($data, TRUE);&lt;✒
+/*
+array(2) {
+  [0]=&gt;
+  array(3) {
+    [&quot;title&quot;]=&gt;
+    string(25) &quot;The Passion of the Christ&quot;
+    [&quot;director&quot;]=&gt;
+    string(10) &quot;Mel Gibson&quot;
+    [&quot;year&quot;]=&gt;
+    string(4) &quot;2004&quot;
+  }
+  [1]=&gt;
+  array(3) {
+    [&quot;title&quot;]=&gt;
+    string(5) &quot;Alien&quot;
+    [&quot;director&quot;]=&gt;
+    string(12) &quot;Ridley Scott&quot;
+    [&quot;year&quot;]=&gt;
+    string(4) &quot;1979&quot;
+  }
+}
+*/</code></pre>
+</section>
+<section id="segédfüggvények" class="slide level2">
+<h2>Segédfüggvények</h2>
+<pre class="php"><code>function load_from_file($filename, $default_data = []) {
+  $data = @file_get_contents($filename);
+  return ($data === false 
+    ? $default_data 
+    : json_decode($data, TRUE));
+}
+
+function save_to_file($filename, $data) {
+  $file_data = json_encode($data);
+  return file_put_contents($filename, $file_data, LOCK_EX);
+}</code></pre>
+<p>Akármilyen adatszerkezetre működik, de típusinformációk elveszhetnek!</p>
+</section>
+<section id="példa-új-film-hozzáadása" class="slide level2">
+<h2>Példa – új film hozzáadása</h2>
+<pre class="php"><code>const FILMS_DATAFILE = &quot;films.json&quot;;
+$films = load_from_file(FILMS_DATAFILE);
+
+$films[] = [
+  &quot;title&quot;    =&gt; &quot;Braveheart&quot;,
+  &quot;director&quot; =&gt; &quot;Mel Gibson&quot;,
+  &quot;year&quot;     =&gt; &quot;1995&quot;
+];
+
+save_to_file(FILMS_DATAFILE, $films);</code></pre>
+</section>
+<section id="hátrányok" class="slide level2">
+<h2>Hátrányok</h2>
+<ul>
+<li>Sok adat mozgatása</li>
+<li>Rossz konkurencia-kezelés</li>
+<li>Manuális szűrés</li>
+<li>→ <strong>magasabb szintű absztrakció</strong></li>
+</ul>
+</section>
+<section id="ifileio-és-istorage-interface-k" class="slide level2">
+<h2><code>IFileIO</code> és <code>IStorage</code> interface-k</h2>
+<p>Cél: egy olyan interfész amivel elrejtjük a tárolás módját</p>
+<pre class="php"><code>interface IFileIO {
+  function save();
+  function load();
+}
+
+interface IStorage {
+  function __construct($connection_params);
+  function add($record);
+  function findById($id);
+  function findAll($params = []);
+  function findOne($params = []);
+  function query($condition);
+  function update($id, $record);
+  function delete($id);
+}</code></pre>
+</section>
+<section id="storage" class="slide level2">
+<h2><code>Storage</code></h2>
+<pre class="php"><code>abstract class Storage implements IStorage, IFileIO {
+  protected $contents;
+  protected $filepath;
+
+  abstract function load();
+  abstract function save();
+
+  public function __construct($filename) {
+    if (!is_readable($filename) || !is_writable($filename)) {
+      throw new Exception(&quot;Data source ${filename} is invalid.&quot;);
+    }
+
+    $this-&gt;filepath = realpath($filename);
+    $this-&gt;contents = $this-&gt;load();
+  }
+
+  public function __destruct() {
+    $this-&gt;save($this-&gt;contents);
+  }
+
+  public function add($record) {
+    $id = uniqid();
+    $this-&gt;contents[$id] = $record_to_save;
+    return $id;
+  }
+
+  public function findById($id) {
+    return $this-&gt;contents[$id] ?? NULL;
+  }
+
+  public function findAll($params = []) {
+    return array_filter($this-&gt;contents, function ($item) use ($params) {
+      foreach ($params as $key =&gt; $value) {
+        if ($item[$key] !== $value) {
+          return FALSE;
+        }
+      }
+
+      return TRUE;
+    });
+  }
+
+  public function findOne($params = []) {
+    $found_items = $this-&gt;findAll($params);
+    return $found_items[0] ?? NULL;
+  }
+
+  public function query($condition) {
+    return array_filter($this-&gt;contents, $condition);
+  }
+
+  public function update($id, $record) {
+    $this-&gt;contents[$id] = $record;
+  }
+
+  public function delete($id) {
+    unset($this-&gt;contents[$id]);
+  }
+}</code></pre>
+</section>
+<section id="jsonstorage-serializestorage" class="slide level2">
+<h2><code>JsonStorage</code> / <code>SerializeStorage</code></h2>
+<pre class="php"><code>class JsonStorage extends Storage {
+  public function load() {
+    $file_contents = file_get_contents($this-&gt;filepath);
+    $this-&gt;contents = json_decode($file_contents, TRUE) ?? [];
+  }
+
+  public function save() {
+    $json_content = json_encode($this-&gt;contents, JSON_PRETTY_PRINT);
+    file_put_contents($this-&gt;filepath, $json_content);
+  }
+}
+
+class SerializeStorage extends Storage {
+  public function load() {
+    $file_contents = file_get_contents($this-&gt;filepath);
+    return unserialize($file_contents) ?? [];
+  }
+
+  public function save() {
+    $file_content = serialiaze(contents, JSON_PRETTY_PRINT);
+    file_put_contents($this-&gt;filepath, $file_content);
+  }
+}</code></pre>
+</section>
+<section id="használat" class="slide level2">
+<h2>Használat</h2>
+<pre class="php"><code>$filmStorage = new JsonStorage(&quot;films.json&quot;);
+
+$allFilms = $filmStorage-&gt;findAll();
+
+$filmsByMelGibson = $films-&gt;findAll([
+  &quot;director&quot; =&gt; &quot;Mel Gibson&quot;
+]);
+
+$newFilm = [
+  &quot;title&quot; =&gt; &quot;Star Wars&quot;,
+  &quot;director&quot; =&gt; &quot;George Lucas&quot;,
+  &quot;year&quot; =&gt; &quot;1977&quot;
+];
+
+$id = $filmStorage-&gt;add($newFilm);
+$newHope = $filmStorage-&gt;findById($id);
+$newHope[&quot;title&quot;] = &quot;A New Hope&quot;;
+$filmStorage-&gt;update($id, $newHope);</code></pre>
+</section>
+<section id="storage-kiterjesztése" class="slide level2">
+<h2><code>Storage</code> kiterjesztése</h2>
+<pre class="php"><code>function getMoviesByYear($year) {
+  $filmStorage = new JsonStorage(&quot;films.json&quot;);
+  return $filmStorage-&gt;query(function ($movie) use ($year) {
+    return $movie[&quot;year&quot;] === $year;
+  });
+}
+// OR
+$filmStorage = new FilmStorage();
+$films = $filmStorage-&gt;getMoviesByYear(2016);</code></pre>
+<pre class="php"><code>class FilmStorage extends JsonStorage {
+  public function __construct() {
+    parent::__construct(&#39;films.json&#39;);
+  }
+
+  public function getMoviesByYear($year) {
+    return $this-&gt;findAll([
+      &quot;year&quot; =&gt; $year
+    ]);
+  }
+}</code></pre>
+</section>
+<section id="storage-osztályokkal" class="slide level2">
+<h2>Storage osztályokkal</h2>
+<p>A <code>findAll</code> művelet nem működik!</p>
+<pre class="php"><code>abstract class ObjectStorage extends Storage {
+  public function findAll($params = []) {
+    return array_filter($this-&gt;contents, function ($item) use ($params) {
+      foreach ($params as $key =&gt; $value) {
+        if (✒&gt;$item-&gt;$key&lt;✒ !== $value) {
+          return FALSE;
+        }
+      }
+
+      return TRUE;
+    });
+  }
+}
+
+abstract class SerializeObjectStorage extends ObjectStorage {/* */}</code></pre>
+</section>
+<section id="storage-osztályokkal-1" class="slide level2">
+<h2>Storage osztályokkal</h2>
+<pre class="php"><code>class Movie {
+  public $title;
+  public $year;
+  public $director;
+
+  public function __construct($title = NULL, $director = NULL, $year = NULL) {
+    $this-&gt;title = $title;
+    $this-&gt;director = $director;
+    $this-&gt;year = $year;
+  }
+}</code></pre>
+<pre class="php"><code>class FilmStorage extends SerializeObjectStorage {
+  public function __construct() {
+    parent::__construct(&quot;films.storage&quot;);
+  }
+}</code></pre>
+</section>
+<section id="összefoglalás" class="slide level2" data-state="topic">
+<h2 data-state="topic">Összefoglalás</h2>
+<ul>
+<li>Környezeti változók a <code>$_SERVER</code> változón keresztül</li>
+<li>Az adat van a központban</li>
+<li>Tárolás fájlban: <strong>Adatszerkezet-vezérelt</strong></li>
+<li><code>JsonStorage</code>, <code>SerializeStorage</code></li>
+</ul>
+</section>
+<section id="kész-kódok" class="slide level2">
+<h2>Kész kódok</h2>
+<pre class="php"><code>interface IFileIO {
+  function save();
+  function load();
+}
+
+interface IStorage {
+  function __construct($connection_params);
+  function add($record);
+  function findById($id);
+  function findAll($params = []);
+  function findOne($params = []);
+  function query($condition);
+  function update($id, $record);
+  function delete($id);
+}
+
+abstract class Storage implements IStorage, IFileIO {
+  protected $contents;
+  protected $filepath;
+
+  abstract function load();
+  abstract function save();
+
+  public function __construct($filename) {
+    if (!is_readable($filename) || !is_writable($filename)) {
+      throw new Exception(&quot;Data source ${filename} is invalid.&quot;);
+    }
+
+    $this-&gt;filepath = realpath($filename);
+    $this-&gt;contents = $this-&gt;load();
+  }
+
+  public function __destruct() {
+    $this-&gt;save($this-&gt;contents);
+  }
+
+  public function add($record) {
+    $id = uniqid();
+    $this-&gt;contents[$id] = $record_to_save;
+    return $id;
+  }
+
+  public function findById($id) {
+    return $this-&gt;contents[$id] ?? NULL;
+  }
+
+  public function findAll($params = []) {
+    return array_filter($this-&gt;contents, function ($item) use ($params) {
+      foreach ($params as $key =&gt; $value) {
+        if ($item[$key] !== $value) {
+          return FALSE;
+        }
+      }
+
+      return TRUE;
+    });
+  }
+
+  public function findOne($params = []) {
+    $found_items = $this-&gt;findAll($params);
+    return $found_items[0] ?? NULL;
+  }
+
+  public function query($condition) {
+    return array_filter($this-&gt;contents, $condition);
+  }
+
+  public function update($id, $record) {
+    $this-&gt;contents[$id] = $record;
+  }
+
+  public function delete($id) {
+    unset($this-&gt;contents[$id]);
+  }
+}
+
+abstract class ObjectStorage extends Storage {
+  public function findAll($params = []) {
+    return array_filter($this-&gt;contents, function ($item) use ($params) {
+      foreach ($params as $key =&gt; $value) {
+        if ($item-&gt;$key !== $value) {
+          return FALSE;
+        }
+      }
+
+      return TRUE;
+    });
+  }
+}
+
+class JsonStorage extends Storage {
+  public function load() {
+    $file_contents = file_get_contents($this-&gt;filepath);
+    $this-&gt;contents = json_decode($file_contents, TRUE) ?? [];
+  }
+
+  public function save() {
+    $json_content = json_encode($this-&gt;contents, JSON_PRETTY_PRINT);
+    file_put_contents($this-&gt;filepath, $json_content);
+  }
+}
+
+class SerializeStorage extends Storage {
+  public function load() {
+    $file_contents = file_get_contents($this-&gt;filepath);
+    return unserialize($file_contents) ?? [];
+  }
+
+  public function save() {
+    $file_content = serialiaze(contents, JSON_PRETTY_PRINT);
+    file_put_contents($this-&gt;filepath, $file_content);
+  }
+}
+
+class SerializeObjectStorage extends ObjectStorage {
+  public function load() {
+    $file_contents = file_get_contents($this-&gt;filepath);
+    return unserialize($file_contents) ?? [];
+  }
+
+  public function save() {
+    $file_content = serialiaze(contents, JSON_PRETTY_PRINT);
+    file_put_contents($this-&gt;filepath, $file_content);
+  }
+}</code></pre>
+</section>
+    </div>
+  </div>
+
+  <div id="captcha"></div>
+
+  <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.18.1/build/highlight.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/js/reveal.js"></script>
+
+  <script>
+    // Highlighting in code blocks
+    const codes = document.querySelectorAll('pre > code')
+    for (const code of codes) {
+      code.setAttribute('data-noescape', '')
+      const text = code.innerHTML
+      const markedText = text
+        .replace(/&lt;✒/g, '</mark>')
+        .replace(/✒&gt;/g, '<mark>')
+      code.innerHTML = markedText
+    }
+
+    // Adding captcha
+    const queryString = new URLSearchParams(window.location.search);
+    const captcha = queryString.get('captcha');
+    const captchaElement = document.getElementById("captcha");
+    captchaElement.innerHTML = captcha;
+
+    // Full list of configuration options available at:
+    // https://github.com/hakimel/reveal.js#configuration
+    Reveal.initialize({
+      // Display controls in the bottom right corner
+      controls: true,
+      controlsTutorial: false,
+      // Display a presentation progress bar
+      progress: true,
+      // Display the page number of the current slide
+      slideNumber: true,
+      // Add the current slide number to the URL hash so that reloading the
+      // page/copying the URL will return you to the same slide
+      hash: true,
+      // Push each slide change to the browser history
+      history: false,
+      // Enable keyboard shortcuts for navigation
+      keyboard: true,
+      // Enable the slide overview mode
+      overview: true,
+      // Vertical centering of slides
+      center: true,
+      // Enables touch navigation on devices with touch input
+      touch: true,
+      // Loop the presentation
+      loop: false,
+      // Hides the address bar on mobile devices
+      hideAddressBar: true,
+      // Transition style
+      transition: 'slide', // none/fade/slide/convex/concave/zoom
+      // Transition style for full page slide backgrounds
+      backgroundTransition: 'slide', // none/fade/slide/convex/concave/zoom
+      // Bounds for smallest/largest possible scale to apply to content
+      minScale: 0.5,
+      maxScale: 3,
+      // Modifier key used to click-zoom to part of the slide
+      zoomKey: "ctrl",
+      math: {
+        mathjax: 'https://cdn.jsdelivr.net/gh/mathjax/MathJax@3.0.1/es5/tex-mml-chtml.js',
+        config: 'TeX-AMS_HTML-full',
+        tex2jax: {
+          inlineMath: [['\\(','\\)']],
+          displayMath: [['\\[','\\]']],
+          balanceBraces: true,
+          processEscapes: false,
+          processRefs: true,
+          processEnvironments: true,
+          preview: 'TeX',
+          skipTags: ['script','noscript','style','textarea','pre','code'],
+          ignoreClass: 'tex2jax_ignore',
+          processClass: 'tex2jax_process'
+        }
+      },
+
+      // Optional reveal.js plugins
+      dependencies: [
+        { src: 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+        { src: 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/plugin/zoom-js/zoom.js', async: true },
+        //{ src: 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/socket.io/socket.io.js', async: true },
+        //{ src: 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/plugin/notes-server/client.js', async: true },
+        { src: 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/plugin/math/math.js', async: true },
+        { src: 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/plugin/notes/notes.js', async: true },
+        { src: 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/plugin/highlight/highlight.js', async: true }
+      ]
+    });
+  </script>
+
+  
+  </body>
+</html>
