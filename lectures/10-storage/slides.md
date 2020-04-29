@@ -714,7 +714,8 @@ abstract class Storage implements IStorage, IFileIO {
 
   public function findOne($params = []) {
     $found_items = $this->findAll($params);
-    return $found_items[0] ?? NULL;
+    $first_index = array_keys($found_items)[0] ?? NULL;
+    return $found_items[$first_index] ?? NULL;
   }
 
   public function query($condition) {
@@ -739,7 +740,7 @@ abstract class Storage implements IStorage, IFileIO {
 class JsonStorage extends Storage {
   public function load() {
     $file_contents = file_get_contents($this->filepath);
-    $this->contents = json_decode($file_contents, TRUE) ?? [];
+    $this->contents = json_decode($file_contents, TRUE) ?: [];
   }
 
   public function save() {
@@ -751,7 +752,7 @@ class JsonStorage extends Storage {
 class SerializeStorage extends Storage {
   public function load() {
     $file_contents = file_get_contents($this->filepath);
-    $this->contents = unserialize($file_contents) ?? [];
+    $this->contents = unserialize($file_contents) ?: [];
   }
 
   public function save() {
@@ -934,7 +935,8 @@ abstract class Storage implements IStorage, IFileIO {
 
   public function findOne($params = []) {
     $found_items = $this->findAll($params);
-    return $found_items[0] ?? NULL;
+    $first_index = array_keys($found_items)[0] ?? NULL;
+    return $found_items[$first_index] ?? NULL;
   }
 
   public function query($condition) {
@@ -967,7 +969,7 @@ abstract class ObjectStorage extends Storage {
 class JsonStorage extends Storage {
   public function load() {
     $file_contents = file_get_contents($this->filepath);
-    $this->contents = json_decode($file_contents, TRUE) ?? [];
+    $this->contents = json_decode($file_contents, TRUE) ?: [];
   }
 
   public function save() {
@@ -979,7 +981,7 @@ class JsonStorage extends Storage {
 class SerializeStorage extends Storage {
   public function load() {
     $file_contents = file_get_contents($this->filepath);
-    $this->contents = unserialize($file_contents) ?? [];
+    $this->contents = unserialize($file_contents) ?: [];
   }
 
   public function save() {
@@ -991,7 +993,7 @@ class SerializeStorage extends Storage {
 class SerializeObjectStorage extends ObjectStorage {
   public function load() {
     $file_contents = file_get_contents($this->filepath);
-    $this->contents = unserialize($file_contents) ?? [];
+    $this->contents = unserialize($file_contents) ?: [];
   }
 
   public function save() {
