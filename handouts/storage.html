@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="UTF-8">
+        <title>A `Storage` osztályok használata</title>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/katex.min.css" integrity="sha384-yFRtMMDnQtDRO8rLpMIKrtPCD5jdktao2TV19YiZYWMDkUR5GQZR/NOVTdquEx1j" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/markdown.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/highlight.css">
+        <link href="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.css" rel="stylesheet" type="text/css">
+        <style>
+.task-list-item { list-style-type: none; } .task-list-item-checkbox { margin-left: -20px; vertical-align: middle; }
+</style>
+        <style>
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', 'Ubuntu', 'Droid Sans', sans-serif;
+                font-size: 14px;
+                line-height: 1.6;
+            }
+        </style>
+        
+        <script src="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.js"></script>
+    </head>
+    <body class="vscode-light">
+        <h1 id="a-storage-oszt%c3%a1lyok-haszn%c3%a1lata">A <code>Storage</code> osztályok használata</h1>
+<ul>
+<li><a href="#rendelkez%c3%a9sre-%c3%a1ll%c3%b3-storage-oszt%c3%a1lyok">Rendelkezésre álló <code>Storage</code> osztályok</a></li>
+<li><a href="#alapvet%c5%91-haszn%c3%a1lat">Alapvető használat</a></li>
+<li><a href="#met%c3%b3dus-referencia">Metódus referencia</a>
+<ul>
+<li><a href="#constructdatafile"><code>__construct($data_file)</code></a></li>
+<li><a href="#addrecord"><code>add($record)</code></a></li>
+<li><a href="#findbyidid"><code>findById($id)</code></a></li>
+<li><a href="#findallfilter"><code>findAll($filter = [])</code></a></li>
+<li><a href="#findonefilter"><code>findOne($filter = [])</code></a></li>
+<li><a href="#querypredicate"><code>query($predicate)</code></a></li>
+<li><a href="#updateid-record"><code>update($id, $record)</code></a></li>
+<li><a href="#deleteid"><code>delete($id)</code></a></li>
+</ul>
+</li>
+</ul>
+<h2 id="rendelkez%c3%a9sre-%c3%a1ll%c3%b3-storage-oszt%c3%a1lyok">Rendelkezésre álló <code>Storage</code> osztályok</h2>
+<ul>
+<li><code>JsonStorage</code>: JSON formátumban tárolja az adatokat, típusinformációk (osztályok) elvesznek.</li>
+<li><code>SerializeStorage</code>: a PHP saját formátumában tárolja az adatokat, az alapvető típusokat megőrzi, de PHP objektumokat (osztálypéldányokat) tárolva a keresések nem működnek.</li>
+<li><code>SerializeObjectStorage</code>: a PHP saját formátumában tárolja az adatokat, objektumokat feltételezve. Akkor kell használni, ha a tárolt adatokat osztálypéldányokként kívánjuk tárolni.</li>
+</ul>
+<h2 id="alapvet%c5%91-haszn%c3%a1lat">Alapvető használat</h2>
+<ol>
+<li>Hozzunk létre egy adatfájlt (praktikusan külön mappában, pl. <code>storage</code>)! Az adatfájl kiterjesztése bármi lehet, de <code>JsonStorage</code> esetén érdemes a <code>.json</code> kiterjesztést használni.</li>
+<li>Adjunk írási és olvasási jogot az adatfájlra a webszervernek (webprogramozás szerveren az &quot;other&quot; jogosultságcsoport)!</li>
+<li>Töltsük be az adatfájlt PHP-ban a megfelelő <code>Storage</code> osztály példányosításával!<pre><code class="language-php"><div>$item_storage = <span class="hljs-keyword">new</span> JsonStorage(`storage/items.json`);
+</div></code></pre>
+</li>
+<li>Dolgozzunk az adatokkal a <code>Storage</code> beépített metódusaival.</li>
+</ol>
+<h2 id="met%c3%b3dus-referencia">Metódus referencia</h2>
+<h3 id="constructdatafile"><code>__construct($data_file)</code></h3>
+<p>Konstruktor, adatfájl betöltése a memóriába.</p>
+<h4 id="param%c3%a9terek">Paraméterek</h4>
+<table>
+<thead>
+<tr>
+<th>név</th>
+<th>típus</th>
+<th>leírás</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>$data_file</code></td>
+<td>string</td>
+<td>az adatfájl elérési útja</td>
+</tr>
+</tbody>
+</table>
+<h4 id="visszat%c3%a9r%c3%a9si-%c3%a9rt%c3%a9k">Visszatérési érték</h4>
+<p><code>Storage</code>: Az adott adatfájl adatait tartalmazó <code>Storage</code> objektum.</p>
+<h4 id="p%c3%a9lda">Példa</h4>
+<pre><code class="language-php"><div>$item_storage = <span class="hljs-keyword">new</span> JsonStorage(`storage/items.json`);
+</div></code></pre>
+<h3 id="addrecord"><code>add($record)</code></h3>
+<p>Új elem felvétele az adatfájlba.</p>
+<h4 id="param%c3%a9terek-1">Paraméterek</h4>
+<table>
+<thead>
+<tr>
+<th>név</th>
+<th>típus</th>
+<th>leírás</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>$record</code></td>
+<td>any | object</td>
+<td>az eltárolandó elem<code>*</code></td>
+</tr>
+</tbody>
+</table>
+<p><code>*</code> : <code>ObjectStorage</code> esetén mindenképpen objektumpéldány</p>
+<h4 id="visszat%c3%a9r%c3%a9si-%c3%a9rt%c3%a9k-1">Visszatérési érték</h4>
+<p><code>int</code> : A beszúrt elem azonosítója.</p>
+<h4 id="p%c3%a9lda-1">Példa</h4>
+<pre><code class="language-php"><div><span class="hljs-comment">// a $record beszúrása az adatfájlba</span>
+$record = [ <span class="hljs-string">"foo"</span> =&gt; <span class="hljs-string">"bar"</span> ];
+$id = $item_storage-&gt;add($record);
+</div></code></pre>
+<h3 id="findbyidid"><code>findById($id)</code></h3>
+<p>Adott azonosítójú elem lekérdezése az adatfájlból.</p>
+<h4 id="param%c3%a9terek-2">Paraméterek</h4>
+<table>
+<thead>
+<tr>
+<th>név</th>
+<th>típus</th>
+<th>leírás</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>$id</code></td>
+<td>string</td>
+<td>a keresett elem azonosítója</td>
+</tr>
+</tbody>
+</table>
+<h4 id="visszat%c3%a9r%c3%a9si-%c3%a9rt%c3%a9k-2">Visszatérési érték</h4>
+<p><code>any | NULL</code> : A megtalált elem vagy <code>NULL</code> ha az elem nem található.</p>
+<h4 id="p%c3%a9lda-2">Példa</h4>
+<pre><code class="language-php"><div><span class="hljs-comment">// Az "5eaee68181871" azonosítójú elem lekérdezése</span>
+$id = <span class="hljs-string">"5eaee68181871"</span>;
+$item = $item_storage-&gt;findById($id);
+</div></code></pre>
+<h3 id="findallfilter"><code>findAll($filter = [])</code></h3>
+<p>Az összes, a megadott kritériumot teljesítő elem lekérdezése az adatfájlból.</p>
+<h4 id="param%c3%a9terek-3">Paraméterek</h4>
+<table>
+<thead>
+<tr>
+<th>név</th>
+<th>típus</th>
+<th>leírás</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>$filter</code></td>
+<td>array</td>
+<td>név-érték párok halmaza, keresési feltétel</td>
+</tr>
+</tbody>
+</table>
+<h4 id="visszat%c3%a9r%c3%a9si-%c3%a9rt%c3%a9k-3">Visszatérési érték</h4>
+<p><code>array</code> : A megtalált elemek tömbje. Ha nincs találat, akkor üres tömb.</p>
+<h4 id="p%c3%a9lda-3">Példa</h4>
+<pre><code class="language-php"><div><span class="hljs-comment">// Összes elem lekérdezése</span>
+$all_items = $item_storage-&gt;findAll();
+<span class="hljs-comment">// Azon elemek lekérdezése, ahol a "foo" mező értéke "bar"</span>
+$search_results = $item_storage-&gt;findAll([
+  <span class="hljs-string">"foo"</span> =&gt; <span class="hljs-string">"bar"</span>
+]);
+</div></code></pre>
+<h3 id="findonefilter"><code>findOne($filter = [])</code></h3>
+<p>Az első olyan elem lekérdezése az adatfájlból, ami teljesíti a megadott kritériumot.</p>
+<h4 id="param%c3%a9terek-4">Paraméterek</h4>
+<table>
+<thead>
+<tr>
+<th>név</th>
+<th>típus</th>
+<th>leírás</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>$filter</code></td>
+<td>array</td>
+<td>név-érték párok halmaza, keresési feltétel</td>
+</tr>
+</tbody>
+</table>
+<h4 id="visszat%c3%a9r%c3%a9si-%c3%a9rt%c3%a9k-4">Visszatérési érték</h4>
+<p><code>any | NULL</code> : A megtalált elem. Ha nincs találat, akkor <code>NULL</code>.</p>
+<h4 id="p%c3%a9lda-4">Példa</h4>
+<pre><code class="language-php"><div><span class="hljs-comment">// Az első olyan elem lekérdezése, ahol a "foo" mező értéke "bar"</span>
+$search_results = $item_storage-&gt;findOne([
+  <span class="hljs-string">"foo"</span> =&gt; <span class="hljs-string">"bar"</span>
+]);
+</div></code></pre>
+<h3 id="querypredicate"><code>query($predicate)</code></h3>
+<p>Az összes olyan elem lekérdezése az adatfájlból, amire teljesül egy megadott függvény-feltétel.</p>
+<h4 id="param%c3%a9terek-5">Paraméterek</h4>
+<table>
+<thead>
+<tr>
+<th>név</th>
+<th>típus</th>
+<th>leírás</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>$predicate</code></td>
+<td>callable</td>
+<td>bool-nal visszatérő függvény, ami eldönti egy elemről, hogy kell-e</td>
+</tr>
+</tbody>
+</table>
+<h4 id="visszat%c3%a9r%c3%a9si-%c3%a9rt%c3%a9k-5">Visszatérési érték</h4>
+<p><code>array</code>: A függvényfeltételt teljesítő elemek tömbje. Ha nincs találat, akkor üres tömb.</p>
+<h4 id="p%c3%a9lda-5">Példa</h4>
+<pre><code class="language-php"><div><span class="hljs-comment">// Az összes olyan elem lekérdezése, ahol a "foo" mező értéke 2-vel oszható</span>
+$search_results = $item_storage-&gt;query(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">($elem)</span> </span>{
+  <span class="hljs-keyword">return</span> $elem[<span class="hljs-string">"foo"</span>] % <span class="hljs-number">2</span> === <span class="hljs-number">0</span>;
+});
+</div></code></pre>
+<h3 id="updateid-record"><code>update($id, $record)</code></h3>
+<p>Adott azonosítójú elem frissítése az adatfájlban.</p>
+<h4 id="param%c3%a9terek-6">Paraméterek</h4>
+<table>
+<thead>
+<tr>
+<th>név</th>
+<th>típus</th>
+<th>leírás</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>$id</code></td>
+<td>string</td>
+<td>a frissítendő elem azonosítója</td>
+</tr>
+<tr>
+<td><code>$record</code></td>
+<td>any</td>
+<td>a rekord, amivel felülírjuk az adott azonosítójú elemet</td>
+</tr>
+</tbody>
+</table>
+<h4 id="visszat%c3%a9r%c3%a9si-%c3%a9rt%c3%a9k-6">Visszatérési érték</h4>
+<p><code>void</code>: Nincs visszatérési érték.</p>
+<h4 id="p%c3%a9lda-6">Példa</h4>
+<pre><code class="language-php"><div><span class="hljs-comment">// A "5eaee68181871" id-jú elem felülírása a $new_record változóval.</span>
+$id = <span class="hljs-string">"5eaee68181871"</span>;
+$new_record = [ <span class="hljs-string">"foo"</span> =&gt; <span class="hljs-string">"bar"</span> ];
+$item_storage-&gt;update($id, $new_record);
+</div></code></pre>
+<h3 id="deleteid"><code>delete($id)</code></h3>
+<p>Adott azonosítójú elem törlése az adatfájlból.</p>
+<h4 id="param%c3%a9terek-7">Paraméterek</h4>
+<table>
+<thead>
+<tr>
+<th>név</th>
+<th>típus</th>
+<th>leírás</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>$id</code></td>
+<td>string</td>
+<td>a törlendő elem azonosítója</td>
+</tr>
+</tbody>
+</table>
+<h4 id="visszat%c3%a9r%c3%a9si-%c3%a9rt%c3%a9k-7">Visszatérési érték</h4>
+<p><code>void</code>: Nincs visszatérési érték.</p>
+<h4 id="p%c3%a9lda-7">Példa</h4>
+<pre><code class="language-php"><div><span class="hljs-comment">// Az "5eaee68181871" id-jú elem törlése.</span>
+$id = <span class="hljs-string">"5eaee68181871"</span>;
+$item_storage-&gt;delete($id);
+</div></code></pre>
+
+    </body>
+    </html>
