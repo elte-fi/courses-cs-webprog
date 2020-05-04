@@ -24,6 +24,7 @@ horvath.gyozo@inf.elte.hu
 </small>
 :::
 ::::::
+
 ------
 
 ## Ismétlés {data-state="new-section"}

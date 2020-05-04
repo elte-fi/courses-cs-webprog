@@ -64,7 +64,7 @@ $item_storage = new JsonStorage(`storage/items.json`);
 
 #### Visszatérési érték
 
-`int` : A beszúrt elem azonosítója.
+`string` : A beszúrt elem azonosítója.
 
 #### Példa
 

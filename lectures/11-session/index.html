@@ -1,0 +1,1220 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <title>Munkamenet, hitelesítés</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+  <!-- Reveal.js Theme -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/elte-fi/revealjs-elte-fi@1.1.1/dist/revealjs-elte-fi.min.css">
+  <!-- Highlighting -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.18.1/build/styles/default.min.css">
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+
+  <!-- Printing and PDF exports -->
+  <script>
+    var link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = window.location.search.match(/print-pdf/gi) 
+      ? 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/css/print/pdf.css' 
+      : 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/css/print/paper.css';
+    document.getElementsByTagName('head')[0].appendChild( link );
+  </script>
+
+  </head>
+
+<body>
+  <div class="reveal">
+    <div class="slides">
+<section class="slide level2">
+
+<div class="title">
+<p>Webprogramozás</p>
+</div>
+<h3 id="munkamenet-hitelesítés">Munkamenet, hitelesítés</h3>
+<div class="columns">
+<div class="column" style="width:33%;">
+<p><small> <strong>Visnovitz Márton</strong><br />
+egyetemi tanársegéd<br />
+visnovitz.marton@inf.elte.hu </small></p>
+</div><div class="column" style="width:33%;">
+<p><small> <strong>Horváth Győző</strong><br />
+egyetemi docens<br />
+horvath.gyozo@inf.elte.hu </small></p>
+</div>
+</div>
+</section>
+<section id="ismétlés" class="slide level2" data-state="new-section">
+<h2 data-state="new-section">Ismétlés</h2>
+</section>
+<section id="ismétlés-1" class="slide level2">
+<h2>Ismétlés</h2>
+<ul class="task-list">
+<li><input type="checkbox" disabled="" checked="" />
+Output generálás</li>
+<li><input type="checkbox" disabled="" />
+Input<ul class="task-list">
+<li><input type="checkbox" disabled="" checked="" />
+Kliens</li>
+<li><input type="checkbox" disabled="" checked="" />
+Környezet</li>
+<li><input type="checkbox" disabled="" checked="" />
+Fájl<ul>
+<li>Fájlszerkezet-vezérelt</li>
+<li>Adatszerkezet-vezérelt</li>
+<li>Segédosztályok</li>
+</ul></li>
+<li><input type="checkbox" disabled="" />
+<del>Adatbázis</del></li>
+<li><input type="checkbox" disabled="" />
+Munkamenet</li>
+</ul></li>
+<li><input type="checkbox" disabled="" checked="" />
+Űrlapfeldolgozás</li>
+</ul>
+</section>
+<section id="példa" class="slide level2">
+<h2>Példa</h2>
+<pre class="php"><code>$filmStorage = new JsonStorage(&quot;films.json&quot;);
+
+$allFilms = $filmStorage-&gt;findAll();
+
+$filmsByMelGibson = $films-&gt;findAll([
+  &quot;director&quot; =&gt; &quot;Mel Gibson&quot;
+]);
+
+$newFilm = [
+  &quot;title&quot; =&gt; &quot;Star Wars&quot;,
+  &quot;director&quot; =&gt; &quot;George Lucas&quot;,
+  &quot;year&quot; =&gt; &quot;1977&quot;
+];
+
+$id = $filmStorage-&gt;add($newFilm);
+$newHope = $filmStorage-&gt;findById($id);
+$newHope[&quot;title&quot;] = &quot;A New Hope&quot;;
+$filmStorage-&gt;update($id, $newHope);</code></pre>
+<p><a href="https://elte-fi.github.io/courses-webprogramming/handouts/storage.html">Handout a <code>Storage</code> osztályok használatához</a></p>
+</section>
+<section id="szerverprogram-bemeneti-adatai" class="slide level2">
+<h2>Szerverprogram bemeneti adatai</h2>
+<p><img data-src="../../assets/images/architecture/server-input.png" /></p>
+</section>
+<section id="munkamenet-kezelés" class="slide level2" data-state="new-section">
+<h2 data-state="new-section">Munkamenet-kezelés</h2>
+</section>
+<section id="szerveroldali-program-bemeneti-adatai" class="slide level2">
+<h2>Szerveroldali program bemeneti adatai</h2>
+<p>A bemeneti program lehetséges forrásai:</p>
+<ul class="task-list">
+<li><input type="checkbox" disabled="" checked="" />
+Kliens</li>
+<li><input type="checkbox" disabled="" checked="" />
+Környezet</li>
+<li><input type="checkbox" disabled="" checked="" />
+Fájl</li>
+<li><input type="checkbox" disabled="" />
+<strong>Munkamenet</strong></li>
+<li><input type="checkbox" disabled="" />
+Adatbázis</li>
+<li><input type="checkbox" disabled="" />
+Másik szerver</li>
+</ul>
+</section>
+<section id="http-állapotmentesség" class="slide level2">
+<h2>HTTP állapotmentesség</h2>
+<ul>
+<li>A HTTP állapotmentes protokoll</li>
+<li>Nem emlékezik az előző kérés adataira</li>
+<li>Függetlenül kezeli a kéréseket
+<ul>
+<li>Ugyanazon kliens különböző kéréseit</li>
+<li>Különböző kliensek kéréseit</li>
+</ul></li>
+</ul>
+<p><img data-src="../../assets/images/architecture/stateless.png" /> <img data-src="../../assets/images/architecture/multiple-clients.png" /></p>
+</section>
+<section id="probléma" class="slide level2">
+<h2>1. probléma</h2>
+<ul>
+<li>Ugyanazon kliens több kérése között az állapot megtartása</li>
+<li>Pl. kosár</li>
+<li>Megoldás: HTTP kéréstől külön tárolni</li>
+</ul>
+<p><img data-src="../../assets/images/architecture/stateless.png" /></p>
+</section>
+<section id="probléma-1" class="slide level2">
+<h2>1. probléma</h2>
+<p><img data-src="../../assets/images/architecture/stateless-file.png" /></p>
+</section>
+<section id="probléma-2" class="slide level2">
+<h2>2. probléma</h2>
+<p>Mindegyik kliens ugyanazon az adaton osztozkodik</p>
+<p><img data-src="../../assets/images/architecture/multiple-clients-file.png" /></p>
+</section>
+<section id="megoldás-munkamenet-kezelés" class="slide level2">
+<h2>Megoldás: Munkamenet-kezelés</h2>
+<p>“Kliensenkénti adattárolás”</p>
+<p><img data-src="../../assets/images/architecture/multiple-clients-multiple-files.png" /></p>
+</section>
+<section id="munkamenet-kezelés-1" class="slide level2">
+<h2>Munkamenet-kezelés</h2>
+<ul>
+<li>Kliensek megkülönböztetése</li>
+<li>Kliensenkénti adattárolás</li>
+<li>Példák:
+<ul>
+<li>levelezés, dokumentumok</li>
+<li>internetbank</li>
+<li>webáruház kosara, online szerkesztők</li>
+</ul></li>
+<li>Megoldás
+<ul>
+<li>kliens oldalon</li>
+<li>szerver oldalon</li>
+</ul></li>
+</ul>
+</section>
+<section id="munkamenet-kezelési-lehetőségek" class="slide level2" data-state="new-section">
+<h2 data-state="new-section">Munkamenet-kezelési lehetőségek</h2>
+</section>
+<section id="példa-1" class="slide level2">
+<h2>Példa</h2>
+<p>Tároljuk egy számláló értékét felhasználónként, és minden kérésnél növeljük a számláló értékét eggyel!</p>
+</section>
+<section id="ötlet-kliensoldali-állapottartás" class="slide level2">
+<h2>1. ötlet: kliensoldali állapottartás</h2>
+<div class="columns">
+<div class="column">
+<ul>
+<li>Az adatot a kliensen tároljuk</li>
+<li>Minden kérésnél felküldjük a szerverre</li>
+<li>A szerver visszaadja a kliensnek</li>
+</ul>
+</div><div class="column">
+<ul>
+<li>Kliens oldali technológiák
+<ul>
+<li>URL</li>
+<li>Rejtett mező</li>
+<li>Süti</li>
+</ul></li>
+</ul>
+</div>
+</div>
+<p><img data-src="../../assets/images/architecture/stateless-data.png" /></p>
+</section>
+<section id="url" class="slide level2">
+<h2>1/1: URL</h2>
+<pre class="txt"><code>session_url.php?counter=1</code></pre>
+<pre class="php"><code>&lt;?php
+$counter = ✒&gt;$_GET[&quot;counter&quot;]&lt;✒ ?? 0;
+$counter += 1;
+?&gt;
+Counter value: &lt;?= $counter ?&gt; &lt;br&gt;
+&lt;a href=&quot;session_url.php?counter=✒&gt;&lt;?= $counter ?&gt;&lt;✒&quot;&gt;Increment&lt;/a&gt;</code></pre>
+</section>
+<section id="url-1" class="slide level2">
+<h2>URL</h2>
+<ul>
+<li>Hátránya:
+<ul>
+<li>Minden linkhez oda kell generálni<br />
+(Ha egyről is lemarad, elvész az adat)</li>
+<li>Sok adat nem fér el benne<br />
+(URL hossza limitált)</li>
+<li>Feltűnő (zavaró)</li>
+<li><strong>Könnyen átírható</strong></li>
+</ul></li>
+<li>Előny
+<ul>
+<li>Könyvjelzőzhető</li>
+</ul></li>
+</ul>
+</section>
+<section id="rejtett-mező" class="slide level2">
+<h2>1/2: rejtett mező</h2>
+<ul>
+<li>URL: kevés adat, feltűnő, manipulálható</li>
+<li>→ űrlap rejtett mezője</li>
+</ul>
+<pre class="html"><code>&lt;input type=&quot;hidden&quot; name=&quot;counter&quot; value=&quot;4&quot;&gt;</code></pre>
+<div class="columns">
+<div class="column">
+<ul>
+<li>Előny
+<ul>
+<li>sok adat</li>
+<li>nem feltűnő</li>
+</ul></li>
+</ul>
+</div><div class="column">
+<ul>
+<li>Hátrány
+<ul>
+<li><strong>manipulálható</strong></li>
+<li>csak űrlapok esetén</li>
+<li>normál linkeknél JavaScript kell</li>
+</ul></li>
+</ul>
+</div>
+</div>
+</section>
+<section id="rejtett-mező-1" class="slide level2">
+<h2>Rejtett mező</h2>
+<pre class="php"><code>&lt;?php
+$counter = $_POST[&quot;counter&quot;] ?? 0;
+$counter += 1;
+?&gt;
+
+Counter value: &lt;?= $counter ?&gt; &lt;br&gt;
+&lt;form action=&quot;&quot; method=&quot;post&quot;&gt;
+  &lt;input type=&quot;hidden&quot; name=&quot;counter&quot; value=&quot;&lt;?= $counter ?&gt;&quot;&gt;
+  &lt;button type=&quot;submit&quot;&gt;Increment&lt;/button&gt;
+&lt;/form&gt;
+
+&lt;a href=&quot;session_hidden.php&quot;&gt;Increment (not working)&lt;/a&gt;</code></pre>
+</section>
+<section id="süti" class="slide level2">
+<h2>1/3: Süti</h2>
+<ul>
+<li>Rejtett mező: macerás, manipulálható → süti</li>
+<li>HTTP kérés és PHP (<code>$_COOKIES</code>)</li>
+</ul>
+<pre class="txt"><code>Cookie: név1=érték1; név2=érték2; név3=érték3</code></pre>
+<p>HTTP válasz és PHP:</p>
+<pre class="php"><code>Set-Cookie: név=érték[; expires=dátum][; domain=domain][; path=path][; secure]</code></pre>
+<pre class="php"><code>// Cookie example
+setcookie(&quot;foo&quot;, &quot;bar&quot;);
+setcookie(&quot;foo&quot;, &quot;bar&quot;, time() + 60); // expires in 60 seconds</code></pre>
+</section>
+<section id="süti-1" class="slide level2">
+<h2>Süti</h2>
+<pre class="php"><code>&lt;?php
+$counter = $_COOKIE[&quot;counter&quot;] ?? 0;
+$counter += 1;
+setcookie(&quot;counter&quot;, $counter);
+?&gt;
+Counter value: &lt;?= $counter ?&gt; &lt;br&gt;
+&lt;a href=&quot;session_cookie.php&quot;&gt;Increment&lt;/a&gt;</code></pre>
+</section>
+<section id="süti-2" class="slide level2">
+<h2>Süti</h2>
+<div class="columns">
+<div class="column">
+<ul>
+<li>Előny
+<ul>
+<li>nem feltűnő</li>
+<li>küldése automatikus</li>
+</ul></li>
+</ul>
+</div><div class="column">
+<ul>
+<li>Hátrány
+<ul>
+<li><strong>manipulálható</strong></li>
+<li>limitált adatmennyiség</li>
+<li>letiltható</li>
+</ul></li>
+</ul>
+</div>
+</div>
+</section>
+<section id="kliensoldali-megoldások" class="slide level2">
+<h2>Kliensoldali megoldások</h2>
+<ul>
+<li>Adat a kliensen van</li>
+<li><strong>Manipulálható</strong></li>
+<li>Sok adat esetén feleslegesen sok adat<br />
+megy oda-vissza a kliens és szerver között</li>
+</ul>
+<p><img data-src="../../assets/images/architecture/stateless-data.png" /></p>
+</section>
+<section id="ötlet-szerveroldali-állapottartás" class="slide level2">
+<h2>2 ötlet: Szerveroldali állapottartás</h2>
+<ul>
+<li>Tároljuk az adatot a szerveren
+<ul>
+<li>→ nem manipulálható kliens oldalon</li>
+<li>→ nem kell sok adatot küldözgetni</li>
+</ul></li>
+<li>A kliens megkülönböztetése továbbra is szükséges</li>
+<li>→ <strong>tokent</strong> kap, amivel azonosítja magát</li>
+<li>→ hozzáfér a <strong>tokenhez</strong> tartozó adatokhoz</li>
+<li>Token kliensoldali megoldással közlekedik
+<ul>
+<li>süti (alapértelmezett)</li>
+<li>URL (ha nincs süti)</li>
+</ul></li>
+</ul>
+</section>
+<section id="szerveroldali-megoldás" class="slide level2">
+<h2>Szerveroldali megoldás</h2>
+<p>Több kliens</p>
+<p><img data-src="../../assets/images/architecture/multiple-clients-token.png" /></p>
+</section>
+<section id="szerveroldali-megoldás-1" class="slide level2">
+<h2>Szerveroldali megoldás</h2>
+<p>Egy kliens különböző kérései</p>
+<p><img data-src="../../assets/images/architecture/stateless-token.png" /></p>
+</section>
+<section id="szerveroldali-megoldás-2" class="slide level2">
+<h2>Szerveroldali megoldás</h2>
+<ul>
+<li>Adatok tárolása
+<ul>
+<li>fájlban</li>
+<li>adatbázisban</li>
+</ul></li>
+<li>Plusz erőforrás a szervertől</li>
+<li>A tokenre nagyon kell vigyázni!
+<ul>
+<li>ellopható</li>
+<li>kilépés</li>
+</ul></li>
+</ul>
+</section>
+<section id="munkamenet-kezelés-php-ban" class="slide level2" data-state="new-section">
+<h2 data-state="new-section">Munkamenet-kezelés PHP-ban</h2>
+</section>
+<section id="munkamenet-kezelés-php-ban-1" class="slide level2">
+<h2>Munkamenet-kezelés PHP-ban</h2>
+<ul>
+<li>Munkamenethez tartozó adatok:
+<ul>
+<li><code>$_SESSION</code></li>
+</ul></li>
+<li>Munkamenet-kezelő függvények:
+<ul>
+<li><code>session_start()</code></li>
+<li><code>session_destroy()</code></li>
+<li>…</li>
+</ul></li>
+<li>Gyakorlatban:
+<ul>
+<li>Klienshez tartozó változó, ami megőrzi<br />
+az értékét újratöltések között is</li>
+</ul></li>
+</ul>
+</section>
+<section id="példa-számláló" class="slide level2">
+<h2>Példa – számláló</h2>
+<pre class="php"><code>&lt;?php
+session_start();
+$counter = $_SESSION[&quot;counter&quot;] ?? 0;
+$counter += 1;
+$_SESSION[&quot;counter&quot;] = $counter;
+?&gt;
+Counter value: &lt;?= $counter ?&gt; &lt;br&gt;
+&lt;a href=&quot;session_php.php&quot;&gt;Increment&lt;/a&gt;</code></pre>
+</section>
+<section id="munkamenet-megszüntetése" class="slide level2">
+<h2>Munkamenet megszüntetése</h2>
+<pre class="php"><code>session_start();
+
+$_SESSION = [];
+
+session_destroy();</code></pre>
+</section>
+<section id="szerveroldali-program-bemeneti-adatai-1" class="slide level2">
+<h2>Szerveroldali program bemeneti adatai</h2>
+<p>A bemeneti program lehetséges forrásai:</p>
+<ul class="task-list">
+<li><input type="checkbox" disabled="" checked="" />
+Kliens</li>
+<li><input type="checkbox" disabled="" checked="" />
+Környezet</li>
+<li><input type="checkbox" disabled="" checked="" />
+Fájl</li>
+<li><input type="checkbox" disabled="" checked="" />
+Munkamenet</li>
+<li><input type="checkbox" disabled="" />
+<del>Adatbázis</del></li>
+<li><input type="checkbox" disabled="" />
+<del>Másik szerver</del></li>
+</ul>
+</section>
+<section id="hitelesítés-és-jogosultságkezelés" class="slide level2" data-state="new-section">
+<h2 data-state="new-section">Hitelesítés és jogosultságkezelés</h2>
+</section>
+<section id="hitelesítés" class="slide level2">
+<h2>Hitelesítés</h2>
+<div class="columns">
+<div class="column" style="width:50%">
+<p><strong>Azonosítás</strong><br />
+<strong>(authentication)</strong></p>
+<ul>
+<li>Ki használja az alkalmazást?</li>
+<li>→ azonosított felhasználó
+<ul>
+<li>felhasználónév, stb.</li>
+</ul></li>
+<li>→ névtelen felhasználó
+<ul>
+<li>vendég</li>
+</ul></li>
+</ul>
+</div><div class="column" style="width:50%">
+<p><strong>Jogosultságkezelés</strong><br />
+<strong>(authorization)</strong></p>
+<ul>
+<li>Engedélyezett-e a hozzáférése az adott felhasználónak?</li>
+<li>Bizonyos oldalak, funkciók csak azonosított felhasználók számára érhetőek el</li>
+</ul>
+</div>
+</div>
+</section>
+<section id="technológiák" class="slide level2">
+<h2>Technológiák</h2>
+<ul>
+<li><code>.htaccess</code>, <code>.htpasswd</code>
+<ul>
+<li>könyvtár alapú védelem</li>
+<li>Apache webszerveken</li>
+</ul></li>
+<li>WWW-Authenticate
+<ul>
+<li>HTTP protokoll</li>
+<li>Módok: Basic, Digest (titkosított)</li>
+<li>PHP-ból kiolvasható</li>
+</ul></li>
+<li>Ezek PHP-tól független technológiák</li>
+<li>Plusz adat tárolására nem alkalmasak</li>
+<li>Csak hitelesítésre</li>
+</ul>
+</section>
+<section id="hitelesítés-munkamenettel" class="slide level2">
+<h2>Hitelesítés munkamenettel</h2>
+<ul>
+<li>Azonosított felhasználó munkamenetében egy speciális kulcsot helyezünk el</li>
+<li>Ezzel jelezzük, hogy már azonosítottuk</li>
+<li>Folyamat
+<ul>
+<li>beléptető űrlap</li>
+<li>sikeres belépés esetén → kulcs</li>
+<li>minden oldalon: ha ez a kulcs megvan, akkor azonosított</li>
+<li>ettől függően más logika, más nézet lehet</li>
+</ul></li>
+</ul>
+</section>
+<section id="átirányítás-segédfüggvény" class="slide level2">
+<h2>Átirányítás (segédfüggvény)</h2>
+<pre class="php"><code>function redirect($page) {
+  header(&quot;Location: ${page}&quot;);
+  exit();
+}</code></pre>
+</section>
+<section id="regisztráció-html" class="slide level2">
+<h2>Regisztráció (HTML)</h2>
+<pre class="php"><code>&lt;form action=&quot;signup.php&quot; method=&quot;post&quot;&gt;
+  &lt;div&gt;
+    &lt;label for=&quot;username&quot;&gt;Username: &lt;/label&gt;&lt;br&gt;
+    &lt;input type=&quot;text&quot; name=&quot;username&quot; id=&quot;username&quot; value=&quot;&lt;?= $username ?? &quot;&quot; ?&gt;&quot;&gt;
+  &lt;/div&gt;
+  &lt;div&gt;
+    &lt;label for=&quot;password&quot;&gt;Password: &lt;/label&gt;&lt;br&gt;
+    &lt;input type=&quot;password&quot; name=&quot;password&quot; id=&quot;password&quot; value=&quot;&lt;?= $password ?? &quot;&quot; ?&gt;&quot;&gt;
+  &lt;/div&gt;
+  &lt;div&gt;
+    &lt;label for=&quot;fullname&quot;&gt;Full name: &lt;/label&gt;&lt;br&gt;
+    &lt;input type=&quot;text&quot; name=&quot;fullname&quot; id=&quot;fullname&quot; value=&quot;&lt;?= $fullname ?? &quot;&quot; ?&gt;&quot;&gt;
+  &lt;/div&gt;
+  &lt;div&gt;
+    &lt;button type=&quot;submit&quot;&gt;Register&lt;/button&gt;
+  &lt;/div&gt;
+&lt;/form&gt;
+
+&lt;?php foreach($messages as $message) : ?&gt;
+  &lt;div class=&quot;&lt;?= $message[&quot;type&quot;] ?&gt;&quot;&gt;&lt;?= $message[&quot;message&quot;] ?&gt;&lt;/div&gt;
+&lt;?php endforeach; ?&gt;</code></pre>
+</section>
+<section id="regisztráció-űrlap" class="slide level2">
+<h2>Regisztráció (Űrlap)</h2>
+<div class="example">
+<form action="signup.php" method="post">
+<div>
+<label for="username">Username: </label><br> <input type="text" name="username">
+</div>
+<div>
+<label for="password">Password: </label><br> <input type="password" name="password" id="password">
+</div>
+<div>
+<label for="fullname">Full name: </label><br> <input type="text" name="fullname" id="fullname">
+</div>
+<div>
+<button type="submit">Register</button>
+</div>
+</form>
+</div>
+</section>
+<section id="regisztráció-php" class="slide level2">
+<h2>Regisztráció (PHP)</h2>
+<pre class="php"><code>session_start();
+$user_storage = new JsonStorage(&quot;storage/users.json&quot;);
+$errors = [];
+
+if (verify_post(&quot;username&quot;, &quot;password&quot;, &quot;fullname&quot;)) {
+  $username = $_POST[&quot;username&quot;];
+  $password = $_POST[&quot;password&quot;];
+  $fullname = $_POST[&quot;fullname&quot;];
+
+  // Validate `username`, `password` and `fullname`
+  // ...
+
+  if (empty($errors)) {
+    $user = [
+      &quot;username&quot; =&gt; $username,
+      &quot;password&quot; =&gt; ✒&gt;password_hash($password, PASSWORD_DEFAULT)&lt;✒,
+      &quot;fullname&quot; =&gt; $fullname
+    ];
+    $user_storage-&gt;add($user);
+
+    ✒&gt;$_SESSION[&quot;user&quot;] = $user;&lt;✒
+    ✒&gt;redirect(&quot;login.php&quot;);&lt;✒
+  }
+}</code></pre>
+</section>
+<section id="beléptetés-html" class="slide level2">
+<h2>Beléptetés (HTML)</h2>
+<pre class="php"><code>&lt;form action=&quot;login.php&quot; method=&quot;post&quot;&gt;
+  &lt;div&gt;
+    &lt;label for=&quot;username&quot;&gt;Username: &lt;/label&gt;&lt;br&gt;
+    &lt;input type=&quot;text&quot; name=&quot;username&quot; id=&quot;username&quot; value=&quot;&lt;?= $username ?? &quot;&quot; ?&gt;&quot;&gt;
+  &lt;/div&gt;
+  &lt;div&gt;
+    &lt;label for=&quot;password&quot;&gt;Password: &lt;/label&gt;&lt;br&gt;
+    &lt;input type=&quot;password&quot; name=&quot;password&quot; id=&quot;password&quot; value=&quot;&lt;?= $password ?? &quot;&quot; ?&gt;&quot;&gt;
+  &lt;/div&gt;
+  &lt;div&gt;
+    &lt;button type=&quot;submit&quot;&gt;Log in&lt;/button&gt;
+  &lt;/div&gt;
+&lt;/form&gt;
+
+&lt;?php foreach($messages as $message) : ?&gt;
+  &lt;div class=&quot;&lt;?= $message[&quot;type&quot;] ?&gt;&quot;&gt;&lt;?= $message[&quot;message&quot;] ?&gt;&lt;/div&gt;
+&lt;?php endforeach; ?&gt;</code></pre>
+</section>
+<section id="beléptetés-űrlap" class="slide level2">
+<h2>Beléptetés (Űrlap)</h2>
+<div class="example">
+<form action="login.php" method="post">
+<div>
+<label for="username">Username: </label><br> <input type="text" name="username" id="username">
+</div>
+<div>
+<label for="password">Password: </label><br> <input type="password" name="password" id="password">
+</div>
+<div>
+<button type="submit">Log in</button>
+</div>
+</form>
+</div>
+</section>
+<section id="beléptetés-php" class="slide level2">
+<h2>Beléptetés (PHP)</h2>
+<pre class="php"><code>session_start();
+$user_storage = new JsonStorage(&quot;storage/users.json&quot;);
+$errors = [];
+
+if (verify_post(&quot;username&quot;, &quot;password&quot;)) {
+  $username = $_POST[&quot;username&quot;];
+  $password = $_POST[&quot;password&quot;];
+
+  $logged_in_user = $user_storage-&gt;query(
+    function ($user) use ($username, $password) {
+      return $user[&quot;username&quot;] === $username &amp;&amp; 
+             password_verify($password, $user[&quot;password&quot;]);
+    }
+  );
+
+  if (!$logged_in_user) {
+    $errors[] = &quot;Invalid username or password&quot;;
+  }
+
+  if (empty($errors)) {
+    ✒&gt;$_SESSION[&quot;user&quot;] = $logged_in_user;&lt;✒
+    ✒&gt;redirect(&quot;index.php&quot;);&lt;✒
+  }
+}</code></pre>
+</section>
+<section id="jogosultságkezelés-authorization" class="slide level2">
+<h2>Jogosultságkezelés (authorization)</h2>
+<ul>
+<li>Többféle modell létezik
+<ul>
+<li>Csak azt nézzük be van-e lépve</li>
+<li>Felhasználói azonosító alapján</li>
+<li>Egyedi jogosultságok erőforrásokhoz</li>
+<li>Szerepkörök alapján<br />
+(RBAC - Role-based Access Control)</li>
+</ul></li>
+</ul>
+</section>
+<section id="jogosultságkezelés-authorization-1" class="slide level2">
+<h2>Jogosultságkezelés (authorization)</h2>
+<ol type="1">
+<li>munkamenet indítása</li>
+<li>van-e bejelentkezett felhasználó?</li>
+<li>a bejelentkezett felhasználónak van-e jogosultsága?</li>
+</ol>
+<pre class="php"><code>session_start();
+
+function authorize() {
+  return isset($_SESSION[&quot;user&quot;]);
+}
+
+// OR
+
+function authorize($required_role) {}
+  return isset($_SESSION[&quot;user&quot;]) &amp;&amp;
+         in_array($required_role, $_SESSION[&quot;user&quot;][&quot;roles&quot;]);
+}</code></pre>
+</section>
+<section id="kijelentkezés" class="slide level2">
+<h2>Kijelentkezés</h2>
+<ul>
+<li>Kulcs kivétele a munkamenetből</li>
+<li>Általában az egész munkamenet megszüntetése (feladatfüggő)</li>
+</ul>
+<pre class="php"><code>function logout() {
+  unset($_SESSION[&quot;user&quot;]);
+}</code></pre>
+</section>
+<section id="segédosztály" class="slide level2">
+<h2>Segédosztály</h2>
+<pre class="php"><code>class UserStorage extends JsonStorage {
+  public $user = NULL;
+
+  public function __construct() {
+    parent::__construct(&quot;storage/users.json&quot;);
+
+    if (isset($_SESSION[&quot;user-id&quot;])) {
+      $user_id = $_SESSION[&quot;user-id&quot;];
+      $this-&gt;user = $this-&gt;findById($user_id);
+    }
+  }
+
+  public function register($username, $password, $fullname) {
+    $user = [
+      &quot;username&quot; =&gt; $username,
+      &quot;password&quot; =&gt; password_hash($password, PASSWORD_DEFUALT),
+      &quot;fullname&quot; =&gt; $fullname,
+      &quot;roles&quot; =&gt; [&quot;user&quot;]
+    ];
+
+    return $this-&gt;add($user);
+  }
+
+  public function authenticate($username, $password) {
+    $users = $this-&gt;query(function ($user) use ($username, $password) {
+      return $user[&quot;username&quot;] === $username &amp;&amp; password_verify($password, $user[&quot;password&quot;]);
+    });
+
+    if (empty($users)) {
+      return FALSE;
+    }
+
+    $user_id = array_keys($users)[0];
+    return $user_id;
+  }
+
+  public function isAuthenticated() {
+    return !is_null($this-&gt;user);
+  }
+
+  public function authorize($roles = []) {
+    if (!$this-&gt;isAuthenticated()) {
+      return FALSE;
+    }
+
+    foreach ($roles as $role) {
+      if (in_array($role, $this-&gt;user[&quot;roles&quot;])) {
+        return TRUE;
+      }
+    }
+
+    return FALSE;
+  }
+
+  public function login($user_id) {
+    $this-&gt;user = $this-&gt;findById($user_id);
+    $_SESSION[&quot;user-id&quot;] = $user_id;
+  }
+
+  public function logout() {
+    $this-&gt;user = NULL;
+    unset($_SESSION[&quot;user-id&quot;]);
+  }
+}</code></pre>
+</section>
+<section id="segédosztály-használata-regisztráció" class="slide level2">
+<h2>Segédosztály használata (regisztráció)</h2>
+<pre class="php"><code>session_start();
+$user_storage = new UserStorage();
+$errors = [];
+
+if (verify_post(&quot;username&quot;, &quot;password&quot;, &quot;fullname&quot;)) {
+  $username = $_POST[&quot;username&quot;];
+  $password = $_POST[&quot;password&quot;];
+  $fullname = $_POST[&quot;fullname&quot;];
+
+  if (empty($errors)) {
+    $user_id = $user_storage-&gt;register($username, $password, $fullname);
+    $user_storage-&gt;login($user_id);
+
+    redirect(&quot;login.php&quot;);
+  }
+}</code></pre>
+</section>
+<section id="segédosztály-használata-beléptetés" class="slide level2">
+<h2>Segédosztály használata (beléptetés)</h2>
+<pre class="php"><code>session_start();
+$user_storage = new UserStorage();
+$errors = [];
+
+if (verify_post(&quot;username&quot;, &quot;password&quot;)) {
+  $username = $_POST[&quot;username&quot;];
+  $password = $_POST[&quot;password&quot;];
+
+  $user_id = $user_storage-&gt;authenticate($username, $password);
+  if ($user_id === FALSE) {
+    $errors[] = &quot;Invalid username or password&quot;;
+  }
+
+  if (empty($errors)) {
+    $user_storage-&gt;login($user_id);
+
+    redirect(&quot;index.php&quot;);
+  }
+}</code></pre>
+</section>
+<section id="segédosztály-használata-jogosultság-ellenőrzés" class="slide level2">
+<h2>Segédosztály használata (jogosultság ellenőrzés)</h2>
+<pre class="php"><code>session_start();
+$user_storage = new UserStorage();
+
+if (!$user_storage-&gt;authorize([&quot;admin&quot;])) {
+  redirect(&quot;login.php&quot;);
+};</code></pre>
+</section>
+<section id="űrlapfeldolgozás" class="slide level2" data-state="new-section">
+<h2 data-state="new-section">Űrlapfeldolgozás</h2>
+</section>
+<section id="űrlapfeldolgozás-lépései" class="slide level2">
+<h2>Űrlapfeldolgozás lépései</h2>
+<ol type="1">
+<li>Űrlap megjelenítése</li>
+<li>Küldés → adatok feldolgozása (mentése)</li>
+<li>Siker oldal megjelenítése</li>
+</ol>
+<p>Hogyan jelenítsük meg a siker oldalt?<br />
+Mi történik az oldal frissítésekor?</p>
+<pre class="php"><code>if (verify_post(&quot;title&quot;)) {
+  // Beolvasás
+  $title = $_POST[&quot;title&quot;];
+
+  // Feldolgozás
+  $todo_storage-&gt;add([
+    &quot;title&quot; =&gt; $data[&quot;title&quot;],
+  ]);
+}
+
+// Lekérdezés
+$todos = $todo_storage-&gt;findAll();
+// Megjelenítés</code></pre>
+</section>
+<section id="post-redirect-get-módszer" class="slide level2">
+<h2>POST-REDIRECT-GET módszer</h2>
+<p>Ötlet: POST konvertálása GET-té átirányítással</p>
+<ol type="1">
+<li>Az űrlap megjelenítése GET metódussal</li>
+<li>Adat elküldése POST metódussal</li>
+<li>Sikeres feldolgozás esetén <strong>átirányítás</strong> a siker oldalra</li>
+<li>Siker oldal megjelenítése GET metódussal</li>
+</ol>
+<div class="columns">
+<div class="column" style="width: 50%">
+<p><mark><code>POST</code></mark> (<code>add-todo.php</code>)</p>
+<pre class="php"><code>if (verify_post(&quot;title&quot;)) {
+  // Beolvasás
+  $title = $_POST[&quot;title&quot;];
+
+  // Feldolgozás
+  $todo_storage-&gt;add([
+    &quot;title&quot; =&gt; $data[&quot;title&quot;],
+  ]);
+}
+✒&gt;redirect(&quot;todo.php&quot;);&lt;✒</code></pre>
+</div><div class="column" style="width: 50%">
+<p><mark><code>GET</code></mark> (<code>todo.php</code>)</p>
+<pre class="php"><code>// Lekérdezés
+$todos = $todoRepository-&gt;all();
+
+// Megjelenítés</code></pre>
+</div>
+</div>
+</section>
+<section id="hibakezelés" class="slide level2">
+<h2>Hibakezelés</h2>
+<p>“Laza” PRG (~ ezt használtuk eddig)</p>
+<ol type="1">
+<li>Az űrlap megjelenítése GET metódussal</li>
+<li>Adat elküldése POST metódussal</li>
+<li><strong>Hiba esetén az űrlap megjelenítése</strong> hibaüzenetekkel és a felküldött adatokkal</li>
+<li>Adat újbóli elküldése POST metódussal</li>
+<li>Sikeres feldolgozás esetén <strong>átirányítás</strong> a siker oldalra</li>
+<li>Siker oldal megjelenítése GET metódussal</li>
+</ol>
+</section>
+<section id="hibakezelés-2." class="slide level2">
+<h2>Hibakezelés 2.</h2>
+<p>“Extrém” PRG: oldalt megjeleníteni csak GET metódussal lehet!</p>
+<ol type="1">
+<li>Az űrlap megjelenítése GET metódussal</li>
+<li>Adat elküldése POST metódussal</li>
+<li><strong>Hiba esetén átirányítás</strong> az 1. pontra
+<ul>
+<li>a hibaüzeneteket és a felküldött adatokat a két kérés között meg kell őrizni</li>
+<li>munkamenet-kezelés (flash adatok)</li>
+</ul></li>
+<li>Adat újbóli elküldése POST metódussal</li>
+<li>Sikeres feldolgozás esetén <strong>átirányítás</strong> a siker oldalra</li>
+<li>Siker oldal megjelenítése GET metódussal</li>
+</ol>
+</section>
+<section id="flash-adatok" class="slide level2">
+<h2>Flash adatok</h2>
+<p>Olyan adatok, amelyek csak egy kérés idejéig élnek a munkamenetben</p>
+<p>(Nálunk: amíg ki nem vesszük őket)</p>
+<pre class="php"><code>function set_flash_data($key, $value) {
+  $_SESSION[$key] = $value;
+}
+
+function get_flash_data($key) {
+  $value = $_SESSION[$key] ?? null;
+  unset($_SESSION[$key]);
+  return $value;
+}</code></pre>
+</section>
+<section id="példa-todo" class="slide level2">
+<h2>Példa: Todo</h2>
+<p><code>GET</code> (<code>todo.php</code>)</p>
+<pre class="php"><code>session_start();
+$todo_storage = new JsonStorage(&quot;storage/todos.json&quot;);
+$errors = get_flash_data(&quot;errors&quot;) ?? [];
+
+$todos = $todoRepository-&gt;all();</code></pre>
+<pre class="html"><code>&lt;form action=&quot;add-todo.php&quot; method=&quot;post&quot;&gt;
+  Todo: &lt;input type=&quot;text&quot; name=&quot;title&quot;&gt;
+  &lt;button type=&quot;submit&quot;&gt;Add todo&lt;/button&gt;
+&lt;/form&gt;
+
+&lt;?php var_dump($errors); ?&gt;
+
+&lt;h1&gt;Todos&lt;/h1&gt;
+&lt;ul&gt;
+  &lt;?php foreach($todos as $todo) : ?&gt;
+    &lt;li&gt;&lt;?= $todo[&quot;title&quot;] ?&gt;&lt;/li&gt;
+  &lt;?php endforeach ?&gt;
+&lt;/ul&gt;</code></pre>
+</section>
+<section id="példa-todo-1" class="slide level2">
+<h2>Példa: Todo</h2>
+<p><code>POST</code> (<code>add-todo.php</code>)</p>
+<pre class="php"><code>$errors = [];
+
+if (verify_post(&quot;title&quot;)) {
+  $title = $_POST[&quot;title&quot;];
+
+  if (empty($title)) {
+    $errors[] = &quot;Title must not be empty&quot;;
+  }
+
+  if (empty($errors)) {
+    $todo_storage-&gt;add([
+      &quot;title&quot; =&gt; $data[&quot;title&quot;],
+    ]);
+  } else {
+    set_flash_data(&quot;errors&quot;, $errors);
+  }
+}
+redirect(&quot;todo.php&quot;);</code></pre>
+</section>
+<section id="összefoglalás" class="slide level2" data-state="topic">
+<h2 data-state="topic">Összefoglalás</h2>
+<ul>
+<li>Munkamenet
+<ul>
+<li>kliensenkénti adattárolás</li>
+<li><code>session_start()</code>, <code>$_SESSION</code></li>
+</ul></li>
+<li>Hitelesítés (authentication + authorization)
+<ul>
+<li>speciális kulcs a munkamenetben</li>
+</ul></li>
+<li>Űrlapfeldolgozás
+<ul>
+<li>PRG irányelv</li>
+</ul></li>
+</ul>
+</section>
+<section id="fájlfeltöltés" class="slide level2" data-state="new-section">
+<h2 data-state="new-section">Fájlfeltöltés</h2>
+</section>
+<section id="űrlap-és-feldolgozás" class="slide level2">
+<h2>Űrlap és feldolgozás</h2>
+<pre class="php"><code>&lt;form action=&quot;&quot; method=&quot;post&quot; enctype=&quot;multipart/form-data&quot;&gt;
+  &lt;input type=&quot;file&quot; name=&quot;file&quot;&gt;
+  &lt;button&gt;Upload&lt;/button&gt;
+&lt;/form&gt;
+&lt;?php var_dump($errors); ?&gt;</code></pre>
+<pre class="php"><code>$errors = [];
+if ($_FILES) {
+  if (array_key_exists(&quot;file&quot;, $_FILES) &amp;&amp;
+      $_FILES[&quot;file&quot;][&quot;error&quot;] == 0) {
+
+    $from = $_FILES[&quot;file&quot;][&quot;tmp_name&quot;];
+    $to = &quot;files/&quot; . $_FILES[&quot;file&quot;][&quot;name&quot;];
+    move_uploaded_file($from, $to); 
+  } else {
+    $errors[] = &quot;Error during upload!&quot;;
+  }
+}</code></pre>
+</section>
+<section id="files" class="slide level2">
+<h2>$_FILES</h2>
+<pre class="txt"><code>Array
+(
+  [file] =&gt; Array
+    (
+      [name] =&gt; Desert_small.jpg
+      [type] =&gt; image/jpeg
+      [tmp_name] =&gt; /tmp/php1750.tmp
+      [error] =&gt; 0
+      [size] =&gt; 18218
+    )
+)</code></pre>
+</section>
+<section id="könyvtárlista" class="slide level2">
+<h2>Könyvtárlista</h2>
+<pre class="php"><code>$files = scandir(&quot;files&quot;);</code></pre>
+<pre class="html"><code>&lt;ul&gt;
+&lt;?php foreach($files as $file) : ?&gt;
+  &lt;li&gt;&lt;?= $file ?&gt;&lt;/li&gt;
+&lt;?php endforeach ?&gt;
+&lt;/ul&gt;</code></pre>
+</section>
+<section id="fejlesztői-környezet" class="slide level2" data-state="new-section">
+<h2 data-state="new-section">Fejlesztői környezet</h2>
+</section>
+<section id="fejlesztői-környezet-részei" class="slide level2">
+<h2>Fejlesztői környezet részei</h2>
+<ul>
+<li>Szerver oldalon
+<ul>
+<li>webszerver</li>
+<li>PHP</li>
+</ul></li>
+<li>Kliens oldalon
+<ul>
+<li>böngésző</li>
+</ul></li>
+<li>Fejlesztői környezet
+<ul>
+<li>Szerkesztő program (HTML, PHP, CSS)</li>
+<li>SFTP, SCP kliens az állományok webszerverre töltéséhez</li>
+</ul></li>
+</ul>
+</section>
+<section id="otthoni-fejlesztéshez" class="slide level2">
+<h2>Otthoni fejlesztéshez</h2>
+<ul>
+<li>PHP fejlesztői szerver
+<ul>
+<li><code>php -S localhost:3000</code></li>
+</ul></li>
+<li><a href="https://www.apachefriends.org/index.html">XAMPP</a></li>
+<li><a href="http://bitnami.com/stacks/infrastructure">Bitnami stacks</a>
+<ul>
+<li>WAMP, LAMP, MAMP</li>
+</ul></li>
+</ul>
+</section>
+<section id="hasznos-függvények" class="slide level2" data-state="new-section">
+<h2 data-state="new-section">Hasznos függvények</h2>
+</section>
+<section id="szövegműveletek" class="slide level2">
+<h2>Szövegműveletek</h2>
+<ul>
+<li>szöveg: karakterek tömbje</li>
+<li><code>explode($elválasztó, $s)</code>: elemekre bontás</li>
+<li><code>implode($elválasztó, $tömb)</code>: összefűzés</li>
+<li><code>substr($s, $kezdet, $hossz)</code>: részszöveg</li>
+<li><code>ltrim($s)</code>, <code>rtrim($s)</code>, <code>trim($s)</code>: fehérszóköz-eltávolítás.</li>
+<li><code>strstr($miben, $mit)</code>, <code>strpos($miben, $mit)</code>, <code>strrpos($miben, $mit)</code>: részszöveg keresése</li>
+<li><code>preg_match($minta, $s)</code>: regkif illeszkedése</li>
+</ul>
+</section>
+<section id="dátum-és-idő" class="slide level2">
+<h2>Dátum és idő</h2>
+<ul>
+<li><code>date($formátum)</code>: az aktuális idő kiírása a megadott formátumban.</li>
+<li><code>time()</code>: Unix idő visszaadása másodpercben.</li>
+<li><code>strtotime($s)</code>: szövegként megadott dátum Unix időbe átalakítása.</li>
+<li><code>getdate()</code>: dátuminformációk visszaadása tömbként.</li>
+<li><code>date_*</code>: dátummal kapcsolatos további függvények</li>
+<li><code>DateTime</code>, <code>DateInterval</code>, <code>DatePeriod</code> osztályok</li>
+</ul>
+</section>
+<section id="dátum-és-idő-1" class="slide level2">
+<h2>Dátum és idő</h2>
+<pre class="php"><code>date(&quot;Y:m:d G:i:s&quot;); // 2019:11:24 17:18:59
+time(); // 1574615959 (s)
+strtotime(&#39;2019-12-12&#39;); // 1576108800
+strtotime(&#39;2019-12-12T12:34:12&#39;); // 1576154052
+strtotime(&#39;now&#39;); // 1574616109
+strtotime(&#39;last day of next month&#39;); // 1577813072
+
+$d1 = new DateTime(&#39;+2 days&#39;);
+$d2 = new DateTime(&#39;-2 weeks&#39;);
+$interval = $d1-&gt;diff($d2);
+$interval-&gt;format(&#39;%R%a days&#39;); // -16 days
+
+$d1 = new DateTimeImmutable(&#39;+2 days&#39;);
+$d2 = $d1-&gt;add(new DateInterval(&#39;P2Y4DT6H8M&#39;));
+$interval = $d2-&gt;diff($d1);
+$interval-&gt;format(&#39;%R%a days&#39;); // -735 days</code></pre>
+</section>
+<section id="http-fejlécek" class="slide level2">
+<h2>HTTP fejlécek</h2>
+<ul>
+<li><code>header()</code>
+<ul>
+<li>HTTP fejlécek leküldése</li>
+<li>Pl.: <code>header('Location: index.php');</code>
+<ul>
+<li>átirányítás másik oldalra</li>
+</ul></li>
+</ul></li>
+</ul>
+<pre class="php"><code>function redirect($page) {
+  header(&quot;Location: index.php?{$page}&quot;);
+}</code></pre>
+</section>
+<section id="külön-fájlba-helyezés" class="slide level2">
+<h2>Külön fájlba helyezés</h2>
+<ul>
+<li>Funkcionálisan elváló részeket külön fájlokban tárolni
+<ul>
+<li>átláthatóság</li>
+</ul></li>
+<li>Fájlok beemelése:
+<ul>
+<li><code>include($fájlnév)</code> – hiba esetén <code>warning</code>gal továbbmegy</li>
+<li><code>include_once($fájlnév)</code></li>
+<li><code>require($fájlnév)</code> – hiba esetén hibával megáll</li>
+<li><code>require_once($fájlnév)</code></li>
+</ul></li>
+<li>Mintha odamásolnánk a fájl tartalmát</li>
+</ul>
+</section>
+    </div>
+  </div>
+
+  <div id="captcha"></div>
+
+  <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.18.1/build/highlight.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/js/reveal.js"></script>
+
+  <script>
+    // Highlighting in code blocks
+    const codes = document.querySelectorAll('pre > code')
+    for (const code of codes) {
+      code.setAttribute('data-noescape', '')
+      const text = code.innerHTML
+      const markedText = text
+        .replace(/&lt;✒/g, '</mark>')
+        .replace(/✒&gt;/g, '<mark>')
+      code.innerHTML = markedText
+    }
+
+    // Adding captcha
+    const queryString = new URLSearchParams(window.location.search);
+    const captcha = queryString.get('captcha');
+    const captchaElement = document.getElementById("captcha");
+    captchaElement.innerHTML = captcha;
+
+    // Full list of configuration options available at:
+    // https://github.com/hakimel/reveal.js#configuration
+    Reveal.initialize({
+      // Display controls in the bottom right corner
+      controls: true,
+      controlsTutorial: false,
+      // Display a presentation progress bar
+      progress: true,
+      // Display the page number of the current slide
+      slideNumber: true,
+      // Add the current slide number to the URL hash so that reloading the
+      // page/copying the URL will return you to the same slide
+      hash: true,
+      // Push each slide change to the browser history
+      history: false,
+      // Enable keyboard shortcuts for navigation
+      keyboard: true,
+      // Enable the slide overview mode
+      overview: true,
+      // Vertical centering of slides
+      center: true,
+      // Enables touch navigation on devices with touch input
+      touch: true,
+      // Loop the presentation
+      loop: false,
+      // Hides the address bar on mobile devices
+      hideAddressBar: true,
+      // Transition style
+      transition: 'slide', // none/fade/slide/convex/concave/zoom
+      // Transition style for full page slide backgrounds
+      backgroundTransition: 'slide', // none/fade/slide/convex/concave/zoom
+      // Bounds for smallest/largest possible scale to apply to content
+      minScale: 0.5,
+      maxScale: 3,
+      // Modifier key used to click-zoom to part of the slide
+      zoomKey: "ctrl",
+      math: {
+        mathjax: 'https://cdn.jsdelivr.net/gh/mathjax/MathJax@3.0.1/es5/tex-mml-chtml.js',
+        config: 'TeX-AMS_HTML-full',
+        tex2jax: {
+          inlineMath: [['\\(','\\)']],
+          displayMath: [['\\[','\\]']],
+          balanceBraces: true,
+          processEscapes: false,
+          processRefs: true,
+          processEnvironments: true,
+          preview: 'TeX',
+          skipTags: ['script','noscript','style','textarea','pre','code'],
+          ignoreClass: 'tex2jax_ignore',
+          processClass: 'tex2jax_process'
+        }
+      },
+
+      // Optional reveal.js plugins
+      dependencies: [
+        { src: 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+        { src: 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/plugin/zoom-js/zoom.js', async: true },
+        //{ src: 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/socket.io/socket.io.js', async: true },
+        //{ src: 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/plugin/notes-server/client.js', async: true },
+        { src: 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/plugin/math/math.js', async: true },
+        { src: 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/plugin/notes/notes.js', async: true },
+        { src: 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/plugin/highlight/highlight.js', async: true }
+      ]
+    });
+  </script>
+
+  
+  </body>
+</html>
