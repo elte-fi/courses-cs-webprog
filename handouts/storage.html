@@ -23,6 +23,7 @@
     <body class="vscode-light">
         <h1 id="a-storage-oszt%c3%a1lyok-haszn%c3%a1lata">A <code>Storage</code> osztályok használata</h1>
 <ul>
+<li><a href="#%c3%9ajrahaszn%c3%a1lhat%c3%b3-k%c3%b3d">Újrahasználható kód</a></li>
 <li><a href="#rendelkez%c3%a9sre-%c3%a1ll%c3%b3-storage-oszt%c3%a1lyok">Rendelkezésre álló <code>Storage</code> osztályok</a></li>
 <li><a href="#alapvet%c5%91-haszn%c3%a1lat">Alapvető használat</a></li>
 <li><a href="#met%c3%b3dus-referencia">Metódus referencia</a>
@@ -38,6 +39,133 @@
 </ul>
 </li>
 </ul>
+<h2 id="%c3%9ajrahaszn%c3%a1lhat%c3%b3-k%c3%b3d">Újrahasználható kód</h2>
+<pre><code class="language-php"><div><span class="hljs-class"><span class="hljs-keyword">interface</span> <span class="hljs-title">IFileIO</span> </span>{
+  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">save</span><span class="hljs-params">()</span></span>;
+  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">load</span><span class="hljs-params">()</span></span>;
+}
+
+<span class="hljs-class"><span class="hljs-keyword">interface</span> <span class="hljs-title">IStorage</span> </span>{
+  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">add</span><span class="hljs-params">($record)</span></span>;
+  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">findById</span><span class="hljs-params">($id)</span></span>;
+  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">findAll</span><span class="hljs-params">($params = [])</span></span>;
+  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">findOne</span><span class="hljs-params">($params = [])</span></span>;
+  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">query</span><span class="hljs-params">($condition)</span></span>;
+  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">update</span><span class="hljs-params">($id, $record)</span></span>;
+  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">delete</span><span class="hljs-params">($id)</span></span>;
+}
+
+<span class="hljs-keyword">abstract</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Storage</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">IStorage</span>, <span class="hljs-title">IFileIO</span> </span>{
+  <span class="hljs-keyword">protected</span> $contents;
+  <span class="hljs-keyword">protected</span> $filepath;
+
+  <span class="hljs-keyword">abstract</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">load</span><span class="hljs-params">()</span></span>;
+  <span class="hljs-keyword">abstract</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">save</span><span class="hljs-params">()</span></span>;
+
+  <span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">__construct</span><span class="hljs-params">($filename)</span> </span>{
+    <span class="hljs-keyword">if</span> (!is_readable($filename) || !is_writable($filename)) {
+      <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-keyword">Exception</span>(<span class="hljs-string">"Data source ${filename} is invalid."</span>);
+    }
+
+    <span class="hljs-keyword">$this</span>-&gt;filepath = realpath($filename);
+    <span class="hljs-keyword">$this</span>-&gt;load();
+  }
+
+  <span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">__destruct</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-keyword">$this</span>-&gt;save();
+  }
+
+  <span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">add</span><span class="hljs-params">($record)</span> </span>{
+    $id = uniqid();
+    <span class="hljs-keyword">$this</span>-&gt;contents[$id] = $record;
+    <span class="hljs-keyword">return</span> $id;
+  }
+
+  <span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">findById</span><span class="hljs-params">($id)</span> </span>{
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">$this</span>-&gt;contents[$id] ?? <span class="hljs-keyword">NULL</span>;
+  }
+
+  <span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">findAll</span><span class="hljs-params">($params = [])</span> </span>{
+    <span class="hljs-keyword">return</span> array_filter(<span class="hljs-keyword">$this</span>-&gt;contents, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">($item)</span> <span class="hljs-title">use</span> <span class="hljs-params">($params)</span> </span>{
+      <span class="hljs-keyword">foreach</span> ($params <span class="hljs-keyword">as</span> $key =&gt; $value) {
+        <span class="hljs-keyword">if</span> ($item[$key] !== $value) {
+          <span class="hljs-keyword">return</span> <span class="hljs-keyword">FALSE</span>;
+        }
+      }
+
+      <span class="hljs-keyword">return</span> <span class="hljs-keyword">TRUE</span>;
+    });
+  }
+
+  <span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">findOne</span><span class="hljs-params">($params = [])</span> </span>{
+    $found_items = <span class="hljs-keyword">$this</span>-&gt;findAll($params);
+    $first_index = array_keys($found_items)[<span class="hljs-number">0</span>] ?? <span class="hljs-keyword">NULL</span>;
+    <span class="hljs-keyword">return</span> $found_items[$first_index] ?? <span class="hljs-keyword">NULL</span>;
+  }
+
+  <span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">query</span><span class="hljs-params">($condition)</span> </span>{
+    <span class="hljs-keyword">return</span> array_filter(<span class="hljs-keyword">$this</span>-&gt;contents, $condition);
+  }
+
+  <span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">update</span><span class="hljs-params">($id, $record)</span> </span>{
+    <span class="hljs-keyword">$this</span>-&gt;contents[$id] = $record;
+  }
+
+  <span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">delete</span><span class="hljs-params">($id)</span> </span>{
+    <span class="hljs-keyword">unset</span>(<span class="hljs-keyword">$this</span>-&gt;contents[$id]);
+  }
+}
+
+<span class="hljs-keyword">abstract</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ObjectStorage</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Storage</span> </span>{
+  <span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">findAll</span><span class="hljs-params">($params = [])</span> </span>{
+    <span class="hljs-keyword">return</span> array_filter(<span class="hljs-keyword">$this</span>-&gt;contents, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">($item)</span> <span class="hljs-title">use</span> <span class="hljs-params">($params)</span> </span>{
+      <span class="hljs-keyword">foreach</span> ($params <span class="hljs-keyword">as</span> $key =&gt; $value) {
+        <span class="hljs-keyword">if</span> ($item-&gt;$key !== $value) {
+          <span class="hljs-keyword">return</span> <span class="hljs-keyword">FALSE</span>;
+        }
+      }
+
+      <span class="hljs-keyword">return</span> <span class="hljs-keyword">TRUE</span>;
+    });
+  }
+}
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">JsonStorage</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Storage</span> </span>{
+  <span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">load</span><span class="hljs-params">()</span> </span>{
+    $file_contents = file_get_contents(<span class="hljs-keyword">$this</span>-&gt;filepath);
+    <span class="hljs-keyword">$this</span>-&gt;contents = json_decode($file_contents, <span class="hljs-keyword">TRUE</span>) ?: [];
+  }
+
+  <span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">save</span><span class="hljs-params">()</span> </span>{
+    $json_content = json_encode(<span class="hljs-keyword">$this</span>-&gt;contents, JSON_PRETTY_PRINT);
+    file_put_contents(<span class="hljs-keyword">$this</span>-&gt;filepath, $json_content);
+  }
+}
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SerializeStorage</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Storage</span> </span>{
+  <span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">load</span><span class="hljs-params">()</span> </span>{
+    $file_contents = file_get_contents(<span class="hljs-keyword">$this</span>-&gt;filepath);
+    <span class="hljs-keyword">$this</span>-&gt;contents = unserialize($file_contents) ?: [];
+  }
+
+  <span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">save</span><span class="hljs-params">()</span> </span>{
+    $file_content = serialize(<span class="hljs-keyword">$this</span>-&gt;contents);
+    file_put_contents(<span class="hljs-keyword">$this</span>-&gt;filepath, $file_content);
+  }
+}
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SerializeObjectStorage</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">ObjectStorage</span> </span>{
+  <span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">load</span><span class="hljs-params">()</span> </span>{
+    $file_contents = file_get_contents(<span class="hljs-keyword">$this</span>-&gt;filepath);
+    <span class="hljs-keyword">$this</span>-&gt;contents = unserialize($file_contents) ?: [];
+  }
+
+  <span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">save</span><span class="hljs-params">()</span> </span>{
+    $file_content = serialize(<span class="hljs-keyword">$this</span>-&gt;contents);
+    file_put_contents(<span class="hljs-keyword">$this</span>-&gt;filepath, $file_content);
+  }
+}
+</div></code></pre>
 <h2 id="rendelkez%c3%a9sre-%c3%a1ll%c3%b3-storage-oszt%c3%a1lyok">Rendelkezésre álló <code>Storage</code> osztályok</h2>
 <ul>
 <li><code>JsonStorage</code>: JSON formátumban tárolja az adatokat, típusinformációk (osztályok) elvesznek.</li>

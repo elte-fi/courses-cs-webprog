@@ -655,7 +655,6 @@ interface IFileIO {
 }
 
 interface IStorage {
-  function __construct($connection_params);
   function add($record);
   function findById($id);
   function findAll($params = []);
@@ -882,7 +881,6 @@ interface IFileIO {
 }
 
 interface IStorage {
-  function __construct($connection_params);
   function add($record);
   function findById($id);
   function findAll($params = []);

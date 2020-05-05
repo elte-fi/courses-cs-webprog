@@ -647,7 +647,6 @@ save_to_file(FILMS_DATAFILE, $films);</code></pre>
 }
 
 interface IStorage {
-  function __construct($connection_params);
   function add($record);
   function findById($id);
   function findAll($params = []);
@@ -843,7 +842,6 @@ $filmStorage-&gt;add(new Film(&quot;Star Wars&quot;, &quot;George Lucas&quot;, &
 }
 
 interface IStorage {
-  function __construct($connection_params);
   function add($record);
   function findById($id);
   function findAll($params = []);
