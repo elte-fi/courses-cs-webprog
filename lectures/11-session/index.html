@@ -702,7 +702,7 @@ function authorize($required_role) {}
   public function register($username, $password, $fullname) {
     $user = [
       &quot;username&quot; =&gt; $username,
-      &quot;password&quot; =&gt; password_hash($password, PASSWORD_DEFUALT),
+      &quot;password&quot; =&gt; password_hash($password, PASSWORD_DEFAULT),
       &quot;fullname&quot; =&gt; $fullname,
       &quot;roles&quot; =&gt; [&quot;user&quot;]
     ];

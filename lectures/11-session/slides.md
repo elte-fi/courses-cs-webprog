@@ -723,7 +723,7 @@ class UserStorage extends JsonStorage {
   public function register($username, $password, $fullname) {
     $user = [
       "username" => $username,
-      "password" => password_hash($password, PASSWORD_DEFUALT),
+      "password" => password_hash($password, PASSWORD_DEFAULT),
       "fullname" => $fullname,
       "roles" => ["user"]
     ];
