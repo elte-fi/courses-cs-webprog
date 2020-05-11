@@ -1,0 +1,1118 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <title>AJAX/JSON kommunikáció, tervezési minták</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+  <!-- Reveal.js Theme -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/elte-fi/revealjs-elte-fi@1.1.1/dist/revealjs-elte-fi.min.css">
+  <!-- Highlighting -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.18.1/build/styles/default.min.css">
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+
+  <!-- Printing and PDF exports -->
+  <script>
+    var link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = window.location.search.match(/print-pdf/gi) 
+      ? 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/css/print/pdf.css' 
+      : 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/css/print/paper.css';
+    document.getElementsByTagName('head')[0].appendChild( link );
+  </script>
+
+  </head>
+
+<body>
+  <div class="reveal">
+    <div class="slides">
+<section class="slide level2">
+
+<div class="title">
+<p>Webprogramozás</p>
+</div>
+<h3 id="ajaxjson-kommunikáció-tervezési-minták">AJAX/JSON kommunikáció, tervezési minták</h3>
+<div class="columns">
+<div class="column" style="width:33%;">
+<p><small> <strong>Visnovitz Márton</strong><br />
+egyetemi tanársegéd<br />
+visnovitz.marton@inf.elte.hu </small></p>
+</div><div class="column" style="width:33%;">
+<p><small> <strong>Horváth Győző</strong><br />
+egyetemi docens<br />
+horvath.gyozo@inf.elte.hu </small></p>
+</div>
+</div>
+</section>
+<section id="ismétlés" class="slide level2" data-state="new-section">
+<h2 data-state="new-section">Ismétlés</h2>
+</section>
+<section id="ismétlés-1" class="slide level2">
+<h2>Ismétlés</h2>
+<ul class="task-list">
+<li><input type="checkbox" disabled="" checked="" />
+Output generálás</li>
+<li><input type="checkbox" disabled="" checked="" />
+Input<ul class="task-list">
+<li><input type="checkbox" disabled="" checked="" />
+Kliens</li>
+<li><input type="checkbox" disabled="" checked="" />
+Környezet</li>
+<li><input type="checkbox" disabled="" checked="" />
+Fájl (segédosztályok)</li>
+</ul></li>
+<li><input type="checkbox" disabled="" checked="" />
+Űrlapfeldolgozás</li>
+<li><input type="checkbox" disabled="" checked="" />
+Munkamenet (segédosztályok)<ul class="task-list">
+<li><input type="checkbox" disabled="" checked="" />
+Autentikáció</li>
+<li><input type="checkbox" disabled="" checked="" />
+Autorizáció</li>
+</ul></li>
+</ul>
+</section>
+<section id="ismétlés-2" class="slide level2">
+<h2>Ismétlés</h2>
+<p><img data-src="../../assets/images/architecture/multiple-clients-token.png" /></p>
+<p><a href="https://elte-fi.github.io/courses-webprogramming/handouts/auth.html">Handout a <code>UserStorage</code> osztályok használatához</a></p>
+</section>
+<section id="ajax" class="slide level2" data-state="new-section">
+<h2 data-state="new-section">AJAX</h2>
+<p>Szerveroldali kiszolgálás</p>
+</section>
+<section id="ajax-1" class="slide level2">
+<h2>AJAX</h2>
+<ul>
+<li>HTTP kérés JavaScriptben</li>
+<li>Oldalújratöltés nélkül</li>
+<li>A háttérben</li>
+</ul>
+<p><img data-src="../../assets/images/architecture/async-network.png" /></p>
+</section>
+<section id="kliens-fetch" class="slide level2">
+<h2>Kliens – fetch</h2>
+<pre class="js"><code>async function getPoster() {
+  const title = document.querySelector(&#39;input&#39;).value;
+  const response = await fetch(`http://www.omdbapi.com/?t=${title}&amp;apikey=2dd0dbee`);
+  const json = await response.json();
+  document.querySelector(&#39;img&#39;).src = json.Poster;
+}</code></pre>
+</section>
+<section id="szerveroldal" class="slide level2">
+<h2>Szerveroldal</h2>
+<ul>
+<li>Mindegy, hogy normál vagy AJAX kérés (HTTP)</li>
+<li>A válasz létrehozása programmal</li>
+<li>Kimenet generálás</li>
+</ul>
+<div class="columns">
+<div class="column">
+<pre class="php"><code>$composers = [
+  &#39;Mozart&#39;,
+  &#39;Beethoven&#39;,
+  &#39;Dvorak&#39;,
+];
+print(implode(&#39;;&#39;, $composers));</code></pre>
+</div><div class="column">
+<pre class="txt"><code>Mozart;Beethoven;Dvorak</code></pre>
+</div>
+</div>
+</section>
+<section class="slide level2">
+
+<div class="columns">
+<div class="column" style="width: 65%">
+<pre class="php"><code>$composers = [
+  &#39;Mozart&#39;,
+  &#39;Beethoven&#39;,
+  &#39;Dvorak&#39;,
+];
+echo json_encode($composers);</code></pre>
+</div><div class="column" style="width: 35%">
+<pre class="json"><code>[
+  &quot;Mozart&quot;,
+  &quot;Beethoven&quot;,
+  &quot;Dvorak&quot;
+]</code></pre>
+</div>
+</div>
+<div class="columns">
+<div class="column" style="width: 65%">
+<pre class="php"><code>&lt;?php 
+$composers = [
+  &#39;Mozart&#39;, 
+  &#39;Beethoven&#39;, 
+  &#39;Dvorak&#39;
+]; 
+?&gt;
+&lt;ul&gt;
+  &lt;?php foreach($composers as $name) : ?&gt;
+    &lt;li&gt;Beethoven&lt;/li&gt;
+  &lt;?php endforeach ?&gt;
+&lt;/ul&gt;</code></pre>
+</div><div class="column" style="width: 35%">
+<pre class="html"><code>&lt;ul&gt;
+  &lt;li&gt;Mozart&lt;/li&gt;
+  &lt;li&gt;Beethoven&lt;/li&gt;
+  &lt;li&gt;Dvorak&lt;/li&gt;
+&lt;/ul&gt;</code></pre>
+</div>
+</div>
+</section>
+<section id="ajax-kommunikáció-a-szerverrel" class="slide level2" data-state="new-section">
+<h2 data-state="new-section">AJAX kommunikáció a szerverrel</h2>
+</section>
+<section id="kommunikáció-kellékei" class="slide level2">
+<h2>Kommunikáció kellékei</h2>
+<ul>
+<li>Űrlapadatok</li>
+<li>URL paraméterek (<code>GET</code>)</li>
+<li>HTTP üzenettörzs (<code>POST</code>, …)</li>
+<li>fejlécek</li>
+<li>választípusok</li>
+</ul>
+</section>
+<section id="űrlapadatok-formdata" class="slide level2">
+<h2>Űrlapadatok – FormData</h2>
+<pre class="html"><code>&lt;form&gt;
+  &lt;input type=&quot;text&quot; name=&quot;event&quot; value=&quot;Advent&quot;&gt;
+  &lt;input type=&quot;text&quot; name=&quot;year&quot; value=&quot;2019&quot;&gt;
+&lt;/form&gt;</code></pre>
+<pre class="js"><code>// Create payload
+const form = document.querySelector(&quot;form&quot;);
+const formData = new FormData(form);
+
+// OR
+
+const advent = document.querySelector(&quot;[name=event]&quot;);
+const formData2 = new FormData();
+formData2.append(&quot;event&quot;, advent.value);</code></pre>
+</section>
+<section id="kérésszöveg-urlsearchparams" class="slide level2">
+<h2>Kérésszöveg – URLSearchParams</h2>
+<pre class="html"><code>&lt;form&gt;
+  &lt;input type=&quot;text&quot; name=&quot;event&quot; value=&quot;Advent&quot;&gt;
+  &lt;input type=&quot;text&quot; name=&quot;year&quot; value=&quot;2019&quot;&gt;
+&lt;/form&gt;</code></pre>
+<pre class="js"><code>const form = document.querySelector(&quot;form&quot;);
+const formData = new FormData(form);
+
+// Option 1.
+const params = new URLSearchParams(formData);
+const queryString = params.toString();
+// &quot;event=Advent&amp;year=2019&amp;place=St+Gerardus+Church&quot;
+
+// Option 2.
+const url = new URL(&quot;http://example.com/foo.php&quot;)
+Array.from(formData).forEach(([key, value]) =&gt; url.searchParams.append(key, value));
+const queryString = url.searchParams.toString();
+// http://example.com/foo.php?event=Advent&amp;year=2019&amp;place=St+Gerardus+Church</code></pre>
+</section>
+<section id="adatok-küldése" class="slide level2">
+<h2>Adatok küldése</h2>
+<pre class="js"><code>async function post(url) {
+  const form = document.querySelector(&quot;form&quot;);
+  const formData = new FormData(form);
+
+  const response = await fetch(url, {
+    method: &quot;POST&quot;,
+    body: formData
+  });
+}</code></pre>
+</section>
+<section id="http-fejlécek-küldése" class="slide level2">
+<h2>HTTP fejlécek küldése</h2>
+<ul>
+<li><code>fetch</code>
+<ul>
+<li><code>Request</code></li>
+<li><code>Headers</code></li>
+</ul></li>
+</ul>
+<pre class="js"><code>const headers = new Headers();
+headers.append(&quot;Content-Type&quot;, &quot;text/plain&quot;);
+
+const options = {
+  method: &quot;POST&quot;,
+  headers: headers
+}
+
+const response = await fetch(url, headers);</code></pre>
+</section>
+<section id="json-küldése" class="slide level2">
+<h2>JSON küldése</h2>
+<pre class="js"><code>const data = {
+  type: &quot;drama&quot;,
+  favourites: [
+    &quot;Macbeth&quot;,
+    &quot;Hamlet&quot;,
+  ]
+}</code></pre>
+<pre class="js"><code>async function postJSON(url, data) {
+  const response = await fetch(url, {
+    method: &quot;POST&quot;,
+    headers: {
+      &quot;Content-Type&quot;: &quot;application/json&quot;,
+    },
+    body: JSON.stringify(data)
+  })
+}</code></pre>
+</section>
+<section id="bemenet-olvasás---server" class="slide level2">
+<h2>Bemenet olvasás - server</h2>
+<pre class="php"><code>// FormData
+$url_data = $get[&quot;url_data&quot;];
+$body_data = $_POST[&quot;body_data&quot;];</code></pre>
+<pre class="php"><code>// JSON
+$json = file_get_contents(&#39;php://input&#39;);
+$data = json_decode($json, true);</code></pre>
+</section>
+<section id="válaszformátumok" class="slide level2" data-state="new-section">
+<h2 data-state="new-section">Válaszformátumok</h2>
+</section>
+<section id="válaszformátumok-1" class="slide level2">
+<h2>Válaszformátumok</h2>
+<ul>
+<li>A válasz az előállítás módjától függően lehet
+<ul>
+<li>Statikus tartalom</li>
+<li>Dinamikus tartalom</li>
+</ul></li>
+<li>A kliens szempontjából mindegy, hogy ki állítja elő a tartalmat (nem is tud róla)</li>
+<li>Formátumok
+<ul>
+<li>Egyszerű szöveg</li>
+<li>JSON</li>
+<li>HTML</li>
+<li>XML</li>
+<li>JavaScript</li>
+<li>stb. (pl. CSS,…)</li>
+</ul></li>
+</ul>
+</section>
+<section id="technikai-háttér" class="slide level2">
+<h2>Technikai háttér</h2>
+<p><code>fetch</code></p>
+<ul>
+<li><code>Response</code> objektum
+<ul>
+<li><code>.text()</code></li>
+<li><code>.json()</code></li>
+<li><code>.formData()</code></li>
+<li><code>.blob()</code></li>
+<li><code>.arrayBuffer()</code></li>
+</ul></li>
+</ul>
+</section>
+<section id="szöveges-válasz" class="slide level2">
+<h2>Szöveges válasz</h2>
+<pre class="js"><code>alma,körte,szilva,barack,eper,málna,szeder</code></pre>
+<pre class="php"><code>$data = [&quot;alma&quot;,&quot;körte&quot;,&quot;szilva&quot;,&quot;barack&quot;,&quot;eper&quot;,&quot;málna&quot;,&quot;szeder&quot;];
+print(implode(&quot;,&quot;, $data)));</code></pre>
+<pre class="js"><code>async function text() {
+  const response = await fetch(`fruits.txt`);
+  const text = await response.text();
+  const fruits = text.split(&#39;,&#39;);
+}</code></pre>
+<p>Ritkán használatos, bármi lehet, egyedi feldolgozás</p>
+</section>
+<section id="json-válasz" class="slide level2">
+<h2>JSON válasz</h2>
+<pre class="json"><code>[ &quot;alma&quot;, &quot;körte&quot;,&quot;szilva&quot;, &quot;barack&quot;, &quot;eper&quot;, &quot;málna&quot;, &quot;szeder&quot;]</code></pre>
+<pre class="php"><code>$data = [&quot;alma&quot;,&quot;körte&quot;,&quot;szilva&quot;,&quot;barack&quot;,&quot;eper&quot;,&quot;málna&quot;,&quot;szeder&quot;];
+print(json_encode($data)));</code></pre>
+<pre class="js"><code>async function json() {
+  const response = await fetch(`fruits.json`);
+  const fruits = await response.json();
+}</code></pre>
+<p>Legelterjedtebb, egyszerű</p>
+</section>
+<section id="html-válasz" class="slide level2">
+<h2>HTML válasz</h2>
+<div class="columns">
+<div class="column" style="width: 30%">
+<pre class="html"><code>&lt;ul&gt;
+  &lt;li&gt;alma&lt;/li&gt;
+  &lt;li&gt;körte&lt;/li&gt;
+  &lt;li&gt;szilva&lt;/li&gt;
+  &lt;li&gt;barack&lt;/li&gt;
+  &lt;li&gt;eper&lt;/li&gt;
+  &lt;li&gt;málna&lt;/li&gt;
+  &lt;li&gt;szeder&lt;/li&gt;
+&lt;/ul&gt;</code></pre>
+</div><div class="column" style="width: 70%">
+<pre class="php"><code>$data = [&quot;alma&quot;,&quot;körte&quot;,&quot;szilva&quot;,&quot;barack&quot;,&quot;eper&quot;,&quot;málna&quot;,&quot;szeder&quot;];
+print(&quot;&lt;ul&gt;&quot; . PHP_EOL);
+foreach ($data as $item) {
+  print(&quot;&lt;li&gt;${item}&lt;/li&gt;&quot; . PHP_EOL);
+}
+print(&quot;&lt;/ul&gt;&quot; . PHP_EOL);</code></pre>
+<pre class="js"><code>async function html() {
+  const response = await fetch(`fruits.html`);
+  const fruitsHTML = await response.text();
+  // innerHTML
+}</code></pre>
+</div>
+</div>
+<p>Mikroformátum, egyszerű feldolgozás</p>
+</section>
+<section id="kódszervezés-tervezési-minták" class="slide level2" data-state="new-section">
+<h2 data-state="new-section">Kódszervezés, tervezési minták</h2>
+</section>
+<section id="kódszervezés-tervezési-minták-1" class="slide level2">
+<h2>Kódszervezés, tervezési minták</h2>
+<ul class="task-list">
+<li><input type="checkbox" disabled="" />
+Kódszervezés módjai<ul class="task-list">
+<li><input type="checkbox" disabled="" />
+Logikai kódszervezés</li>
+<li><input type="checkbox" disabled="" />
+Fizikai kódszervezés</li>
+</ul></li>
+<li><input type="checkbox" disabled="" />
+Tervezési minták<ul class="task-list">
+<li><input type="checkbox" disabled="" />
+PRG minta</li>
+<li><input type="checkbox" disabled="" />
+MVC architektúra</li>
+</ul></li>
+</ul>
+</section>
+<section id="kódszervezés-eszközei" class="slide level2">
+<h2>Kódszervezés eszközei</h2>
+<ul>
+<li>Logikai
+<ul>
+<li>megjegyzések</li>
+<li>függvények</li>
+<li>osztályok, interfészek</li>
+<li>névterek</li>
+</ul></li>
+<li>Fizikai: fájlok, könyvtárak</li>
+<li>Nyelvi elemek
+<ul>
+<li><code>include</code>, <code>include_once</code></li>
+<li>osztályok automatikus betöltése<br />
+(autoloading)</li>
+</ul></li>
+<li>Tervezési minták (pl. MVC)</li>
+</ul>
+</section>
+<section id="logikai-kódszervezés-megjegyzések" class="slide level2">
+<h2>Logikai kódszervezés<br>(megjegyzések)</h2>
+<pre class="php"><code>✒&gt;// Segédfüggvények&lt;✒
+/* ... */
+
+✒&gt;// Bemenet ellenőrzése&lt;✒
+if (/* ... */) {
+  ✒&gt;// Beolvasás, előfeldolgozás&lt;✒
+  /* ... */
+  ✒&gt;// Bemenet ellenőrzése&lt;✒
+  /* ... */
+  ✒&gt;// Feldolgozás&lt;✒
+  /* ... */
+}
+✒&gt;// Adatok lekérdezése&lt;✒
+/* ... */
+
+✒&gt;// Megjelenítés (HTML sablon)&lt;✒</code></pre>
+</section>
+<section id="logikai-kódszervezés-függvények-osztályok-interfészek" class="slide level2">
+<h2>Logikai kódszervezés<br>(függvények, osztályok, interfészek)</h2>
+<pre class="php"><code>function array_all_keys_exist($array, $keys) {/* ... */}
+function verify_post(...$inputs) {/* ... */}</code></pre>
+<pre class="php"><code>interface IFileIO {/* ... */}
+interface IStorage {/* ... */}
+abstract class Storage implements IStorage, IFileIO {/* ... */}
+class JsonStorage extends Storage {/* ... */}
+class SerializeStorage extends Storage {/* ... */}</code></pre>
+</section>
+<section id="fizikai-kódszervezés-fájlok-könyvtárak" class="slide level2">
+<h2>Fizikai kódszervezés<br>(fájlok, könyvtárak)</h2>
+<ul>
+<li>Fájlok
+<ul>
+<li>logikai kódszervezési egységek külön fájlokba</li>
+<li>fájlok függése egymástól, függőség betöltése<br />
+(<code>include</code>, <code>include_once</code>, <code>require</code>, <code>require_once</code>)</li>
+<li>függőségek manuális kezelése → “bootstrapping”</li>
+</ul></li>
+<li>Mappák
+<ul>
+<li>fájlok típusa alapján (pl. adatfájlok, osztályok, sablonok)</li>
+<li>tervezési minta alapján (vezérlők, modellek, nézetek)</li>
+</ul></li>
+</ul>
+</section>
+<section id="bootstrapping" class="slide level2">
+<h2>Bootstrapping</h2>
+<p><code>_init.php</code></p>
+<pre class="php"><code>// Start session
+session_start();
+
+// Load dependencies
+include(&quot;dependency1.php&quot;);
+include(&quot;dependency2.php&quot;);
+
+// Connect to data sources
+$storage1 = new JsonStorage(&quot;storage1.json&quot;);
+$storage2 = new JsonStorage(&quot;storage2.json&quot;);
+
+// Create global variables
+$errors = [];</code></pre>
+<p><code>foo.php</code></p>
+<pre class="php"><code>include_once(&quot;_init.php&quot;);</code></pre>
+</section>
+<section id="mappaszerkezet-1." class="slide level2">
+<h2>Mappaszerkezet 1.</h2>
+<ul>
+<li><i class="fa fa-folder"></i> <code>lib</code>
+<ul>
+<li><i class="fa fa-folder"></i> <code>classes</code></li>
+<li><i class="fa fa-folder"></i> <code>utils</code></li>
+<li><mark><i class="fa fa-code"></i> <code>_init.php</code></mark></li>
+</ul></li>
+<li><i class="fa fa-folder"></i> <code>storage</code>
+<ul>
+<li><i class="fa fa-file"></i> <code>storage1.json</code></li>
+<li><i class="fa fa-file"></i> <code>storage2.json</code></li>
+</ul></li>
+<li><i class="fa fa-folder"></i> <code>partials</code>
+<ul>
+<li><i class="fa fa-code"></i> <code>header.php</code></li>
+<li><i class="fa fa-code"></i> <code>footer.php</code></li>
+</ul></li>
+<li><i class="fa fa-code"></i> <code>index.php</code></li>
+<li><i class="fa fa-code"></i> <code>page1.php</code></li>
+<li><i class="fa fa-code"></i> <code>page2.php</code></li>
+</ul>
+</section>
+<section id="osztályok-automatikus-betöltése" class="slide level2">
+<h2>Osztályok automatikus betöltése</h2>
+<p>Név alapján megpróbálhatunk automatikusan betölteni egy osztályt futási időben, ha az nem található.</p>
+<p><code>_init.php</code></p>
+<pre class="php"><code>spl_autoload_register(function ($class) {
+  include_once(&quot;./classes/&quot; . strtolower($class) . &quot;.class.php&quot;);
+});</code></pre>
+</section>
+<section id="kódszervezés-tervezési-minták-2" class="slide level2">
+<h2>Kódszervezés, tervezési minták</h2>
+<ul class="task-list">
+<li><input type="checkbox" disabled="" checked="" />
+Kódszervezés módjai<ul class="task-list">
+<li><input type="checkbox" disabled="" checked="" />
+Logikai kódszervezés</li>
+<li><input type="checkbox" disabled="" checked="" />
+Fizikai kódszervezés</li>
+</ul></li>
+<li><input type="checkbox" disabled="" />
+Tervezési minták<ul class="task-list">
+<li><input type="checkbox" disabled="" />
+PRG minta</li>
+<li><input type="checkbox" disabled="" />
+MVC architektúra</li>
+</ul></li>
+</ul>
+</section>
+<section id="tervezési-minták" class="slide level2" data-state="new-section">
+<h2 data-state="new-section">Tervezési minták</h2>
+</section>
+<section id="példa" class="slide level2">
+<h2>Példa</h2>
+<p>TODO alkalmazás</p>
+</section>
+<section id="űrlapfeldolgozás-lépései" class="slide level2">
+<h2>Űrlapfeldolgozás lépései</h2>
+<ol type="1">
+<li>Űrlap megjelenítése</li>
+<li>Küldés → adatok feldolgozása (mentése)</li>
+<li>Siker oldal megjelenítése</li>
+</ol>
+<p>Hogy jelenítsük meg a siker oldalt? Mi történik frissítéskor?</p>
+<pre class="php"><code>if (verify_post(&quot;todo&quot;)) {
+  // Beolvasás
+  $todo = $_POST[&quot;todo&quot;];
+
+  // Feldolgozás
+  $todo_storage-&gt;add($todo);
+}
+
+// Lekérdezés
+$todos = $todo_storage-&gt;findAll();</code></pre>
+<pre class="html"><code>&lt;!-- Megjelenítés --&gt;</code></pre>
+</section>
+<section id="post-redirect-get-módszer" class="slide level2">
+<h2>POST-REDIRECT-GET módszer</h2>
+<p>Ötlet: POST konvertálása GET-té átirányítással</p>
+<ol type="1">
+<li>Az űrlap megjelenítése GET metódussal</li>
+<li>Adat elküldése POST metódussal</li>
+<li>Sikeres feldolgozás esetén <strong>átirányítás</strong> a siker oldalra</li>
+<li>Siker oldal megjelenítése GET metódussal</li>
+</ol>
+<div class="columns">
+<div class="column" style="width: 50%">
+<p><mark><code>POST</code></mark> (<code>add-todo.php</code>)</p>
+<pre class="php"><code>if (verify_post(&quot;todo&quot;)) {
+  // Beolvasás
+  $todo = $_POST[&quot;todo&quot;];
+
+  // Feldolgozás
+  $todo_storage-&gt;add($todo);
+}
+✒&gt;redirect(&quot;todo.php&quot;);&lt;✒</code></pre>
+</div><div class="column" style="width: 50%">
+<p><mark><code>GET</code></mark> (<code>todo.php</code>)</p>
+<pre class="php"><code>// Lekérdezés
+$todos = $todoRepository-&gt;all();</code></pre>
+<pre class="html"><code>&lt;!-- Megjelenítés --&gt;</code></pre>
+</div>
+</div>
+</section>
+<section id="hibakezelés" class="slide level2">
+<h2>Hibakezelés</h2>
+<p>“Laza” PRG (kb. ezt használtuk eddig)</p>
+<ol type="1">
+<li>Az űrlap megjelenítése GET metódussal</li>
+<li>Adat elküldése POST metódussal</li>
+<li><strong>Hiba esetén az űrlap megjelenítése</strong> hibaüzenetekkel és a felküldött adatokkal</li>
+<li>Adat újbóli elküldése POST metódussal</li>
+<li>Sikeres feldolgozás esetén <strong>átirányítás</strong> a siker oldalra</li>
+<li>Siker oldal megjelenítése GET metódussal</li>
+</ol>
+</section>
+<section id="hibakezelés-2." class="slide level2">
+<h2>Hibakezelés 2.</h2>
+<p>“Extrém” PRG: oldalt megjeleníteni csak GET metódussal lehet!</p>
+<ol type="1">
+<li>Az űrlap megjelenítése <code>GET</code></li>
+<li>Adat elküldése egy másik oldalra <code>POST</code></li>
+<li><strong>Hiba esetén átirányítás</strong> az 1. pontra <code>redirect</code>
+<ul>
+<li>a hibaüzeneteket és a felküldött adatokat a két kérés között meg kell őrizni</li>
+<li>munkamenet-kezelés (flash adatok)</li>
+</ul></li>
+<li>Adat újbóli elküldése <code>POST</code></li>
+<li>Sikeres feldolgozás esetén <strong>átirányítás</strong> a siker oldalra <code>redirect</code></li>
+<li>Siker oldal megjelenítése <code>GET</code></li>
+</ol>
+</section>
+<section id="prg" class="slide level2">
+<h2>PRG</h2>
+<p><img data-src="../../assets/images/architecture/prg.png" /></p>
+<p>Átirányításkor hogyan jutnak vissza az adatok?</p>
+</section>
+<section id="flash-adatok" class="slide level2">
+<h2>Flash adatok</h2>
+<p>Olyan adatok, amelyek csak egy kérés idejéig élnek a munkamenetben (nálunk: amíg ki nem vesszük őket)</p>
+<pre class="php"><code>function set_flash_data($key, $value) {
+  $_SESSION[$key] = $value;
+}
+
+function get_flash_data($key) {
+  $value = $_SESSION[$key] ?? null;
+  unset($_SESSION[$key]);
+  return $value;
+}</code></pre>
+</section>
+<section id="példa-todo" class="slide level2">
+<h2>Példa: Todo</h2>
+<p><code>GET</code> (<code>todo.php</code>)</p>
+<pre class="php"><code>session_start();
+$todo_storage = new JsonStorage(&quot;storage/todos.json&quot;);
+$errors = get_flash_data(&quot;errors&quot;) ?? [];
+
+$todos = $todoRepository-&gt;all();</code></pre>
+<pre class="html"><code>&lt;form action=&quot;add-todo.php&quot; method=&quot;post&quot;&gt;
+  Todo: &lt;input type=&quot;text&quot; name=&quot;todo&quot;&gt;
+  &lt;button type=&quot;submit&quot;&gt;Add todo&lt;/button&gt;
+&lt;/form&gt;
+
+&lt;?php var_dump($errors); ?&gt;
+
+&lt;h1&gt;Todos&lt;/h1&gt;
+&lt;ul&gt;
+  &lt;?php foreach($todos as $todo) : ?&gt;
+    &lt;li&gt;&lt;?= $todo ?&gt;&lt;/li&gt;
+  &lt;?php endforeach ?&gt;
+&lt;/ul&gt;</code></pre>
+</section>
+<section id="példa-todo-1" class="slide level2">
+<h2>Példa: Todo</h2>
+<p><code>POST</code> (<code>add-todo.php</code>)</p>
+<pre class="php"><code>$errors = [];
+
+if (verify_post(&quot;todo&quot;)) {
+  $todo = $_POST[&quot;todo&quot;];
+
+  if (empty($todo)) {
+    $errors[] = &quot;Todo must not be empty&quot;;
+  }
+
+  if (empty($errors)) {
+    $todo_storage-&gt;add($todo);
+  } else {
+    set_flash_data(&quot;errors&quot;, $errors);
+  }
+}
+redirect(&quot;todo.php&quot;);</code></pre>
+</section>
+<section id="koncepciók-szétválasztása" class="slide level2">
+<h2>Koncepciók szétválasztása</h2>
+<p>Alkalmazás felbontása működés szerint:</p>
+<ul>
+<li>Oldalak, amik információt jelenítenek meg,<br />
+bemenetként szolgálnak (<code>GET</code>)</li>
+<li>Oldalak, amik csak feldolgozást végeznek,<br />
+utána átirányítanak (<code>POST</code>)</li>
+<li>Működéshez szükséges segédfájlok
+<ul>
+<li>segédfüggvények</li>
+<li>segédosztályok</li>
+</ul></li>
+</ul>
+</section>
+<section id="példa-todo-2" class="slide level2">
+<h2>Példa: TODO</h2>
+<p><code>todo-list.php</code></p>
+<pre class="php"><code>include_once(&quot;_init.php&quot;);
+
+$errors = get_flash_data(&quot;errors&quot;) ?? [];
+$todo_storage-&gt;findAll();</code></pre>
+<pre class="html"><code>&lt;?php include(&quot;partials/header.php&quot;); ?&gt;
+
+&lt;form method=&quot;post&quot; action=&quot;action/add-todo.php&quot;&gt;
+  &lt;input type=&quot;text&quot; name=&quot;todo&quot;&gt;
+  &lt;button type=&quot;submit&quot;&gt;Add&lt;/button&gt;
+&lt;/form&gt;
+
+&lt;?php foreach($errors as $error): ?&gt;
+&lt;div class=&quot;error&quot;&gt;&lt;?= $error ?&gt;&lt;/div&gt;
+&lt;?php endforeach; ?&gt;
+
+&lt;?php foreach($todos as $todo): ?&gt;
+&lt;div class=&quot;todo&quot;&gt;&lt;?= $todo ?&gt;&lt;/div&gt;
+&lt;?php endforeach; ?&gt;
+
+&lt;?php include(&quot;partials/footer.php&quot;); ?&gt;</code></pre>
+</section>
+<section id="példa-todo-3" class="slide level2">
+<h2>Példa: TODO</h2>
+<p><code>actions/add-todo.php</code></p>
+<pre class="php"><code>include_once(&quot;_init.php&quot;);
+
+if (verify_post(&quot;todo&quot;)) {
+  $todo = trim($_POST[&quot;todo&quot;]);
+
+  if (empty($todo)) {
+    $errors[] = &quot;Todo must not be empty&quot;;
+  }
+
+  if (empty($errors)) {
+    $todo_storage-&gt;add($todo);
+  }
+}
+
+redirect(&quot;../ pages/todo-list.php&quot;);</code></pre>
+</section>
+<section id="mappaszerkezet-2." class="slide level2">
+<h2>Mappaszerkezet 2.</h2>
+<ul>
+<li><i class="fa fa-folder"></i> <code>lib</code>
+<ul>
+<li><i class="fa fa-folder"></i> <code>utils</code></li>
+<li><i class="fa fa-code"></i> <code>_init.php</code></li>
+</ul></li>
+<li><i class="fa fa-folder"></i> <code>storage</code>
+<ul>
+<li><i class="fa fa-file"></i> <code>todos.json</code></li>
+</ul></li>
+<li><i class="fa fa-folder"></i> <code>partials</code>
+<ul>
+<li><i class="fa fa-code"></i> <code>header.php</code></li>
+<li><i class="fa fa-code"></i> <code>footer.php</code></li>
+</ul></li>
+<li><mark><i class="fa fa-folder"></i> <code>actions</code></mark>
+<ul>
+<li><i class="fa fa-code"></i> <code>add-todo.php</code></li>
+</ul></li>
+<li><i class="fa fa-code"></i> <code>todo-list.php</code></li>
+</ul>
+</section>
+<section id="koncepciók-szétválasztása-1" class="slide level2">
+<h2>Koncepciók szétválasztása</h2>
+<p>Alkalmazás felbontása felelősségi körök szerint:</p>
+<ul>
+<li>Megjelenésért felelős: <strong>NÉZET</strong> (View)</li>
+<li>Működésért felelős: <strong>VEZÉRLŐ</strong> (Controller)</li>
+<li>Adatokért felelős: <strong>MODELL</strong> (Model)</li>
+<li>Működéshez szükséges segédfájlok
+<ul>
+<li>segédfüggvények</li>
+<li>segédosztályok</li>
+</ul></li>
+</ul>
+</section>
+<section id="mvc" class="slide level2">
+<h2>MVC</h2>
+<p><img data-src="../../assets/images/architecture/mvc.png" /></p>
+</section>
+<section id="fogalmak" class="slide level2">
+<h2>Fogalmak</h2>
+<ul>
+<li>Vezérlő
+<ul>
+<li>Egy adott végponthoz rendelt logika</li>
+<li>Valamilyen URL, pl. <code>page.php</code></li>
+<li>1 végpont = 1 fájl = 1 funkcionalitás = 1 vezérlő</li>
+</ul></li>
+<li>Irányítás (routing)
+<ul>
+<li>Végpont vezérlőhöz rendelése</li>
+<li>Eddig: webszerver (alacsony szintű)</li>
+</ul></li>
+</ul>
+</section>
+<section id="routing" class="slide level2">
+<h2>Routing</h2>
+<ul>
+<li>Útvonal + HTTP metódus → működés</li>
+<li>HTTP metódusok
+<ul>
+<li>GET, POST, DELETE, stb.</li>
+</ul></li>
+<li>Webszerver automatikusan</li>
+<li>Manuálisan egy belépési ponttal</li>
+</ul>
+</section>
+<section id="manuális-routing" class="slide level2">
+<h2>Manuális routing</h2>
+<ul>
+<li>Lehetőségek
+<ul>
+<li><code>http://example.com/index.php?path=registration</code> ✓</li>
+<li><code>http://example.com/index.php?registration</code></li>
+<li><code>http://example.com/index.php/registration</code></li>
+<li><code>http://example.com/registration</code></li>
+</ul></li>
+</ul>
+</section>
+<section id="manuális-routing-1" class="slide level2">
+<h2>Manuális routing</h2>
+<pre class="php"><code>class Router {
+  private $routes = [];
+
+  public function start() {
+    $path = $_GET[&quot;page&quot;] ?? &quot;index&quot;;
+    $http_method = $_SERVER[&quot;REQUEST_METHOD&quot;];
+
+    foreach ($this-&gt;routes as $route) {
+      if ($route[&quot;path&quot;] === $path &amp;&amp; $route[&quot;http-method&quot;] === $http_method) {
+        $controller_name = $route[&quot;controller&quot;];
+        $method_name = $route[&quot;method&quot;];
+
+        $controller = new $controller_name();
+        $controller-&gt;$method_name();
+        return;
+      }
+    }
+  }
+
+  public function get($path, $controller, $method) {
+    $this-&gt;routes[] = [
+      &quot;path&quot; =&gt; $path,
+      &quot;http-method&quot; =&gt; &quot;GET&quot;,
+      &quot;controller&quot; =&gt; $controller,
+      &quot;method&quot; =&gt; $method
+    ];
+  }
+
+  public function post($path, $controller, $method) { /*...*/ }
+  public function put($path, $controller, $method) { /*...*/ }
+  public function delete($path, $controller, $method) { /*...*/ }
+}</code></pre>
+</section>
+<section id="elővezérlő" class="slide level2">
+<h2>Elővezérlő</h2>
+<p><code>index.php</code></p>
+<pre class="php"><code>// index.php
+// start session
+session_start();
+
+// auto-loading controllers and models
+/* ... */
+
+// start routing
+$router = new Router();
+$router-&gt;get(&quot;/todos&quot;, &quot;TodoController&quot;, &quot;showForm&quot;);
+$router-&gt;post(&quot;/add-todo&quot;, &quot;TodoController&quot;, &quot;addTodo&quot;);
+$router-&gt;start();</code></pre>
+</section>
+<section id="mvc-1" class="slide level2">
+<h2>MVC</h2>
+<ul>
+<li><strong>Model</strong>: definiálja a tárolt típusokat és biztosítja a kapcsolatot az adatforrás felé</li>
+<li><strong>Kontroller</strong>: a végpontokat működését definiálja
+<ul>
+<li>Adatbeöltés + nézet megjelenítése</li>
+<li>Adatfeldolgozás + átirányítás</li>
+</ul></li>
+<li><strong>Nézet</strong>: megfelelő bemenő adatok alapján megjelenít egy sablont</li>
+</ul>
+</section>
+<section id="mappaszerkezet-3." class="slide level2">
+<h2>Mappaszerkezet 3.</h2>
+<div class="columns">
+<div class="column" style="width:50%">
+<ul>
+<li><i class="fa fa-folder"></i> <code>storage</code>
+<ul>
+<li><i class="fa fa-file"></i> <code>storage1.json</code></li>
+<li><i class="fa fa-file"></i> <code>storage2.json</code></li>
+</ul></li>
+<li><i class="fa fa-folder"></i> <code>partials</code>
+<ul>
+<li><i class="fa fa-code"></i> <code>header.php</code></li>
+<li><i class="fa fa-code"></i> <code>footer.php</code></li>
+</ul></li>
+<li><i class="fa fa-code"></i> <code>index.php</code></li>
+</ul>
+</div><div class="column" style="width:50%">
+<ul>
+<li><i class="fa fa-folder"></i> <code>lib</code>
+<ul>
+<li><i class="fa fa-code"></i> <code>model.php</code></li>
+<li><i class="fa fa-code"></i> <code>view.php</code></li>
+<li><i class="fa fa-code"></i> <code>controller.php</code></li>
+<li><i class="fa fa-code"></i> <code>router.php</code></li>
+</ul></li>
+<li><i class="fa fa-folder"></i> <code>controllers</code>
+<ul>
+<li><i class="fa fa-code"></i> <code>todo.controller.php</code></li>
+</ul></li>
+<li><i class="fa fa-folder"></i> <code>models</code>
+<ul>
+<li><i class="fa fa-code"></i> <code>todo.model.php</code></li>
+</ul></li>
+<li><i class="fa fa-folder"></i> <code>views</code>
+<ul>
+<li><i class="fa fa-code"></i> <code>todo-list.view.php</code></li>
+<li><i class="fa fa-code"></i> <code>todo-form.view.php</code></li>
+</ul></li>
+</ul>
+</div>
+</div>
+</section>
+<section id="eredmény" class="slide level2">
+<h2>Eredmény</h2>
+<ul>
+<li><code>index.php</code>: elővezérlő, routing</li>
+<li><code>storage</code>: tárolt adatok</li>
+<li><code>controllers</code>: vezérlő osztályok
+<ul>
+<li>beolvasás (<code>$_POST</code>, <code>$_GET</code>)</li>
+<li>feldolgozás (→ repository)</li>
+<li>kiírás (view)</li>
+</ul></li>
+<li><code>models</code> repository osztályok
+<ul>
+<li>feldolgozó függvények</li>
+</ul></li>
+<li><code>views</code>: sablonok</li>
+<li>→ Modell-Nézet-Vezérlő tervezési minta</li>
+<li>→ Elővezérlő tervezési minta</li>
+</ul>
+</section>
+<section id="fájlok-közvetlen-meghívásának-védelme" class="slide level2">
+<h2>Fájlok közvetlen meghívásának védelme</h2>
+<ul>
+<li>Tokenes védelem
+<ul>
+<li>alkalmazás szintű</li>
+</ul></li>
+<li>.htaccess védelem
+<ul>
+<li>webszerver szintű</li>
+</ul></li>
+<li>webkönyvtáron kívüli elhelyezés
+<ul>
+<li>operációs rendszer szintű</li>
+</ul></li>
+</ul>
+</section>
+<section id="tokenes-védelem" class="slide level2">
+<h2>Tokenes védelem</h2>
+<ul>
+<li>Token definiálása az elővezérlőben</li>
+</ul>
+<pre class="php"><code>// index.php
+define(&#39;TOKEN&#39;, &#39;A secret token&#39;);
+// ...</code></pre>
+<ul>
+<li>További szkriptek első sora ezt vizsgálja</li>
+</ul>
+<pre class="php"><code>// classes/registration_controller.php
+&lt;?php if ( ! defined(&#39;TOKEN&#39;)) die(&#39;Directly not accessible!&#39;);</code></pre>
+</section>
+<section id="htaccess-védelem" class="slide level2">
+<h2>.htaccess védelem</h2>
+<div class="columns">
+<div class="column" style="width: 70%">
+<ul>
+<li>Könyvtár alapú konfigurációs fájl</li>
+<li>Apache képes kezelni</li>
+<li>Ehhez külön könyvtárba kell</li>
+<li>(webprogramozas szerveren nem működik (nginx))</li>
+<li>Könyvtáranként <code>.htaccess</code> állomány
+<ul>
+<li><code>classes</code></li>
+<li><code>templates</code></li>
+<li><code>data</code></li>
+</ul></li>
+</ul>
+<pre class="txt"><code># .htaccess
+deny from all</code></pre>
+</div><div class="column" style="width: 30%">
+<pre class="txt"><code>|+ (D) classes
+|  |--+ .htaccess
+|+ (D) data
+|  |--+ .htaccess
+|+ (D) templates
+|  |--+ .htaccess
+|+ index.php</code></pre>
+</div>
+</div>
+</section>
+<section id="elhelyezés-webkönyvtáron-kívül" class="slide level2">
+<h2>Elhelyezés webkönyvtáron kívül</h2>
+<p>Könyvtárszerkezet</p>
+<pre class="txt"><code>- (D) www
+  |--+ index.php
+- (D) app
+  |--+ (D) classes
+  |--+ (D) data
+  |--+ (D) templates</code></pre>
+</section>
+<section id="összefoglalás" class="slide level2" data-state="topic">
+<h2 data-state="topic">Összefoglalás</h2>
+<ul>
+<li><strong>AJAX</strong> szerveroldalon
+<ul>
+<li>kimenet generálás</li>
+<li>szöveg, JSON, HTML, stb.</li>
+<li>bemenet: <code>FormData</code> vagy <code>JSON</code></li>
+</ul></li>
+<li><strong>PRG minta</strong>
+<ul>
+<li><code>GET</code> - megjelenítés, adatküldés</li>
+<li><code>POST</code> - feldolgozás, átirányítás</li>
+</ul></li>
+<li><strong>Modell-Nézet-Vezérlő minta</strong>
+<ul>
+<li>vezérlő: működés</li>
+<li>modell: adatok</li>
+<li>nézet: sablon</li>
+</ul></li>
+</ul>
+</section>
+    </div>
+  </div>
+
+  <div id="captcha"></div>
+
+  <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.18.1/build/highlight.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/js/reveal.js"></script>
+
+  <script>
+    // Highlighting in code blocks
+    const codes = document.querySelectorAll('pre > code')
+    for (const code of codes) {
+      code.setAttribute('data-noescape', '')
+      const text = code.innerHTML
+      const markedText = text
+        .replace(/&lt;✒/g, '</mark>')
+        .replace(/✒&gt;/g, '<mark>')
+      code.innerHTML = markedText
+    }
+
+    // Adding captcha
+    const queryString = new URLSearchParams(window.location.search);
+    const captcha = queryString.get('captcha');
+    const captchaElement = document.getElementById("captcha");
+    captchaElement.innerHTML = captcha;
+
+    // Full list of configuration options available at:
+    // https://github.com/hakimel/reveal.js#configuration
+    Reveal.initialize({
+      // Display controls in the bottom right corner
+      controls: true,
+      controlsTutorial: false,
+      // Display a presentation progress bar
+      progress: true,
+      // Display the page number of the current slide
+      slideNumber: true,
+      // Add the current slide number to the URL hash so that reloading the
+      // page/copying the URL will return you to the same slide
+      hash: true,
+      // Push each slide change to the browser history
+      history: false,
+      // Enable keyboard shortcuts for navigation
+      keyboard: true,
+      // Enable the slide overview mode
+      overview: true,
+      // Vertical centering of slides
+      center: true,
+      // Enables touch navigation on devices with touch input
+      touch: true,
+      // Loop the presentation
+      loop: false,
+      // Hides the address bar on mobile devices
+      hideAddressBar: true,
+      // Transition style
+      transition: 'slide', // none/fade/slide/convex/concave/zoom
+      // Transition style for full page slide backgrounds
+      backgroundTransition: 'slide', // none/fade/slide/convex/concave/zoom
+      // Bounds for smallest/largest possible scale to apply to content
+      minScale: 0.5,
+      maxScale: 3,
+      // Modifier key used to click-zoom to part of the slide
+      zoomKey: "ctrl",
+      math: {
+        mathjax: 'https://cdn.jsdelivr.net/gh/mathjax/MathJax@3.0.1/es5/tex-mml-chtml.js',
+        config: 'TeX-AMS_HTML-full',
+        tex2jax: {
+          inlineMath: [['\\(','\\)']],
+          displayMath: [['\\[','\\]']],
+          balanceBraces: true,
+          processEscapes: false,
+          processRefs: true,
+          processEnvironments: true,
+          preview: 'TeX',
+          skipTags: ['script','noscript','style','textarea','pre','code'],
+          ignoreClass: 'tex2jax_ignore',
+          processClass: 'tex2jax_process'
+        }
+      },
+
+      // Optional reveal.js plugins
+      dependencies: [
+        { src: 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+        { src: 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/plugin/zoom-js/zoom.js', async: true },
+        //{ src: 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/socket.io/socket.io.js', async: true },
+        //{ src: 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/plugin/notes-server/client.js', async: true },
+        { src: 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/plugin/math/math.js', async: true },
+        { src: 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/plugin/notes/notes.js', async: true },
+        { src: 'https://cdn.jsdelivr.net/gh/hakimel/reveal.js@3.9.2/plugin/highlight/highlight.js', async: true }
+      ]
+    });
+  </script>
+
+  
+  </body>
+</html>

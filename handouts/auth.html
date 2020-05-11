@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Az `AuthStorage` osztályok használata</title>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/katex.min.css" integrity="sha384-yFRtMMDnQtDRO8rLpMIKrtPCD5jdktao2TV19YiZYWMDkUR5GQZR/NOVTdquEx1j" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/markdown.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/highlight.css">
+        <link href="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.css" rel="stylesheet" type="text/css">
+        <style>
+.task-list-item { list-style-type: none; } .task-list-item-checkbox { margin-left: -20px; vertical-align: middle; }
+</style>
+        <style>
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', 'Ubuntu', 'Droid Sans', sans-serif;
+                font-size: 14px;
+                line-height: 1.6;
+            }
+        </style>
+        
+        <script src="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.js"></script>
+    </head>
+    <body class="vscode-light">
+        <h1 id="az-authstorage-oszt%c3%a1lyok-haszn%c3%a1lata">Az <code>AuthStorage</code> osztályok használata</h1>
+<ul>
+<li><a href="#%c3%9ajrahaszn%c3%a1lhat%c3%b3-k%c3%b3d">Újrahasználható kód</a></li>
+<li><a href="#rendelkez%c3%a9sre-%c3%a1ll%c3%b3-oszt%c3%a1lyok">Rendelkezésre álló osztályok</a></li>
+<li><a href="#alapvet%c5%91-haszn%c3%a1lat">Alapvető használat</a></li>
+</ul>
+<h2 id="%c3%9ajrahaszn%c3%a1lhat%c3%b3-k%c3%b3d">Újrahasználható kód</h2>
+<details>
+  <summary>
+    <code>User</code>
+  </summary>
+<pre><code class="language-php"><div><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">User</span> </span>{
+  <span class="hljs-keyword">public</span> $username;
+  <span class="hljs-keyword">public</span> $fullname;
+  <span class="hljs-keyword">public</span> $roles;
+  <span class="hljs-keyword">private</span> $password;
+
+  <span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">__construct</span><span class="hljs-params">($username, $password, $fullname, $roles = [<span class="hljs-string">"user"</span>])</span> </span>{
+    <span class="hljs-keyword">$this</span>-&gt;username = $username;
+    <span class="hljs-keyword">$this</span>-&gt;password = $password;
+    <span class="hljs-keyword">$this</span>-&gt;fullname = $fullname;
+    <span class="hljs-keyword">$this</span>-&gt;roles = $roles;
+  }
+
+  <span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">hasRole</span><span class="hljs-params">($role)</span> </span>{
+    <span class="hljs-keyword">return</span> in_array($role, <span class="hljs-keyword">$this</span>-&gt;roles);
+  }
+
+  <span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">verifyPassword</span><span class="hljs-params">($password)</span> </span>{
+    <span class="hljs-keyword">return</span> password_verify($password, <span class="hljs-keyword">$this</span>-&gt;password);
+  }
+}
+</div></code></pre>
+</details>
+<details>
+  <summary>
+    <code>IAuthStorage</code>,
+    <code>UserStorage</code>,
+    <code>UserObjectStorage</code>
+  </summary>
+<pre><code class="language-php"><div><span class="hljs-class"><span class="hljs-keyword">interface</span> <span class="hljs-title">IAuthStorage</span> </span>{
+  <span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">restore</span><span class="hljs-params">()</span></span>;
+  <span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">register</span><span class="hljs-params">($username, $password, $fullname)</span></span>;
+  <span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">authenticate</span><span class="hljs-params">($username, $password)</span></span>;
+  <span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">isAuthenticated</span><span class="hljs-params">()</span></span>;
+  <span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">login</span><span class="hljs-params">($user_id)</span></span>;
+  <span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">logout</span><span class="hljs-params">()</span></span>;
+}
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">UserStorage</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">JsonStorage</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">IAuthStorage</span> </span>{
+  <span class="hljs-keyword">public</span> $user = <span class="hljs-keyword">NULL</span>;
+  <span class="hljs-keyword">public</span> $userId = <span class="hljs-keyword">NULL</span>;
+
+  <span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">__construct</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-keyword">parent</span>::__construct(<span class="hljs-string">"storage/users.json"</span>);
+    <span class="hljs-keyword">$this</span>-&gt;restore();
+  }
+
+  <span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">restore</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">isset</span>($_SESSION[<span class="hljs-string">"user-id"</span>])) {
+      $user_id = $_SESSION[<span class="hljs-string">"user-id"</span>];
+      <span class="hljs-keyword">$this</span>-&gt;user = <span class="hljs-keyword">$this</span>-&gt;findById($user_id);
+      <span class="hljs-keyword">$this</span>-&gt;userId = $user_id;
+    }
+  }
+
+  <span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">register</span><span class="hljs-params">($username, $password, $fullname)</span> </span>{
+    $user = [
+      <span class="hljs-string">"username"</span> =&gt; $username,
+      <span class="hljs-string">"password"</span> =&gt; password_hash($password, PASSWORD_DEFAULT),
+      <span class="hljs-string">"fullname"</span> =&gt; $fullname,
+      <span class="hljs-string">"roles"</span> =&gt; [<span class="hljs-string">"user"</span>]
+    ];
+
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">$this</span>-&gt;add($user);
+  }
+
+  <span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">authenticate</span><span class="hljs-params">($username, $password)</span> </span>{
+    $users = <span class="hljs-keyword">$this</span>-&gt;query(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">($user)</span> <span class="hljs-title">use</span> <span class="hljs-params">($username, $password)</span> </span>{
+      <span class="hljs-keyword">return</span> $user[<span class="hljs-string">"username"</span>] === $username &amp;&amp; password_verify($password, $user[<span class="hljs-string">"password"</span>]);
+    });
+
+    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">empty</span>($users)) {
+      <span class="hljs-keyword">return</span> <span class="hljs-keyword">FALSE</span>;
+    }
+
+    $user_id = array_keys($users)[<span class="hljs-number">0</span>];
+    <span class="hljs-keyword">return</span> $user_id;
+  }
+
+  <span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">isAuthenticated</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-keyword">return</span> !is_null(<span class="hljs-keyword">$this</span>-&gt;user);
+  }
+
+  <span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">authorize</span><span class="hljs-params">($roles = [])</span> </span>{
+    <span class="hljs-keyword">if</span> (!<span class="hljs-keyword">$this</span>-&gt;isAuthenticated()) {
+      <span class="hljs-keyword">return</span> <span class="hljs-keyword">FALSE</span>;
+    }
+
+    <span class="hljs-keyword">foreach</span> ($roles <span class="hljs-keyword">as</span> $role) {
+      <span class="hljs-keyword">if</span> (in_array($role, <span class="hljs-keyword">$this</span>-&gt;user[<span class="hljs-string">"roles"</span>])) {
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">TRUE</span>;
+      }
+    }
+
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">FALSE</span>;
+  }
+
+  <span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">login</span><span class="hljs-params">($user_id)</span> </span>{
+    <span class="hljs-keyword">$this</span>-&gt;user = <span class="hljs-keyword">$this</span>-&gt;findById($user_id);
+    <span class="hljs-keyword">$this</span>-&gt;userId = $user_id;
+    $_SESSION[<span class="hljs-string">"user-id"</span>] = $user_id;
+  }
+
+  <span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">logout</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-keyword">$this</span>-&gt;user = <span class="hljs-keyword">NULL</span>;
+    <span class="hljs-keyword">$this</span>-&gt;userId = <span class="hljs-keyword">NULL</span>;
+    <span class="hljs-keyword">unset</span>($_SESSION[<span class="hljs-string">"user-id"</span>]);
+  }
+}
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">UserObjectStorage</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">SerializeObjectStorage</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">IAuthStorage</span> </span>{
+  <span class="hljs-keyword">public</span> $user = <span class="hljs-keyword">NULL</span>;
+  <span class="hljs-keyword">public</span> $userId = <span class="hljs-keyword">NULL</span>;
+
+  <span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">__construct</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-keyword">parent</span>::__construct(<span class="hljs-string">"storage/users.storage"</span>);
+    <span class="hljs-keyword">$this</span>-&gt;restore();
+  }
+
+  <span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">restore</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">isset</span>($_SESSION[<span class="hljs-string">"user-id"</span>])) {
+      $user_id = $_SESSION[<span class="hljs-string">"user-id"</span>];
+      <span class="hljs-keyword">$this</span>-&gt;user = <span class="hljs-keyword">$this</span>-&gt;findById($user_id);
+    }
+  }
+
+  <span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">register</span><span class="hljs-params">($username, $password, $fullname)</span> </span>{
+    $password_hash = password_hash($password, PASSWORD_DEFAULT);
+    $user = <span class="hljs-keyword">new</span> User($username, $password, $fullname);
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">$this</span>-&gt;add($user);
+  }
+
+  <span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">authenticate</span><span class="hljs-params">($username, $password)</span> </span>{
+    $users = <span class="hljs-keyword">$this</span>-&gt;query(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">($user)</span> <span class="hljs-title">use</span> <span class="hljs-params">($username, $password)</span> </span>{
+      <span class="hljs-keyword">return</span> $user-&gt;username === $username &amp;&amp; $user-&gt;verifyPassword($password);
+    });
+
+    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">empty</span>($users)) {
+      <span class="hljs-keyword">return</span> <span class="hljs-keyword">FALSE</span>;
+    }
+
+    $user_id = array_keys($users)[<span class="hljs-number">0</span>];
+    <span class="hljs-keyword">return</span> $user_id;
+  }
+
+  <span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">isAuthenticated</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-keyword">return</span> !is_null(<span class="hljs-keyword">$this</span>-&gt;user);
+  }
+
+  <span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">authorize</span><span class="hljs-params">($roles = [])</span> </span>{
+    <span class="hljs-keyword">if</span> (!<span class="hljs-keyword">$this</span>-&gt;isAuthenticated()) {
+      <span class="hljs-keyword">return</span> <span class="hljs-keyword">FALSE</span>;
+    }
+
+    <span class="hljs-keyword">foreach</span> ($roles <span class="hljs-keyword">as</span> $role) {
+      <span class="hljs-keyword">if</span> (<span class="hljs-keyword">$this</span>-&gt;user-&gt;hasRole($role)) {
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">TRUE</span>;
+      }
+    }
+
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">FALSE</span>;
+  }
+
+  <span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">login</span><span class="hljs-params">($user_id)</span> </span>{
+    <span class="hljs-keyword">$this</span>-&gt;user = <span class="hljs-keyword">$this</span>-&gt;findById($user_id);
+    <span class="hljs-keyword">$this</span>-&gt;userId = $user_id;
+    $_SESSION[<span class="hljs-string">"user-id"</span>] = $user_id;
+  }
+
+  <span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">logout</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-keyword">$this</span>-&gt;user = <span class="hljs-keyword">NULL</span>;
+    <span class="hljs-keyword">$this</span>-&gt;userId = <span class="hljs-keyword">NULL</span>;
+    <span class="hljs-keyword">unset</span>($_SESSION[<span class="hljs-string">"user-id"</span>]);
+  }
+}
+</div></code></pre>
+</details>
+<h2 id="rendelkez%c3%a9sre-%c3%a1ll%c3%b3-oszt%c3%a1lyok">Rendelkezésre álló osztályok</h2>
+<ul>
+<li><code>UserStorage</code>: a <code>JsonStorage</code> osztály kiterjesztése, felhasználók tömbökkel való kezelését valósítja meg JSON tárolás esetén</li>
+<li><code>UserObjectStorage</code>: a <code>SerializeObjectStorage</code> osztály kiterjesztése, felhasználók osztályokkal és objektumokkal való kezelését valósítja meg &quot;serialize&quot; tárolás esetén</li>
+<li><code>User</code>: egy felhasználót reprezentáló osztály, ezt használja a <code>UserObjectStorage</code></li>
+</ul>
+<h2 id="alapvet%c5%91-haszn%c3%a1lat">Alapvető használat</h2>
+<ol>
+<li>Hozzuk létre a felhasználók tárolásához szükséges adatfájlt (<code>storage/users.json</code> vagy <code>storage/users.storage</code>)!</li>
+<li>Adjunk írási és olvasási jogot az adatfájlra a webszervernek (webprogramozás szerveren az &quot;other&quot; jogosultságcsoport)!</li>
+<li>Indítsuk el a munkamenetet!<pre><code class="language-php"><div>session_start();
+</div></code></pre>
+</li>
+<li>Töltsük be a felhasználókat PHP-ban a megfelelő <code>AuthStorage</code> osztály példányosításával!<pre><code class="language-php"><div>$user_storage = <span class="hljs-keyword">new</span> UserStorage();
+</div></code></pre>
+</li>
+<li>Dolgozzunk az <code>IAuthStorage</code> interfész metódusaival.</li>
+</ol>
+
+    </body>
+    </html>

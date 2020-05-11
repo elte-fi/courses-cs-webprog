@@ -40,6 +40,15 @@
 </li>
 </ul>
 <h2 id="%c3%9ajrahaszn%c3%a1lhat%c3%b3-k%c3%b3d">Újrahasználható kód</h2>
+<details>
+  <summary>
+    <code>IFileIO</code>
+    <code>IStorage</code>
+    <code>Storage</code>
+    <code>JsonStorage</code>
+    <code>SerializeStorage</code>
+    <code>SerializeObjectStorage</code>
+  </summary>
 <pre><code class="language-php"><div><span class="hljs-class"><span class="hljs-keyword">interface</span> <span class="hljs-title">IFileIO</span> </span>{
   <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">save</span><span class="hljs-params">()</span></span>;
   <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">load</span><span class="hljs-params">()</span></span>;
@@ -166,6 +175,7 @@
   }
 }
 </div></code></pre>
+</details>
 <h2 id="rendelkez%c3%a9sre-%c3%a1ll%c3%b3-storage-oszt%c3%a1lyok">Rendelkezésre álló <code>Storage</code> osztályok</h2>
 <ul>
 <li><code>JsonStorage</code>: JSON formátumban tárolja az adatokat, típusinformációk (osztályok) elvesznek.</li>
@@ -179,7 +189,7 @@
 <li>Töltsük be az adatfájlt PHP-ban a megfelelő <code>Storage</code> osztály példányosításával!<pre><code class="language-php"><div>$item_storage = <span class="hljs-keyword">new</span> JsonStorage(`storage/items.json`);
 </div></code></pre>
 </li>
-<li>Dolgozzunk az adatokkal a <code>Storage</code> beépített metódusaival.</li>
+<li>Dolgozzunk az adatokkal az <code>IStorage</code> interfész metódusaival.</li>
 </ol>
 <h2 id="met%c3%b3dus-referencia">Metódus referencia</h2>
 <h3 id="constructdatafile"><code>__construct($data_file)</code></h3>
