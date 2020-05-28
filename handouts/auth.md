@@ -1,9 +1,16 @@
 # Az `AuthStorage` osztályok használata
 
-- [Újrahasználható kód](#%c3%9ajrahaszn%c3%a1lhat%c3%b3-k%c3%b3d)
-- [Rendelkezésre álló osztályok](#rendelkez%c3%a9sre-%c3%a1ll%c3%b3-oszt%c3%a1lyok)
-- [Alapvető használat](#alapvet%c5%91-haszn%c3%a1lat)
-- [Metódus referencia](#met%c3%b3dus-referencia)
+- [Újrahasználható kód](#újrahasználható-kód)
+- [Rendelkezésre álló osztályok](#rendelkezésre-álló-osztályok)
+- [Alapvető használat](#alapvető-használat)
+- [Metódus referencia](#metódus-referencia)
+  - [restore()](#restore)
+  - [register($username, $password, $fullname)](#registerusername-password-fullname)
+  - [authenticate($username, $password)](#authenticateusername-password)
+  - [isAuthenticated()](#isauthenticated)
+  - [authorize($roles = [])](#authorizeroles--)
+  - [login($user_id)](#loginuser_id)
+  - [logout()](#logout)
 
 ## Újrahasználható kód
 
@@ -49,6 +56,7 @@
     public function restore();
     public function register($username, $password, $fullname);
     public function authenticate($username, $password);
+    public function authorize($roles = []);
     public function isAuthenticated();
     public function login($user_id);
     public function logout();
@@ -58,8 +66,8 @@
     public $user = NULL;
     public $userId = NULL;
 
-    public function __construct() {
-      parent::__construct("storage/users.json");
+    public function __construct($data_file = "storage/users.json") {
+      parent::__construct($data_file);
       $this->restore();
     }
 
@@ -130,8 +138,8 @@
     public $user = NULL;
     public $userId = NULL;
 
-    public function __construct() {
-      parent::__construct("storage/users.storage");
+    public function __construct($data_file = "storage/users.storage") {
+      parent::__construct($data_file);
       $this->restore();
     }
 
@@ -216,3 +224,114 @@
 5. Dolgozzunk az `IAuthStorage` interfész metódusaival.
 
 ## Metódus referencia
+
+### restore()
+
+Visszaállítja a bejelentkezett felhasználót a munkamenetből. A konstruktor hívja meg.
+
+### register($username, $password, $fullname)
+
+Megadott felhasználónévvel, jelszóval és teljes névvel regisztrál egy felhasználót.
+
+#### Paraméterek
+
+| név         | típus  | leírás                                 |
+| ----------- | ------ | -------------------------------------- |
+| `$username` | string | a felhasználó azonosítója              |
+| `$password` | string | a felhasználó jelszava plain text-ként |
+| `$username` | string | a felhasználó teljes neve              |
+
+#### Visszatérési érték
+
+`$user_id`: A regisztrált új felhasználó ID-ja.
+
+#### Példa
+
+```php
+$han_id = $user_storage->register("hansolo", "iloveyou.iknow", "Han Solo");
+```
+
+### authenticate($username, $password)
+
+Felhasználó autentikálása, felhasználónév-jelszó kombináció ellenőrzése
+
+| név         | típus  | leírás                                    |
+| ----------- | ------ | ----------------------------------------- |
+| `$username` | string | felhasználó azonosító                     |
+| `$password` | string | felhasználó jelszó plain text formátumban |
+
+#### Visszatérési érték
+
+`string` | `FALSE`: Sikeres autentikálás esetén a megtalált felhasználó ID-ja, FALSE különben.
+
+#### Példa
+
+```php
+$leia = $user_storage->authenticate("princessleia", "scruffylookingnerfherder11");
+if ($leia) {
+  print("Login successful");
+} else {
+  print("login failed");
+}
+```
+
+### isAuthenticated()
+
+Megnézi, hogy van-e bejelentkezve valaki.
+
+#### Visszatérési érték
+
+`bool` : `TRUE`, ha be van jelentkezve valaki, `FALSE` különben.
+
+#### Példa
+
+```php
+if ($user_storage->isAuthenticated()) {
+  print("Logged in: " . $user_storage->user["fullname"]);
+} else {
+  print("You're not logged in");
+}
+```
+
+### authorize($roles = [])
+
+Megvizsgálja, hogy a bejelentkezett felhasználó rendelkezik-e a megadott szerepkörök valamelyikével.
+
+#### Paraméterek
+
+| név      | típus | leírás                        |
+| -------- | ----- | ----------------------------- |
+| `$roles` | array | lehetséges szerepkörök tömbje |
+
+#### Visszatérési érték
+
+`bool`: `FALSE`, ha nincs senki bejelentkezve vagy a bejelentkezett felhasználó nem rendelkezik a megadott szerepkörök egyikével sem, `TRUE` különben.
+
+#### Példa
+
+```php
+if(!$user_storage->authorize(["admin"])) {
+  print("Only admins can come here");
+}
+```
+
+### login($user_id)
+
+Adott ID-jú felhasználó bejelentkeztetése, bejelentkezés tárolása a munkamenetben.
+
+#### Paraméterek
+
+| név        | típus  | leírás              |
+| ---------- | ------ | ------------------- |
+| `$user_id` | string | a felhasználó ID-ja |
+
+#### Példa
+
+```php
+$user_storage->login($han_id);
+```
+
+### logout()
+
+Kilépteti a felhasználót, törli a munkamenetből a bejelentkezést.
+
