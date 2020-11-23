@@ -1,31 +1,31 @@
-# Az `AuthStorage` osztályok használata
+# Usage of the `AuthStorage` classes
 
-- [Az `AuthStorage` osztályok használata](#az-authstorage-osztályok-használata)
-  - [Újrahasználható kód](#újrahasználható-kód)
-  - [Rendelkezésre álló osztályok](#rendelkezésre-álló-osztályok)
+- [Usage of the `AuthStorage` classes](#usage-of-the-authstorage-classes)
+  - [Reusable code](#reusable-code)
+  - [Available classes](#available-classes)
   - [Alapvető használat](#alapvető-használat)
-  - [Metódus referencia](#metódus-referencia)
+  - [Method reference](#method-reference)
     - [restore()](#restore)
     - [register($username, $password, $fullname)](#registerusername-password-fullname)
-      - [Paraméterek](#paraméterek)
-      - [Visszatérési érték](#visszatérési-érték)
-      - [Példa](#példa)
+      - [Parameters](#parameters)
+      - [Return value](#return-value)
+      - [Example](#example)
     - [authenticate($username, $password)](#authenticateusername-password)
-      - [Visszatérési érték](#visszatérési-érték-1)
-      - [Példa](#példa-1)
+      - [Return value](#return-value-1)
+      - [Example](#example-1)
     - [isAuthenticated()](#isauthenticated)
-      - [Visszatérési érték](#visszatérési-érték-2)
-      - [Példa](#példa-2)
+      - [Return value](#return-value-2)
+      - [Example](#example-2)
     - [authorize($roles = [])](#authorizeroles--)
-      - [Paraméterek](#paraméterek-1)
-      - [Visszatérési érték](#visszatérési-érték-3)
-      - [Példa](#példa-3)
+      - [Parameters](#parameters-1)
+      - [Return value](#return-value-3)
+      - [Example](#example-3)
     - [login($user_id)](#loginuser_id)
-      - [Paraméterek](#paraméterek-2)
-      - [Példa](#példa-4)
+      - [Parameters](#parameters-2)
+      - [Example](#example-4)
     - [logout()](#logout)
 
-## Újrahasználható kód
+## Reusable code
 
 <details>
   <summary>
@@ -216,49 +216,49 @@
 
 </details>
 
-## Rendelkezésre álló osztályok
+## Available classes
 
-- `UserStorage`: a `JsonStorage` osztály kiterjesztése, felhasználók tömbökkel való kezelését valósítja meg JSON tárolás esetén
-- `UserObjectStorage`: a `SerializeObjectStorage` osztály kiterjesztése, felhasználók osztályokkal és objektumokkal való kezelését valósítja meg "serialize" tárolás esetén
-- `User`: egy felhasználót reprezentáló osztály, ezt használja a `UserObjectStorage`
+- `UserStorage`: Extension of the `JsonStorage` class. Implements user handling with arrays when using JSON storage.
+- `UserObjectStorage`: Extends the `SerializeObjectStorage` class.Implements user handling with classes and objects while using "serialize" storage.
+- `User`: A class representing an user, used by `UserObjectStorage`
 
 ## Alapvető használat
 
-1. Hozzuk létre a felhasználók tárolásához szükséges adatfájlt (`storage/users.json` vagy `storage/users.storage`)!
-2. Adjunk írási és olvasási jogot az adatfájlra a webszervernek (webprogramozás szerveren az "other" jogosultságcsoport)!
-3. Indítsuk el a munkamenetet!
+1. Create a data file for the users (`storage/users.json` or `storage/users.storage`)!
+2. Set read and write permissions for the web server (the "other" group on `webprogramozas.inf.elte.hu`)!
+3. Start the session!
    ```php
    session_start();
    ```
-4. Töltsük be a felhasználókat PHP-ban a megfelelő `AuthStorage` osztály példányosításával!
+4. Load the users into PHP with creating the necessary `AuthStorage` object!
    ```php
    $user_storage = new UserStorage();
    ```
-5. Dolgozzunk az `IAuthStorage` interfész metódusaival.
+5. Work with the methods of the `IAuthStorage` interface.
 
-## Metódus referencia
+## Method reference
 
 ### restore()
 
-Visszaállítja a bejelentkezett felhasználót a munkamenetből. A konstruktor hívja meg.
+Restores the logged in user from session. Called by the constructor.
 
 ### register($username, $password, $fullname)
 
-Megadott felhasználónévvel, jelszóval és teljes névvel regisztrál egy felhasználót.
+Registers a new user with the given username, password and full name.
 
-#### Paraméterek
+#### Parameters
 
-| név         | típus  | leírás                                 |
-| ----------- | ------ | -------------------------------------- |
-| `$username` | string | a felhasználó azonosítója              |
-| `$password` | string | a felhasználó jelszava plain text-ként |
-| `$fullname` | string | a felhasználó teljes neve              |
+| name        | type   | description                        |
+| ----------- | ------ | ---------------------------------- |
+| `$username` | string | username of the user               |
+| `$password` | string | password of the user in plain text |
+| `$fullname` | string | full name of the user              |
 
-#### Visszatérési érték
+#### Return value
 
-`$user_id`: A regisztrált új felhasználó ID-ja.
+`$user_id`: ID of the newly registered user.
 
-#### Példa
+#### Example
 
 ```php
 $han_id = $user_storage->register("hansolo", "iloveyou.iknow", "Han Solo");
@@ -266,18 +266,18 @@ $han_id = $user_storage->register("hansolo", "iloveyou.iknow", "Han Solo");
 
 ### authenticate($username, $password)
 
-Felhasználó autentikálása, felhasználónév-jelszó kombináció ellenőrzése
+Authenticating an user with checking the username-password combination
 
-| név         | típus  | leírás                                    |
-| ----------- | ------ | ----------------------------------------- |
-| `$username` | string | felhasználó azonosító                     |
-| `$password` | string | felhasználó jelszó plain text formátumban |
+| name        | type   | description                 |
+| ----------- | ------ | --------------------------- |
+| `$username` | string | user name                   |
+| `$password` | string | user password in plain text |
 
-#### Visszatérési érték
+#### Return value
 
-`string` | `FALSE`: Sikeres autentikálás esetén a megtalált felhasználó ID-ja, FALSE különben.
+`string` | `FALSE`: The ID of the user is authentication was successful, otherwise `FALSE`
 
-#### Példa
+#### Example
 
 ```php
 $leia = $user_storage->authenticate("princessleia", "scruffylookingnerfherder11");
@@ -290,13 +290,13 @@ if ($leia) {
 
 ### isAuthenticated()
 
-Megnézi, hogy van-e bejelentkezve valaki.
+Check if someone is logged in.
 
-#### Visszatérési érték
+#### Return value
 
-`bool` : `TRUE`, ha be van jelentkezve valaki, `FALSE` különben.
+`bool` : `TRUE`, if someone is logged in, otherwise `FALSE`.
 
-#### Példa
+#### Example
 
 ```php
 if ($user_storage->isAuthenticated()) {
@@ -308,19 +308,19 @@ if ($user_storage->isAuthenticated()) {
 
 ### authorize($roles = [])
 
-Megvizsgálja, hogy a bejelentkezett felhasználó rendelkezik-e a megadott szerepkörök valamelyikével.
+Checks if the logged in user has any of the queried roles.
 
-#### Paraméterek
+#### Parameters
 
-| név      | típus | leírás                        |
-| -------- | ----- | ----------------------------- |
-| `$roles` | array | lehetséges szerepkörök tömbje |
+| name     | type  | description             |
+| -------- | ----- | ----------------------- |
+| `$roles` | array | array of possible roles |
 
-#### Visszatérési érték
+#### Return value
 
-`bool`: `FALSE`, ha nincs senki bejelentkezve vagy a bejelentkezett felhasználó nem rendelkezik a megadott szerepkörök egyikével sem, `TRUE` különben.
+`bool`: `FALSE`, if noone is logged in or the user has none of the queried roles, `TRUE` otherwise.
 
-#### Példa
+#### Example
 
 ```php
 if(!$user_storage->authorize(["admin"])) {
@@ -330,15 +330,15 @@ if(!$user_storage->authorize(["admin"])) {
 
 ### login($user_id)
 
-Adott ID-jú felhasználó bejelentkeztetése, bejelentkezés tárolása a munkamenetben.
+Logs in an user with the given ID and stores login information in the session.
 
-#### Paraméterek
+#### Parameters
 
-| név        | típus  | leírás              |
-| ---------- | ------ | ------------------- |
-| `$user_id` | string | a felhasználó ID-ja |
+| name       | type   | description    |
+| ---------- | ------ | -------------- |
+| `$user_id` | string | ID of the user |
 
-#### Példa
+#### Example
 
 ```php
 $user_storage->login($han_id);
@@ -346,5 +346,5 @@ $user_storage->login($han_id);
 
 ### logout()
 
-Kilépteti a felhasználót, törli a munkamenetből a bejelentkezést.
+Logs out the user and clears login information from session.
 

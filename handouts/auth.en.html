@@ -2,7 +2,7 @@
     <html>
     <head>
         <meta charset="UTF-8">
-        <title>Az &grave;AuthStorage&grave; oszt&aacute;lyok haszn&aacute;lata</title>
+        <title>Usage of the &grave;AuthStorage&grave; classes</title>
         <style>
 </style>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/katex.min.css" integrity="sha384-yFRtMMDnQtDRO8rLpMIKrtPCD5jdktao2TV19YiZYWMDkUR5GQZR/NOVTdquEx1j" crossorigin="anonymous">
@@ -24,46 +24,46 @@
         
     </head>
     <body class="vscode-body vscode-light">
-        <h1 id="az-authstorage-osztályok-használata">Az <code>AuthStorage</code> osztályok használata</h1>
+        <h1 id="usage-of-the-authstorage-classes">Usage of the <code>AuthStorage</code> classes</h1>
 <ul>
-<li><a href="#az-authstorage-oszt%C3%A1lyok-haszn%C3%A1lata">Az <code>AuthStorage</code> osztályok használata</a>
+<li><a href="#usage-of-the-authstorage-classes">Usage of the <code>AuthStorage</code> classes</a>
 <ul>
-<li><a href="#%C3%BAjrahaszn%C3%A1lhat%C3%B3-k%C3%B3d">Újrahasználható kód</a></li>
-<li><a href="#rendelkez%C3%A9sre-%C3%A1ll%C3%B3-oszt%C3%A1lyok">Rendelkezésre álló osztályok</a></li>
+<li><a href="#reusable-code">Reusable code</a></li>
+<li><a href="#available-classes">Available classes</a></li>
 <li><a href="#alapvet%C5%91-haszn%C3%A1lat">Alapvető használat</a></li>
-<li><a href="#met%C3%B3dus-referencia">Metódus referencia</a>
+<li><a href="#method-reference">Method reference</a>
 <ul>
 <li><a href="#restore">restore()</a></li>
 <li><a href="#registerusername-password-fullname">register($username, $password, $fullname)</a>
 <ul>
-<li><a href="#param%C3%A9terek">Paraméterek</a></li>
-<li><a href="#visszat%C3%A9r%C3%A9si-%C3%A9rt%C3%A9k">Visszatérési érték</a></li>
-<li><a href="#p%C3%A9lda">Példa</a></li>
+<li><a href="#parameters">Parameters</a></li>
+<li><a href="#return-value">Return value</a></li>
+<li><a href="#example">Example</a></li>
 </ul>
 </li>
 <li><a href="#authenticateusername-password">authenticate($username, $password)</a>
 <ul>
-<li><a href="#visszat%C3%A9r%C3%A9si-%C3%A9rt%C3%A9k-1">Visszatérési érték</a></li>
-<li><a href="#p%C3%A9lda-1">Példa</a></li>
+<li><a href="#return-value-1">Return value</a></li>
+<li><a href="#example-1">Example</a></li>
 </ul>
 </li>
 <li><a href="#isauthenticated">isAuthenticated()</a>
 <ul>
-<li><a href="#visszat%C3%A9r%C3%A9si-%C3%A9rt%C3%A9k-2">Visszatérési érték</a></li>
-<li><a href="#p%C3%A9lda-2">Példa</a></li>
+<li><a href="#return-value-2">Return value</a></li>
+<li><a href="#example-2">Example</a></li>
 </ul>
 </li>
 <li><a href="#authorizeroles--">authorize($roles = [])</a>
 <ul>
-<li><a href="#param%C3%A9terek-1">Paraméterek</a></li>
-<li><a href="#visszat%C3%A9r%C3%A9si-%C3%A9rt%C3%A9k-3">Visszatérési érték</a></li>
-<li><a href="#p%C3%A9lda-3">Példa</a></li>
+<li><a href="#parameters-1">Parameters</a></li>
+<li><a href="#return-value-3">Return value</a></li>
+<li><a href="#example-3">Example</a></li>
 </ul>
 </li>
 <li><a href="#loginuser_id">login($user_id)</a>
 <ul>
-<li><a href="#param%C3%A9terek-2">Paraméterek</a></li>
-<li><a href="#p%C3%A9lda-4">Példa</a></li>
+<li><a href="#parameters-2">Parameters</a></li>
+<li><a href="#example-4">Example</a></li>
 </ul>
 </li>
 <li><a href="#logout">logout()</a></li>
@@ -72,7 +72,7 @@
 </ul>
 </li>
 </ul>
-<h2 id="újrahasználható-kód">Újrahasználható kód</h2>
+<h2 id="reusable-code">Reusable code</h2>
 <details>
   <summary>
     <code>User</code>
@@ -255,87 +255,87 @@
 }
 </div></code></pre>
 </details>
-<h2 id="rendelkezésre-álló-osztályok">Rendelkezésre álló osztályok</h2>
+<h2 id="available-classes">Available classes</h2>
 <ul>
-<li><code>UserStorage</code>: a <code>JsonStorage</code> osztály kiterjesztése, felhasználók tömbökkel való kezelését valósítja meg JSON tárolás esetén</li>
-<li><code>UserObjectStorage</code>: a <code>SerializeObjectStorage</code> osztály kiterjesztése, felhasználók osztályokkal és objektumokkal való kezelését valósítja meg &quot;serialize&quot; tárolás esetén</li>
-<li><code>User</code>: egy felhasználót reprezentáló osztály, ezt használja a <code>UserObjectStorage</code></li>
+<li><code>UserStorage</code>: Extension of the <code>JsonStorage</code> class. Implements user handling with arrays when using JSON storage.</li>
+<li><code>UserObjectStorage</code>: Extends the <code>SerializeObjectStorage</code> class.Implements user handling with classes and objects while using &quot;serialize&quot; storage.</li>
+<li><code>User</code>: A class representing an user, used by <code>UserObjectStorage</code></li>
 </ul>
 <h2 id="alapvető-használat">Alapvető használat</h2>
 <ol>
-<li>Hozzuk létre a felhasználók tárolásához szükséges adatfájlt (<code>storage/users.json</code> vagy <code>storage/users.storage</code>)!</li>
-<li>Adjunk írási és olvasási jogot az adatfájlra a webszervernek (webprogramozás szerveren az &quot;other&quot; jogosultságcsoport)!</li>
-<li>Indítsuk el a munkamenetet!<pre><code class="language-php"><div>session_start();
+<li>Create a data file for the users (<code>storage/users.json</code> or <code>storage/users.storage</code>)!</li>
+<li>Set read and write permissions for the web server (the &quot;other&quot; group on <code>webprogramozas.inf.elte.hu</code>)!</li>
+<li>Start the session!<pre><code class="language-php"><div>session_start();
 </div></code></pre>
 </li>
-<li>Töltsük be a felhasználókat PHP-ban a megfelelő <code>AuthStorage</code> osztály példányosításával!<pre><code class="language-php"><div>$user_storage = <span class="hljs-keyword">new</span> UserStorage();
+<li>Load the users into PHP with creating the necessary <code>AuthStorage</code> object!<pre><code class="language-php"><div>$user_storage = <span class="hljs-keyword">new</span> UserStorage();
 </div></code></pre>
 </li>
-<li>Dolgozzunk az <code>IAuthStorage</code> interfész metódusaival.</li>
+<li>Work with the methods of the <code>IAuthStorage</code> interface.</li>
 </ol>
-<h2 id="metódus-referencia">Metódus referencia</h2>
+<h2 id="method-reference">Method reference</h2>
 <h3 id="restore">restore()</h3>
-<p>Visszaállítja a bejelentkezett felhasználót a munkamenetből. A konstruktor hívja meg.</p>
+<p>Restores the logged in user from session. Called by the constructor.</p>
 <h3 id="registerusername-password-fullname">register($username, $password, $fullname)</h3>
-<p>Megadott felhasználónévvel, jelszóval és teljes névvel regisztrál egy felhasználót.</p>
-<h4 id="paraméterek">Paraméterek</h4>
+<p>Registers a new user with the given username, password and full name.</p>
+<h4 id="parameters">Parameters</h4>
 <table>
 <thead>
 <tr>
-<th>név</th>
-<th>típus</th>
-<th>leírás</th>
+<th>name</th>
+<th>type</th>
+<th>description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td><code>$username</code></td>
 <td>string</td>
-<td>a felhasználó azonosítója</td>
+<td>username of the user</td>
 </tr>
 <tr>
 <td><code>$password</code></td>
 <td>string</td>
-<td>a felhasználó jelszava plain text-ként</td>
+<td>password of the user in plain text</td>
 </tr>
 <tr>
 <td><code>$fullname</code></td>
 <td>string</td>
-<td>a felhasználó teljes neve</td>
+<td>full name of the user</td>
 </tr>
 </tbody>
 </table>
-<h4 id="visszatérési-érték">Visszatérési érték</h4>
-<p><code>$user_id</code>: A regisztrált új felhasználó ID-ja.</p>
-<h4 id="példa">Példa</h4>
+<h4 id="return-value">Return value</h4>
+<p><code>$user_id</code>: ID of the newly registered user.</p>
+<h4 id="example">Example</h4>
 <pre><code class="language-php"><div>$han_id = $user_storage-&gt;register(<span class="hljs-string">&quot;hansolo&quot;</span>, <span class="hljs-string">&quot;iloveyou.iknow&quot;</span>, <span class="hljs-string">&quot;Han Solo&quot;</span>);
 </div></code></pre>
 <h3 id="authenticateusername-password">authenticate($username, $password)</h3>
-<p>Felhasználó autentikálása, felhasználónév-jelszó kombináció ellenőrzése</p>
+<p>Authenticating an user with checking the username-password combination</p>
 <table>
 <thead>
 <tr>
-<th>név</th>
-<th>típus</th>
-<th>leírás</th>
+<th>name</th>
+<th>type</th>
+<th>description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td><code>$username</code></td>
 <td>string</td>
-<td>felhasználó azonosító</td>
+<td>user name</td>
 </tr>
 <tr>
 <td><code>$password</code></td>
 <td>string</td>
-<td>felhasználó jelszó plain text formátumban</td>
+<td>user password in plain text</td>
 </tr>
 </tbody>
 </table>
-<h4 id="visszatérési-érték-1">Visszatérési érték</h4>
-<p><code>string</code> | <code>FALSE</code>: Sikeres autentikálás esetén a megtalált felhasználó ID-ja, FALSE különben.</p>
-<h4 id="példa-1">Példa</h4>
+<h4 id="return-value-1">Return value</h4>
+<p><code>string</code> | <code>FALSE</code>: The ID of the user is authentication was successful, otherwise <code>FALSE</code></p>
+<h4 id="example-1">Example</h4>
 <pre><code class="language-php"><div>$leia = $user_storage-&gt;authenticate(<span class="hljs-string">&quot;princessleia&quot;</span>, <span class="hljs-string">&quot;scruffylookingnerfherder11&quot;</span>);
 <span class="hljs-keyword">if</span> ($leia) {
   <span class="hljs-keyword">print</span>(<span class="hljs-string">&quot;Login successful&quot;</span>);
@@ -344,10 +344,10 @@
 }
 </div></code></pre>
 <h3 id="isauthenticated">isAuthenticated()</h3>
-<p>Megnézi, hogy van-e bejelentkezve valaki.</p>
-<h4 id="visszatérési-érték-2">Visszatérési érték</h4>
-<p><code>bool</code> : <code>TRUE</code>, ha be van jelentkezve valaki, <code>FALSE</code> különben.</p>
-<h4 id="példa-2">Példa</h4>
+<p>Check if someone is logged in.</p>
+<h4 id="return-value-2">Return value</h4>
+<p><code>bool</code> : <code>TRUE</code>, if someone is logged in, otherwise <code>FALSE</code>.</p>
+<h4 id="example-2">Example</h4>
 <pre><code class="language-php"><div><span class="hljs-keyword">if</span> ($user_storage-&gt;isAuthenticated()) {
   <span class="hljs-keyword">print</span>(<span class="hljs-string">&quot;Logged in: &quot;</span> . $user_storage-&gt;user[<span class="hljs-string">&quot;fullname&quot;</span>]);
 } <span class="hljs-keyword">else</span> {
@@ -355,55 +355,55 @@
 }
 </div></code></pre>
 <h3 id="authorizeroles--">authorize($roles = [])</h3>
-<p>Megvizsgálja, hogy a bejelentkezett felhasználó rendelkezik-e a megadott szerepkörök valamelyikével.</p>
-<h4 id="paraméterek-1">Paraméterek</h4>
+<p>Checks if the logged in user has any of the queried roles.</p>
+<h4 id="parameters-1">Parameters</h4>
 <table>
 <thead>
 <tr>
-<th>név</th>
-<th>típus</th>
-<th>leírás</th>
+<th>name</th>
+<th>type</th>
+<th>description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td><code>$roles</code></td>
 <td>array</td>
-<td>lehetséges szerepkörök tömbje</td>
+<td>array of possible roles</td>
 </tr>
 </tbody>
 </table>
-<h4 id="visszatérési-érték-3">Visszatérési érték</h4>
-<p><code>bool</code>: <code>FALSE</code>, ha nincs senki bejelentkezve vagy a bejelentkezett felhasználó nem rendelkezik a megadott szerepkörök egyikével sem, <code>TRUE</code> különben.</p>
-<h4 id="példa-3">Példa</h4>
+<h4 id="return-value-3">Return value</h4>
+<p><code>bool</code>: <code>FALSE</code>, if noone is logged in or the user has none of the queried roles, <code>TRUE</code> otherwise.</p>
+<h4 id="example-3">Example</h4>
 <pre><code class="language-php"><div><span class="hljs-keyword">if</span>(!$user_storage-&gt;authorize([<span class="hljs-string">&quot;admin&quot;</span>])) {
   <span class="hljs-keyword">print</span>(<span class="hljs-string">&quot;Only admins can come here&quot;</span>);
 }
 </div></code></pre>
 <h3 id="loginuser_id">login($user_id)</h3>
-<p>Adott ID-jú felhasználó bejelentkeztetése, bejelentkezés tárolása a munkamenetben.</p>
-<h4 id="paraméterek-2">Paraméterek</h4>
+<p>Logs in an user with the given ID and stores login information in the session.</p>
+<h4 id="parameters-2">Parameters</h4>
 <table>
 <thead>
 <tr>
-<th>név</th>
-<th>típus</th>
-<th>leírás</th>
+<th>name</th>
+<th>type</th>
+<th>description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td><code>$user_id</code></td>
 <td>string</td>
-<td>a felhasználó ID-ja</td>
+<td>ID of the user</td>
 </tr>
 </tbody>
 </table>
-<h4 id="példa-4">Példa</h4>
+<h4 id="example-4">Example</h4>
 <pre><code class="language-php"><div>$user_storage-&gt;login($han_id);
 </div></code></pre>
 <h3 id="logout">logout()</h3>
-<p>Kilépteti a felhasználót, törli a munkamenetből a bejelentkezést.</p>
+<p>Logs out the user and clears login information from session.</p>
 
     </body>
     </html>
