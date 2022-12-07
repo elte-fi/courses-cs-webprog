@@ -15,6 +15,6 @@
   },
   "devDependencies": {
     "chokidar-cli": "^2.1.0",
-    "reveal-md": "^3.4.7"
+    "reveal-md": "^5.4.0"
   }
 }
